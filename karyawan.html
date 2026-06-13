@@ -1,52 +1,187 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Karyawan - K3 Web</title>
+    <title>Data Karyawan - OTSUKA K3</title>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
 
-    <h1>Manajemen Data Karyawan</h1>
-    <a href="index.html">Kembali ke Dashboard</a>
+    <!-- Sidebar -->
+    <div class="sidebar">
 
-    <div class="form-container">
-        <h3>Tambah Karyawan Baru</h3>
-        <form id="formKaryawan">
-            <input type="text" id="nik" placeholder="NIK" required><br><br>
-            <input type="text" id="nama" placeholder="Nama Lengkap" required><br><br>
-            <input type="text" id="departemen" placeholder="Departemen (Contoh: Produksi, QC)"><br><br>
-            <input type="text" id="jabatan" placeholder="Jabatan"><br><br>
-            <select id="status_mcu">
-                <option value="Fit">Fit</option>
-                <option value="Fit dengan Catatan">Fit dengan Catatan</option>
-                <option value="Unfit">Unfit</option>
-            </select><br><br>
-            <button type="submit">Simpan Karyawan</button>
-        </form>
+        <h2>OTSUKA K3</h2>
+
+        <ul>
+
+            <li>🏠 Dashboard</li>
+
+            <li class="active">👥 Data Karyawan</li>
+
+            <li>🏢 Struktur P2K3</li>
+
+            <li>📂 Dokumen K3</li>
+
+            <li>📋 Pelaksanaan SOP</li>
+
+            <li>📊 Audit</li>
+
+            <li>🚪 Logout</li>
+
+        </ul>
+
     </div>
 
-    <hr>
+    <!-- Main -->
+    <div class="main">
 
-    <h3>Daftar Karyawan</h3>
-    <table border="1" cellpadding="10" cellspacing="0">
-        <thead>
-            <tr>
-                <th>NIK</th>
-                <th>Nama</th>
-                <th>Departemen</th>
-                <th>Jabatan</th>
-                <th>Status MCU</th>
-            </tr>
-        </thead>
-        <tbody id="tabelKaryawanBody">
-            </tbody>
-    </table>
+        <!-- Navbar -->
+        <div class="navbar">
 
+            <h2>Data Karyawan</h2>
+
+            <div class="profile">
+
+                Administrator
+
+            </div>
+
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+
+            <div class="top">
+
+                <button id="openModal">
+
+                    + Tambah Data
+
+                </button>
+
+                <input type="text" id="search" placeholder="Cari karyawan...">
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Nama</th>
+
+                        <th>NIK</th>
+
+                        <th>Departemen</th>
+
+                        <th>Jabatan</th>
+
+                        <th>Status MCU</th>
+
+                        <th>Aksi</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tbody">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+
+    <div class="modal" id="modal">
+
+        <div class="modal-content">
+
+            <h2>Tambah Data Karyawan</h2>
+
+            <input
+                type="text"
+                id="nama"
+                placeholder="Nama Karyawan"
+            >
+
+            <input
+                type="text"
+                id="nik"
+                placeholder="NIK"
+            >
+
+            <select id="departemen">
+
+                <option value="Produksi">Produksi</option>
+
+                <option value="QA">QA</option>
+
+                <option value="QC">QC</option>
+
+                <option value="HRD">HRD</option>
+
+                <option value="Engineering">Engineering</option>
+
+                <option value="Warehouse">Warehouse</option>
+
+            </select>
+
+            <input
+                type="text"
+                id="jabatan"
+                placeholder="Jabatan"
+            >
+
+            <select id="mcu">
+
+                <option value="Fit">Fit</option>
+
+                <option value="Fit dengan Catatan">
+                    Fit dengan Catatan
+                </option>
+
+                <option value="Unfit">
+                    Unfit
+                </option>
+
+            </select>
+
+            <button onclick="tambahData()">
+
+                Simpan
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Library Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Konfigurasi Supabase -->
     <script src="js/supabase-config.js"></script>
+
+    <!-- CRUD Karyawan -->
     <script src="js/karyawan.js"></script>
+
 </body>
+
 </html>
+```

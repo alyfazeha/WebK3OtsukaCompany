@@ -1,62 +1,187 @@
-// Jalankan fungsi saat halaman selesai dimuat
-document.addEventListener("DOMContentLoaded", () => {
-    ambilDataKaryawan();
-    
-    // Pasang event listener untuk form submit
-    document.getElementById("formKaryawan").addEventListener("submit", tambahKaryawan);
-});
+// Modal
+const modal = document.getElementById("modal");
+const tbody = document.getElementById("tbody");
 
-// Fungsi 1: Mengambil data dari tabel 'karyawan' di Supabase
-async function ambilDataKaryawan() {
-    const { data, error } = await supabase
-        .from('karyawan')
-        .select('*');
+document.getElementById("openModal").onclick = () => {
+    modal.style.display = "flex";
+};
+
+// =======================
+// LOAD DATA DARI SUPABASE
+// =======================
+
+async function loadData() {
+
+    const { data, error } = await db
+        .from("karyawan")
+        .select("*")
+        .order("id", { ascending: true });
 
     if (error) {
-        console.error("Gagal mengambil data:", error.message);
+        console.log(error);
         return;
     }
 
-    const tbody = document.getElementById("tabelKaryawanBody");
-    tbody.innerHTML = ""; // Bersihkan tabel terlebih dahulu
+    tbody.innerHTML = "";
 
-    // Looping data dan masukkan ke dalam baris tabel HTML
-    data.forEach(karyawan => {
-        const row = `
-            <tr>
-                <td>${karyawan.nik}</td>
-                <td>${karyawan.nama}</td>
-                <td>${karyawan.departemen || '-'}</td>
-                <td>${karyawan.jabatan || '-'}</td>
-                <td>${karyawan.status_mcu || '-'}</td>
-            </tr>
+    data.forEach(item => {
+
+        let warna = "fit";
+
+        if (item.status_mcu == "Fit dengan Catatan") {
+            warna = "catatan";
+        }
+
+        if (item.status_mcu == "Unfit") {
+            warna = "unfit";
+        }
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>${item.nama}</td>
+
+            <td>${item.nik}</td>
+
+            <td>${item.departemen}</td>
+
+            <td>${item.jabatan}</td>
+
+            <td>
+
+                <span class="badge ${warna}">
+                    ${item.status_mcu}
+                </span>
+
+            </td>
+
+            <td>
+
+                <button onclick="editData(${item.id})">
+                    Edit
+                </button>
+
+                <button
+                    onclick="hapusData(${item.id})"
+                    style="background:red"
+                >
+                    Hapus
+                </button>
+
+            </td>
+
+        </tr>
+
         `;
-        tbody.innerHTML += row;
+
     });
+
 }
 
-// Fungsi 2: Menambah data ke tabel 'karyawan' di Supabase
-async function tambahKaryawan(event) {
-    event.preventDefault(); // Mencegah halaman refresh otomatis
+loadData();
 
-    const nik = document.getElementById("nik").value;
-    const nama = document.getElementById("nama").value;
-    const departemen = document.getElementById("departemen").value;
-    const jabatan = document.getElementById("jabatan").value;
-    const status_mcu = document.getElementById("status_mcu").value;
 
-    // Kirim data ke Supabase
-    const { data, error } = await supabase
-        .from('karyawan')
+// =======================
+// TAMBAH DATA
+// =======================
+
+async function tambahData() {
+
+    let nama = document.getElementById("nama").value;
+
+    let nik = document.getElementById("nik").value;
+
+    let departemen = document.getElementById("departemen").value;
+
+    let jabatan = document.getElementById("jabatan").value;
+
+    let mcu = document.getElementById("mcu").value;
+
+    const { error } = await db
+
+        .from("karyawan")
+
         .insert([
-            { nik: nik, nama: nama, departemen: departemen, jabatan: jabatan, status_mcu: status_mcu }
+
+            {
+
+                nama: nama,
+
+                nik: nik,
+
+                departemen: departemen,
+
+                jabatan: jabatan,
+
+                status_mcu: mcu
+
+            }
+
         ]);
 
     if (error) {
-        alert("Gagal menambahkan karyawan: " + error.message);
-    } else {
-        alert("Karyawan berhasil ditambahkan!");
-        document.getElementById("formKaryawan").reset(); // Reset form input
-        ambilDataKaryawan(); // Refresh tabel agar data baru langsung muncul
+
+        alert(error.message);
+
+        console.log(error);
+
+        return;
+
     }
+
+    modal.style.display = "none";
+
+    document.getElementById("nama").value = "";
+
+    document.getElementById("nik").value = "";
+
+    document.getElementById("jabatan").value = "";
+
+    loadData();
+
+}
+
+
+// =======================
+// HAPUS DATA
+// =======================
+
+async function hapusData(id){
+
+    if(!confirm("Yakin ingin menghapus data?")){
+
+        return;
+
+    }
+
+    const {error}=await db
+
+        .from("karyawan")
+
+        .delete()
+
+        .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    loadData();
+
+}
+
+
+// =======================
+// EDIT DATA
+// =======================
+
+function editData(id){
+
+    alert("Fitur edit nanti bisa dibuat dengan modal edit.");
+
 }

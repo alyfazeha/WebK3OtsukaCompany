@@ -1,14 +1,7 @@
 /**
  * dokumen.js
  * Kartiko Widyotomo – Document Repository & Audit Specialist
- *
- * Handles:
- *  - Drag-and-drop / file picker for PDF upload to Supabase Storage
- *  - Saving metadata (nama, jenis, file_path, tanggal_upload) to tabel dokumen_k3
- *  - Listing, searching, filtering, and deleting documents
  */
-
-const supabase = db;
 
 /* ─────────────────────────────────────────────
    STATE
@@ -46,237 +39,216 @@ function setupDragAndDrop() {
   });
 }
 
-/* ─────────────────────────────────────────────
-   FILE SELECTION
-───────────────────────────────────────────── */
 function onFileSelected(input) {
-  if (input.files && input.files[0]) handleFile(input.files[0]);
+  const file = input.files[0];
+  if (file) handleFile(file);
 }
 
 function handleFile(file) {
   if (file.type !== 'application/pdf') {
-    showToast('Hanya file PDF yang diperbolehkan.', 'error'); return;
+    showToast('Hanya diperbolehkan mengunggah berkas PDF!', 'error');
+    clearFile();
+    return;
   }
   if (file.size > 10 * 1024 * 1024) {
-    showToast('Ukuran file maksimal 10 MB.', 'error'); return;
+    showToast('Ukuran berkas maksimal adalah 10 MB!', 'error');
+    clearFile();
+    return;
   }
   selectedFile = file;
+  
+  // Update info teks nama file & ubah tampilan menjadi FULL CARD ikon PDF besar
   document.getElementById('selected-file-name').textContent = file.name;
-  document.getElementById('selected-file-badge').style.display = 'inline-flex';
-
-  const nameField = document.getElementById('nama-dokumen');
-  if (!nameField.value) {
-    nameField.value = file.name.replace(/\.pdf$/i, '').replace(/[-_]/g, ' ');
-  }
+  document.getElementById('upload-prompt').style.display = 'none';
+  document.getElementById('selected-file-badge').style.display = 'flex';
 }
 
 function clearFile() {
   selectedFile = null;
-  document.getElementById('file-input').value = '';
+  const input = document.getElementById('file-input');
+  if (input) input.value = '';
+  
+  // Kembalikan ke tampilan default instruksi kosong semula
   document.getElementById('selected-file-badge').style.display = 'none';
+  document.getElementById('upload-prompt').style.display = 'flex';
 }
 
 /* ─────────────────────────────────────────────
-   UPLOAD DOKUMEN
+   UPLOAD LOGIC
 ───────────────────────────────────────────── */
 async function uploadDokumen() {
-  const namaDokumen  = document.getElementById('nama-dokumen').value.trim();
-  const jenisDokumen = document.getElementById('jenis-dokumen').value;
-  const btn          = document.getElementById('btn-upload');
-  const statusEl     = document.getElementById('upload-status');
+  const namaInp = document.getElementById('nama-dokumen');
+  const jenisInp = document.getElementById('jenis-dokumen');
+  const btn = document.getElementById('btn-upload');
 
-  if (!selectedFile)   { showToast('Pilih file PDF terlebih dahulu.', 'error'); return; }
-  if (!namaDokumen)    { showToast('Nama dokumen wajib diisi.', 'error');        return; }
-  if (!jenisDokumen)   { showToast('Pilih jenis dokumen.',              'error'); return; }
+  if (!namaInp || !jenisInp) return;
 
-  btn.disabled = true;
-  btn.textContent = 'Mengupload…';
-  statusEl.textContent = 'Mengunggah file ke storage…';
-  showProgress(0);
+  const nama = namaInp.value.trim();
+  const jenis = jenisInp.value;
+
+  if (!selectedFile) {
+    showToast('Silakan pilih atau jatuhkan berkas PDF terlebih dahulu!', 'error');
+    return;
+  }
+  if (!nama) {
+    showToast('Nama dokumen wajib diisi!', 'error');
+    return;
+  }
+  if (!jenis) {
+    showToast('Silakan pilih jenis dokumen!', 'error');
+    return;
+  }
 
   try {
-    const timestamp   = Date.now();
-    const safeFileName = selectedFile.name.replace(/\s+/g, '_');
-    const filePath    = `${timestamp}_${safeFileName}`;
+    btn.disabled = true;
+    btn.textContent = 'Mengunggah...';
+    animateProgress(0, 80, 1500);
 
-    animateProgress(0, 70, 800);
+    const fileExt = selectedFile.name.split('.').pop();
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+    const filePath = `repository/${fileName}`;
 
-    const { error: storageError } = await supabase
-      .storage
+    // 1. Upload file fisik ke Supabase Storage Bucket menggunakan 'db' dari config kamu
+    const { error: storageError } = await db.storage
       .from('dokumen-k3')
-      .upload(filePath, selectedFile, { contentType: 'application/pdf', upsert: false });
+      .upload(filePath, selectedFile, { cacheControl: '3600', upsert: false });
 
     if (storageError) throw storageError;
 
-    animateProgress(70, 90, 300);
-
-    const { data: urlData } = supabase
-      .storage
-      .from('dokumen-k3')
-      .getPublicUrl(filePath);
-
-    const publicUrl = urlData?.publicUrl || filePath;
-
-    const { error: dbError } = await supabase
+    // 2. Insert metadata ke database tabel dokumen_k3 menggunakan 'db' dari config kamu
+    const { error: dbError } = await db
       .from('dokumen_k3')
-      .insert([{
-        nama_dokumen:   namaDokumen,
-        jenis_dokumen:  jenisDokumen,
-        file_path:      publicUrl,
-        tanggal_upload: new Date().toISOString().split('T')[0],
+      .insert([{ 
+        nama_dokumen: nama, 
+        jenis_dokumen: jenis, 
+        file_path: filePath, 
+        tanggal_upload: new Date().toISOString().split('T')[0] 
       }]);
 
     if (dbError) throw dbError;
 
-    animateProgress(90, 100, 200);
-
+    animateProgress(80, 100, 300);
     setTimeout(() => {
+      showToast('Dokumen berhasil disimpan ke repository!', 'success');
+      namaInp.value = '';
+      jenisInp.value = '';
+      clearFile();
       hideProgress();
-      showToast('Dokumen berhasil diupload!', 'success');
-      resetUploadForm();
       loadDokumen();
-    }, 300);
+    }, 400);
 
   } catch (err) {
+    console.error(err);
+    showToast(err.message || 'Gagal mengunggah dokumen', 'error');
     hideProgress();
-    console.error('Upload error:', err);
-    showToast(`Gagal upload: ${err.message || 'Terjadi kesalahan'}`, 'error');
-    statusEl.textContent = '';
   } finally {
     btn.disabled = false;
-    btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Dokumen`;
+    btn.textContent = 'Upload Dokumen';
   }
 }
 
-function resetUploadForm() {
-  clearFile();
-  document.getElementById('nama-dokumen').value = '';
-  document.getElementById('jenis-dokumen').value = '';
-  document.getElementById('upload-status').textContent = '';
-}
-
 /* ─────────────────────────────────────────────
-   LOAD & RENDER DOKUMEN
+   LOAD & DISPLAY
 ───────────────────────────────────────────── */
 async function loadDokumen() {
-  const tbody = document.getElementById('doc-tbody');
-  tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>Memuat data…</p></div></td></tr>`;
-
   try {
-    const { data, error } = await supabase
+    // Menggunakan koneksi 'db' dari config kamu
+    const { data, error } = await db
       .from('dokumen_k3')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('id', { ascending: false });
 
     if (error) throw error;
     allDokumen = data || [];
-    updateStats(allDokumen);
     renderTable(allDokumen);
-
+    calculateStats(allDokumen);
   } catch (err) {
-    console.error('Load error:', err);
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>Gagal memuat data: ${err.message}</p></div></td></tr>`;
+    console.error(err);
+    document.getElementById('doc-tbody').innerHTML = `<tr><td colspan="5" style="color:#dc2626;">Gagal memuat data: ${escapeHtml(err.message)}</td></tr>`;
   }
 }
 
-function renderTable(data) {
+function renderTable(list) {
   const tbody = document.getElementById('doc-tbody');
+  if (!tbody) return;
 
-  if (!data || data.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
-      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>
-        <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-      </svg>
-      <p>Belum ada dokumen. Upload dokumen pertama Anda!</p>
-    </div></td></tr>`;
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#95a5a6;">Tidak ada dokumen ditemukan.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = data.map((doc, idx) => {
-    const jenis = doc.jenis_dokumen || 'Lainnya';
-    const tanggal = doc.tanggal_upload
-      ? new Date(doc.tanggal_upload).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' })
-      : '-';
-    const filePathEscaped = escapeHtml(doc.file_path || '');
-    const namaEscaped     = escapeHtml(doc.nama_dokumen);
-
-    return `<tr>
-      <td style="color:#9ca3af; font-size:.8rem;">${idx + 1}</td>
-      <td><div style="font-weight:500; color:#111827;">${namaEscaped}</div></td>
-      <td><span class="badge-jenis badge-${escapeHtml(jenis)}">${escapeHtml(jenis)}</span></td>
-      <td>${tanggal}</td>
-      <td style="display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;">
-        ${doc.file_path
-          ? `<a href="${filePathEscaped}" target="_blank" rel="noopener" class="btn-lihat">
-              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-                <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-              </svg> Lihat</a>`
-          : '<span style="color:#9ca3af; font-size:.82rem;">–</span>'}
-        <button class="btn-hapus" onclick="hapusDokumen(${doc.id}, '${filePathEscaped}', '${namaEscaped}')">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-            <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
-          </svg> Hapus
-        </button>
-      </td>
-    </tr>`;
-  }).join('');
+  let html = '';
+  list.forEach((doc, idx) => {
+    html += `
+      <tr>
+        <td>${idx + 1}</td>
+        <td style="font-weight:500; color:#0F3D56; text-align: left;">${escapeHtml(doc.nama_dokumen)}</td>
+        <td><span class="badge-jenis badge-${doc.jenis_dokumen}">${doc.jenis_dokumen}</span></td>
+        <td>${formatDate(doc.tanggal_upload)}</td>
+        <td>
+          <div style="display:flex; gap:8px; justify-content: center;">
+            <button class="btn-lihat" onclick="bukaDokumen('${escapeHtml(doc.file_path)}')">👁️ Lihat</button>
+            <button class="btn-hapus-doc" onclick="hapusDokumen(${doc.id}, '${escapeHtml(doc.file_path)}')">🗑️ Hapus</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
 }
 
-/* ─────────────────────────────────────────────
-   HAPUS DOKUMEN
-───────────────────────────────────────────── */
-async function hapusDokumen(id, filePath, namaDokumen) {
-  if (!confirm(`Hapus dokumen "${namaDokumen}"?\nTindakan ini tidak dapat dibatalkan.`)) return;
+async function bukaDokumen(path) {
+  try {
+    // Menggunakan koneksi 'db' dari config kamu
+    const { data } = db.storage.from('dokumen-k3').getPublicUrl(path);
+    if (data?.publicUrl) {
+      window.open(data.publicUrl, '_blank');
+    } else {
+      showToast('Gagal mendapatkan URL dokumen', 'error');
+    }
+  } catch (err) {
+    showToast('Gagal membuka dokumen', 'error');
+  }
+}
+
+async function hapusDokumen(id, path) {
+  if (!confirm('Apakah Anda yakin ingin menghapus dokumen ini secara permanen dari basis data?')) return;
 
   try {
-    const { error: dbError } = await db.from('dokumen_k3').delete().eq('id', id);
-    if (dbError) throw dbError;
+    // Menggunakan koneksi 'db' dari config kamu
+    await db.storage.from('dokumen-k3').remove([path]);
+    const { error } = await db.from('dokumen_k3').delete().eq('id', id);
+    if (error) throw error;
 
-    // Try to delete from storage too
-    if (filePath) {
-      try {
-        const url = new URL(filePath);
-        const pathParts = url.pathname.split('/dokumen-k3/');
-        const storagePath = pathParts[1];
-        if (storagePath) await db.storage.from('dokumen-k3').remove([storagePath]);
-      } catch (_) { /* ignore */ }
-    }
-
-    showToast('Dokumen berhasil dihapus.', 'success');
+    showToast('Dokumen berhasil dihapus!', 'success');
     loadDokumen();
-
   } catch (err) {
-    console.error('Delete error:', err);
-    showToast(`Gagal menghapus: ${err.message}`, 'error');
+    console.error(err);
+    showToast('Gagal menghapus dokumen: ' + err.message, 'error');
   }
 }
 
 /* ─────────────────────────────────────────────
-   SEARCH & FILTER
+   FILTER & SEARCH
 ───────────────────────────────────────────── */
 function filterDokumen() {
-  const keyword = document.getElementById('search-input').value.toLowerCase();
-  const jenis   = document.getElementById('filter-jenis').value;
+  const searchVal = document.getElementById('search-input').value.toLowerCase();
+  const jenisVal = document.getElementById('filter-jenis').value;
+
   const filtered = allDokumen.filter(doc => {
-    const matchKeyword = !keyword || (doc.nama_dokumen || '').toLowerCase().includes(keyword);
-    const matchJenis   = !jenis   || doc.jenis_dokumen === jenis;
-    return matchKeyword && matchJenis;
+    const matchSearch = (doc.nama_dokumen || '').toLowerCase().includes(searchVal);
+    const matchJenis = jenisVal === '' || doc.jenis_dokumen === jenisVal;
+    return matchSearch && matchJenis;
   });
+
   renderTable(filtered);
 }
 
-/* ─────────────────────────────────────────────
-   STATS
-───────────────────────────────────────────── */
-function updateStats(data) {
-  document.getElementById('stat-total').textContent    = data.length;
-  document.getElementById('stat-sop').textContent      = data.filter(d => d.jenis_dokumen === 'SOP').length;
-  document.getElementById('stat-protap').textContent   = data.filter(d => d.jenis_dokumen === 'PROTAP').length;
-  document.getElementById('stat-regulasi').textContent = data.filter(d => d.jenis_dokumen === 'Regulasi').length;
+function calculateStats(list) {
+  document.getElementById('stat-total').textContent = list.length;
+  document.getElementById('stat-sop').textContent = list.filter(d => d.jenis_dokumen === 'SOP').length;
+  document.getElementById('stat-protap').textContent = list.filter(d => d.jenis_dokumen === 'PROTAP').length;
+  document.getElementById('stat-regulasi').textContent = list.filter(d => d.jenis_dokumen === 'Regulasi').length;
 }
 
 /* ─────────────────────────────────────────────
@@ -299,28 +271,31 @@ function animateProgress(from, to, duration) {
   showProgress(current);
   const iv = setInterval(() => {
     current += stepSize;
-    bar.style.width = Math.min(current, to) + '%';
+    if (bar) bar.style.width = Math.min(current, to) + '%';
     if (current >= to) clearInterval(iv);
   }, stepTime);
 }
 
 /* ─────────────────────────────────────────────
-   TOAST
+   HELPERS
 ───────────────────────────────────────────── */
+function formatDate(dateStr) {
+  if (!dateStr) return '–';
+  return new Date(dateStr).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+}
+
 function showToast(msg, type = 'info') {
   const toast = document.getElementById('toast');
+  if(!toast) return;
   toast.textContent = msg;
   toast.style.background = type === 'error' ? '#dc2626' : type === 'success' ? '#16a34a' : '#111827';
   toast.style.display = 'block';
   setTimeout(() => { toast.style.display = 'none'; }, 3500);
 }
 
-/* ─────────────────────────────────────────────
-   UTIL
-───────────────────────────────────────────── */
 function escapeHtml(str) {
   if (!str) return '';
   return String(str)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }

@@ -2,7 +2,7 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Poppins;
+    font-family:'Poppins',sans-serif;
 }
 
 body{
@@ -10,645 +10,425 @@ body{
     background:#f4f8fb;
 }
 
+/* =======================
+SIDEBAR
+======================= */
+
 .sidebar{
-    width:250px;
+    width:260px;
     height:100vh;
     background:#0F3D56;
     color:white;
-    padding:30px;
+    padding:30px 20px;
     position:fixed;
 }
 
 .sidebar h2{
     margin-bottom:40px;
+    font-size:22px;
+    text-align:center;
+    font-weight:700;
+}
+
+.sidebar ul{
+    list-style:none;
+    padding:0;
 }
 
 .sidebar li{
-    list-style:none;
-    padding:15px;
-    margin-bottom:10px;
-    border-radius:10px;
-    cursor:pointer;
-    transition:.3s;
+    margin-bottom:12px;
 }
 
-.sidebar li:hover{
-    background:#1FA9E6;
+.sidebar li a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    width:100%;
+
+    padding:15px 18px;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:12px;
+
+    font-size:17px;
+
+    font-weight:500;
+
+    transition:0.3s;
+
 }
 
-.active{
+.sidebar li a:hover{
+
     background:#1FA9E6;
+
 }
+
+.sidebar li.active a{
+
+    background:#1FA9E6;
+
+}
+
+/* menghilangkan warna biru dan underline */
+
+.sidebar a,
+.sidebar a:hover,
+.sidebar a:visited,
+.sidebar a:active{
+
+    color:white;
+
+    text-decoration:none;
+
+}
+
+/* =======================
+MAIN
+======================= */
 
 .main{
-    margin-left:250px;
+
+    margin-left:260px;
+
     width:100%;
+
 }
+
+/* =======================
+NAVBAR
+======================= */
 
 .navbar{
+
     height:80px;
+
     background:white;
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
-    padding:20px 40px;
-    box-shadow:0 5px 15px rgba(0,0,0,.1);
+
+    padding:0 40px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+
 }
 
+.navbar h2{
+
+    font-size:32px;
+
+    font-weight:700;
+
+}
+
+.profile{
+
+    font-size:18px;
+
+    font-weight:500;
+
+}
+
+/* =======================
+CONTENT
+======================= */
+
 .content{
+
     padding:30px;
+
 }
 
 .top{
+
     display:flex;
+
     justify-content:space-between;
-    margin-bottom:20px;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
 }
+
+/* =======================
+BUTTON
+======================= */
 
 button{
+
     background:#1FA9E6;
+
     color:white;
-    padding:12px 20px;
+
     border:none;
+
+    padding:12px 20px;
+
     border-radius:10px;
+
     cursor:pointer;
+
+    transition:0.3s;
+
 }
 
-input{
-    padding:12px;
-    border-radius:10px;
-    border:1px solid #ddd;
+button:hover{
+
+    background:#1189bd;
+
 }
+
+/* =======================
+INPUT
+======================= */
+
+input,
+select,
+textarea{
+
+    padding:12px;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    width:100%;
+
+    outline:none;
+
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+
+    border:1px solid #1FA9E6;
+
+}
+
+/* =======================
+TABLE
+======================= */
 
 table{
+
     width:100%;
+
     background:white;
+
     border-collapse:collapse;
-    border-radius:15px;
+
+    border-radius:18px;
+
     overflow:hidden;
+
     box-shadow:0 5px 20px rgba(0,0,0,.08);
+
 }
 
 th{
+
     background:#1FA9E6;
+
     color:white;
-    padding:15px;
+
+    padding:18px;
+
+    font-size:16px;
+
 }
 
 td{
-    padding:15px;
+
+    padding:16px;
+
     text-align:center;
+
     border-bottom:1px solid #eee;
+
 }
 
+tbody tr:hover{
+
+    background:#f8fcff;
+
+}
+
+/* =======================
+BADGE MCU
+======================= */
+
 .badge{
-    padding:6px 15px;
-    border-radius:20px;
+
     color:white;
-    font-size:12px;
+
+    padding:6px 15px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
 }
 
 .fit{
+
     background:#2ecc71;
+
 }
 
 .catatan{
+
     background:#f1c40f;
+
 }
 
 .unfit{
+
     background:#e74c3c;
+
 }
 
+/* =======================
+MODAL
+======================= */
+
 .modal{
+
     display:none;
+
     position:fixed;
+
+    top:0;
+
+    left:0;
+
     width:100%;
+
     height:100%;
-    background:rgba(0,0,0,.5);
+
+    background:rgba(0,0,0,.4);
+
     justify-content:center;
+
     align-items:center;
+
 }
 
 .modal-content{
+
     background:white;
+
+    width:450px;
+
     padding:30px;
-    width:400px;
-    border-radius:20px;
+
+    border-radius:18px;
+
     display:flex;
+
     flex-direction:column;
+
     gap:15px;
-}
-
-select{
-    padding:12px;
-    border-radius:10px;
-}
-
-/* ================================================================
-   HALAMAN PELAKSANAAN K3  (pelaksanaan.html)
-   Semua class di bawah ini hanya dipakai di halaman pelaksanaan
-================================================================ */
-
-/* -- Variabel Warna Pelaksanaan -- */
-.pelaksanaan-page {
-    --p-primary:    #1FA9E6;
-    --p-primary-dk: #0F3D56;
-    --p-success:    #0e9f6e;
-    --p-warning:    #c27803;
-    --p-danger:     #e02424;
-    --p-border:     #e5e7eb;
-    --p-muted:      #6b7280;
-    --p-card:       #ffffff;
-    --p-radius:     10px;
-}
-
-/* -- Page Header (judul + ikon halaman) -- */
-.pel-page-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 28px;
-}
-
-.pel-page-header .pel-icon-wrap {
-    width: 48px;
-    height: 48px;
-    background: #0F3D56;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.pel-page-header .pel-icon-wrap svg {
-    color: #fff;
-}
-
-.pel-page-header h1 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #0F3D56;
-}
-
-.pel-page-header p {
-    font-size: .85rem;
-    color: var(--p-muted, #6b7280);
-    margin-top: 2px;
-}
-
-/* -- Card Umum Pelaksanaan -- */
-.pel-card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 15px;
-    padding: 24px 28px;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, .08);
-}
-
-.pel-card h2 {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #0F3D56;
-    margin-bottom: 18px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.pel-card h2 .pel-badge-section {
-    background: #e0f2fe;
-    border: 1px solid #bae6fd;
-    border-radius: 20px;
-    font-size: .7rem;
-    font-weight: 600;
-    color: #1FA9E6;
-    padding: 1px 10px;
-}
-
-/* -- Form Grid 2 kolom -- */
-.pel-form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
-
-@media (max-width: 600px) {
-    .pel-form-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.pel-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.pel-form-group.full {
-    grid-column: 1 / -1;
-}
-
-.pel-form-group label {
-    font-size: .82rem;
-    font-weight: 600;
-    color: #374151;
-}
-
-.pel-form-group label .req {
-    color: #e02424;
-    margin-left: 2px;
-}
-
-.pel-form-group input[type="date"],
-.pel-form-group select,
-.pel-form-group textarea {
-    border: 1.5px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 9px 12px;
-    font-size: .9rem;
-    color: #111827;
-    background: #fff;
-    transition: border-color .15s, box-shadow .15s;
-    outline: none;
-    width: 100%;
-    font-family: Poppins;
-}
-
-.pel-form-group input[type="date"]:focus,
-.pel-form-group select:focus,
-.pel-form-group textarea:focus {
-    border-color: #1FA9E6;
-    box-shadow: 0 0 0 3px rgba(31, 169, 230, .15);
-}
-
-.pel-form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-/* -- Checklist Header (judul + skor badge per seksi) -- */
-.pel-checklist-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
-
-.pel-checklist-header h3 {
-    font-size: .95rem;
-    font-weight: 700;
-    color: #374151;
-}
-
-.pel-skor-badge {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 20px;
-    padding: 3px 14px;
-    font-size: .82rem;
-    font-weight: 700;
-    color: #0e9f6e;
-    min-width: 80px;
-    text-align: center;
-}
 
-.pel-skor-badge.warn   { background: #fffbeb; border-color: #fde68a; color: #c27803; }
-.pel-skor-badge.danger { background: #fff1f2; border-color: #fecdd3; color: #e02424; }
-
-/* -- Tabel Checklist -- */
-.pel-checklist-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 8px;
-    /* override tabel global agar tidak kena border-radius & shadow global */
-    border-radius: 0;
-    box-shadow: none;
-    background: transparent;
 }
 
-.pel-checklist-table thead th {
-    background: #f9fafb;
-    font-size: .78rem;
-    font-weight: 700;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    padding: 8px 10px;
-    text-align: left;
-    border-bottom: 2px solid #e5e7eb;
-}
+.modal-content h2{
 
-.pel-checklist-table thead th:last-child {
-    text-align: center;
-}
+    text-align:center;
 
-.pel-checklist-table tbody tr {
-    border-bottom: 1px solid #f3f4f6;
-}
+    margin-bottom:10px;
 
-.pel-checklist-table tbody tr:last-child {
-    border-bottom: none;
 }
 
-.pel-checklist-table tbody td {
-    padding: 10px 10px;
-    font-size: .88rem;
-    vertical-align: middle;
-    text-align: left;
-    border-bottom: none;
-}
+/* =========================
+   LOGO SIDEBAR
+========================= */
 
-.pel-checklist-table tbody td:last-child {
-    text-align: center;
-}
+.logo{
 
-/* -- Toggle Switch -- */
-.pel-toggle-wrap {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
+    display:flex;
 
-.pel-toggle {
-    position: relative;
-    width: 42px;
-    height: 24px;
-    flex-shrink: 0;
-}
+    flex-direction:column;
 
-.pel-toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-    padding: 0;
-    border: none;
-}
+    align-items:center;
 
-.pel-toggle .pel-slider {
-    position: absolute;
-    inset: 0;
-    background: #d1d5db;
-    border-radius: 24px;
-    cursor: pointer;
-    transition: background .2s;
-}
+    margin-bottom:35px;
 
-.pel-toggle .pel-slider::before {
-    content: '';
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    left: 3px;
-    top: 3px;
-    background: #fff;
-    border-radius: 50%;
-    transition: transform .2s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
 }
 
-.pel-toggle input:checked + .pel-slider {
-    background: #0e9f6e;
-}
+.logo img{
 
-.pel-toggle input:checked + .pel-slider::before {
-    transform: translateX(18px);
-}
+    width:140px;
 
-.pel-toggle-label {
-    font-size: .8rem;
-    color: #6b7280;
-    min-width: 58px;
-}
+    height:auto;
 
-/* -- Divider antar seksi -- */
-.pel-divider {
-    border: none;
-    border-top: 2px dashed #e5e7eb;
-    margin: 24px 0 20px;
-}
+    margin-bottom:15px;
 
-/* -- Skor Meter / Progress Bar -- */
-.pel-skor-meter-wrap {
-    margin-top: 20px;
 }
 
-.pel-skor-meter-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: .82rem;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 6px;
-}
+.logo h2{
 
-.pel-skor-meter {
-    height: 10px;
-    background: #e5e7eb;
-    border-radius: 10px;
-    overflow: hidden;
-}
+    color:white;
 
-.pel-skor-meter-fill {
-    height: 100%;
-    border-radius: 10px;
-    background: #0e9f6e;
-    transition: width .4s ease, background .4s;
-    width: 0%;
-}
+    font-size:28px;
 
-.pel-skor-meter-fill.warn   { background: #c27803; }
-.pel-skor-meter-fill.danger { background: #e02424; }
-
-/* -- Area Submit (skor besar + tombol) -- */
-.pel-submit-area {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 24px;
-}
+    font-weight:700;
 
-.pel-skor-total-display {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    margin-bottom:5px;
 
-.pel-big-skor {
-    font-size: 2.2rem;
-    font-weight: 800;
-    line-height: 1;
-    color: #0e9f6e;
-    transition: color .3s;
 }
 
-.pel-big-skor.warn   { color: #c27803; }
-.pel-big-skor.danger { color: #e02424; }
+.logo p{
 
-.pel-skor-desc {
-    font-size: .8rem;
-    color: #6b7280;
-    line-height: 1.4;
-}
+    color:#d9e8f2;
 
-.pel-skor-desc strong {
-    display: block;
-    color: #111827;
-    font-size: .9rem;
-}
+    font-size:13px;
 
-/* -- Tombol Submit Pelaksanaan -- */
-.pel-btn-submit {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-size: .92rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    background: #0F3D56;
-    color: #fff;
-    transition: background .15s, transform .1s, opacity .15s;
-    font-family: Poppins;
-}
+    text-align:center;
 
-.pel-btn-submit:hover:not(:disabled) {
-    background: #1FA9E6;
 }
 
-.pel-btn-submit:active {
-    transform: scale(.97);
-}
+/* =======================
+RESPONSIVE
+======================= */
 
-.pel-btn-submit:disabled {
-    opacity: .5;
-    cursor: not-allowed;
-}
+@media(max-width:768px){
 
-/* -- Spinner loading di dalam tombol -- */
-.pel-spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2.5px solid rgba(255, 255, 255, .4);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: pel-spin .6s linear infinite;
-}
+.sidebar{
 
-@keyframes pel-spin {
-    to { transform: rotate(360deg); }
-}
+    width:80px;
 
-/* -- Tabel Riwayat Inspeksi -- */
-.pel-history-wrap {
-    overflow-x: auto;
 }
 
-.pel-history-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: .85rem;
-    border-radius: 0;
-    box-shadow: none;
-    background: transparent;
-}
+.sidebar h2{
 
-.pel-history-table th {
-    background: #0F3D56;
-    color: #fff;
-    font-size: .75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    padding: 11px 14px;
-    text-align: left;
-}
+    display:none;
 
-.pel-history-table td {
-    padding: 11px 14px;
-    border-bottom: 1px solid #f3f4f6;
-    vertical-align: middle;
-    text-align: left;
 }
 
-.pel-history-table tr:last-child td {
-    border-bottom: none;
-}
+.sidebar li a{
 
-.pel-history-table tr:hover td {
-    background: #f0f9ff;
-}
+    justify-content:center;
 
-/* -- Pill Status Skor -- */
-.pel-pill {
-    display: inline-block;
-    padding: 3px 12px;
-    border-radius: 20px;
-    font-size: .75rem;
-    font-weight: 700;
-}
+    font-size:14px;
 
-.pel-pill.green  { background: #d1fae5; color: #065f46; }
-.pel-pill.yellow { background: #fef3c7; color: #92400e; }
-.pel-pill.red    { background: #fee2e2; color: #991b1b; }
-
-/* -- Empty State (tabel kosong) -- */
-.pel-empty-state {
-    text-align: center;
-    padding: 32px 0;
-    color: #6b7280;
-    font-size: .9rem;
 }
 
-.pel-empty-state svg {
-    margin-bottom: 10px;
-    opacity: .4;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
+.main{
 
-/* -- Toast Notification -- */
-#pel-toast-container {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 9999;
-}
+    margin-left:80px;
 
-.pel-toast {
-    background: #1f2937;
-    color: #fff;
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-size: .88rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, .3);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: pel-slideUp .25s ease;
-    max-width: 320px;
-    font-family: Poppins;
 }
-
-.pel-toast.success { background: #065f46; }
-.pel-toast.error   { background: #7f1d1d; }
-
-@keyframes pel-slideUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
 }
-
-/* ================================================================
-   END OF PELAKSANAAN K3 STYLES
-================================================================ */

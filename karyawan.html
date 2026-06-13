@@ -1,187 +1,134 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Karyawan - OTSUKA K3</title>
-
-    <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <!-- CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-
-    <!-- Sidebar -->
     <div class="sidebar">
-
-        <h2>OTSUKA K3</h2>
-
+        <div class="logo">
+            <img src="images/logo otsuka.jpg" alt="Logo Otsuka">
+            <h2>OTSUKA K3</h2>
+        </div>
         <ul>
-
-            <li>🏠 Dashboard</li>
-
-            <li class="active">👥 Data Karyawan</li>
-
-            <li>🏢 Struktur P2K3</li>
-
-            <li>📂 Dokumen K3</li>
-
-            <li>📋 Pelaksanaan SOP</li>
-
-            <li>📊 Audit</li>
-
-            <li>🚪 Logout</li>
-
+            <li>
+                <a href="index.html">🏠 Dashboard</a>
+            </li>
+            <li class="active">
+                <a href="karyawan.html">👥 Data Karyawan</a>
+            </li>
+            <li>
+                <a href="p2k3.html">🏢 Struktur P2K3</a>
+            </li>
+            <li>
+                <a href="dokumen.html">📂 Dokumen K3</a>
+            </li>
+            <li>
+                <a href="pelaksanaan.html">📋 Pelaksanaan SOP</a>
+            </li>
+            <li>
+                <a href="audit.html">📊 Audit</a>
+            </li>
         </ul>
-
     </div>
-
-    <!-- Main -->
     <div class="main">
-
-        <!-- Navbar -->
         <div class="navbar">
-
             <h2>Data Karyawan</h2>
-
             <div class="profile">
-
                 Administrator
-
             </div>
-
         </div>
-
-        <!-- Content -->
         <div class="content">
-
             <div class="top">
-
                 <button id="openModal">
-
                     + Tambah Data
-
                 </button>
-
-                <input type="text" id="search" placeholder="Cari karyawan...">
-
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="Cari karyawan..."
+                >
             </div>
-
             <table>
-
                 <thead>
-
                     <tr>
-
                         <th>Nama</th>
-
                         <th>NIK</th>
-
                         <th>Departemen</th>
-
                         <th>Jabatan</th>
-
                         <th>Status MCU</th>
-
                         <th>Aksi</th>
-
                     </tr>
-
                 </thead>
-
                 <tbody id="tbody">
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
-
-    <!-- Modal -->
-
     <div class="modal" id="modal">
-
         <div class="modal-content">
-
-            <h2>Tambah Data Karyawan</h2>
-
+            <h2 id="judulModal">
+                Tambah Data Karyawan
+            </h2>
             <input
                 type="text"
                 id="nama"
                 placeholder="Nama Karyawan"
             >
-
             <input
                 type="text"
                 id="nik"
                 placeholder="NIK"
             >
-
             <select id="departemen">
-
                 <option value="Produksi">Produksi</option>
-
                 <option value="QA">QA</option>
-
                 <option value="QC">QC</option>
-
                 <option value="HRD">HRD</option>
-
                 <option value="Engineering">Engineering</option>
-
                 <option value="Warehouse">Warehouse</option>
-
             </select>
-
             <input
                 type="text"
                 id="jabatan"
                 placeholder="Jabatan"
             >
-
             <select id="mcu">
-
-                <option value="Fit">Fit</option>
-
+                <option value="Fit">
+                    Fit
+                </option>
                 <option value="Fit dengan Catatan">
                     Fit dengan Catatan
                 </option>
-
                 <option value="Unfit">
                     Unfit
                 </option>
-
             </select>
-
-            <button onclick="tambahData()">
-
-                Simpan
-
-            </button>
-
+            <div
+                style="display:flex;justify-content:end;gap:10px;margin-top:10px;"
+            >
+                <button
+                    type="button"
+                    onclick="tutupModal()"
+                    style="background:#7f8c8d;"
+                >
+                    Batal
+                </button>
+                <button
+                    type="button"
+                    onclick="simpanData()"
+                >
+                    Simpan
+                </button>
+            </div>
         </div>
-
     </div>
-
-    <!-- Library Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- Konfigurasi Supabase -->
     <script src="js/supabase-config.js"></script>
-
-    <!-- CRUD Karyawan -->
     <script src="js/karyawan.js"></script>
-
 </body>
-
 </html>
-```

@@ -4,20 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HALAMAN DASHBOARD TP SEK BLM AKU ISI XIXIXIX</title>
+    <title>Dashboard Utama - OTSUKA K3</title>
 
-    <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>OTSUKA K3</h2>
         <ul>
@@ -28,38 +24,83 @@
             <li><a href="sop.html">📋 Pelaksanaan SOP</a></li>
             <li><a href="audit.html">📊 Audit</a></li>
         </ul>
-
     </div>
 
-    <!-- Main -->
     <div class="main">
 
-        <!-- Navbar -->
         <div class="navbar">
-            <h2>HALAMAN DASHBOARD TP SEK BLM AKU ISI XIXIXIX</h2>
+            <h2>Dashboard Sistem K3</h2>
             <div class="profile">
                 Administrator
             </div>
         </div>
 
-        <!-- Content -->
+        <div class="content">
+            <div class="top">
+                <h3>Ringkasan Performa Keselamatan Kerja</h3>
+            </div>
 
+            <div class="dashboard-grid">
+                <div class="card-stat">
+                    <div class="card-icon">👥</div>
+                    <div class="card-info">
+                        <h3 id="stat-karyawan">0</h3>
+                        <p>Total Karyawan</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">📋</div>
+                    <div class="card-info">
+                        <h3 id="stat-kepatuhan">0%</h3>
+                        <p>Kepatuhan SOP</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">📂</div>
+                    <div class="card-info">
+                        <h3 id="stat-dokumen">0</h3>
+                        <p>Dokumen K3</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">📊</div>
+                    <div class="card-info">
+                        <h3 id="stat-audit">0</h3>
+                        <p>Agenda Audit</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="narrative-container">
+                <h3>🤖 Narasi Kesimpulan Otomatis (Sistem)</h3>
+                <div class="narrative-box" id="narasi-box">
+                    Memuat narasi kesimpulan dari database...
+                </div>
+            </div>
+
+            <div class="table-container" style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px;">📅 Riwayat Rekapitulasi Bulanan</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bulan / Tahun</th>
+                            <th>Rata-rata Kepatuhan</th>
+                            <th>Narasi Evaluasi Khusus</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel-rekap-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
 
-    <!-- Modal -->
-
-
-
-    <!-- Library Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Konfigurasi Supabase -->
     <script src="js/supabase-config.js"></script>
 
-    <!-- CRUD Karyawan -->
-    <script src="js/karyawan.js"></script>
+    <script src="js/dashboard.js"></script>
 
 </body>
-
 </html>

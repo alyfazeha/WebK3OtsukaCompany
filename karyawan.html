@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Karyawan - K3 Web</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <h1>Manajemen Data Karyawan</h1>
+    <a href="index.html">Kembali ke Dashboard</a>
+
+    <div class="form-container">
+        <h3>Tambah Karyawan Baru</h3>
+        <form id="formKaryawan">
+            <input type="text" id="nik" placeholder="NIK" required><br><br>
+            <input type="text" id="nama" placeholder="Nama Lengkap" required><br><br>
+            <input type="text" id="departemen" placeholder="Departemen (Contoh: Produksi, QC)"><br><br>
+            <input type="text" id="jabatan" placeholder="Jabatan"><br><br>
+            <select id="status_mcu">
+                <option value="Fit">Fit</option>
+                <option value="Fit dengan Catatan">Fit dengan Catatan</option>
+                <option value="Unfit">Unfit</option>
+            </select><br><br>
+            <button type="submit">Simpan Karyawan</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <h3>Daftar Karyawan</h3>
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>NIK</th>
+                <th>Nama</th>
+                <th>Departemen</th>
+                <th>Jabatan</th>
+                <th>Status MCU</th>
+            </tr>
+        </thead>
+        <tbody id="tabelKaryawanBody">
+            </tbody>
+    </table>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/karyawan.js"></script>
+</body>
+</html>

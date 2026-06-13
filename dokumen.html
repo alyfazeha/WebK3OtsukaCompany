@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dokumen Dasar K3 - OTSUKA K3</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    /* Styling khusus komponen Dokumen agar serasi dengan style.css */
+    .doc-upload-card {
+      background: #fff;
+      border: 2px dashed #1FA9E6;
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      transition: .3s;
+      cursor: pointer;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,.02);
+    }
+    .doc-upload-card:hover, .doc-upload-card.dragover {
+      border-color: #0F3D56;
+      background: #eef7fc;
+    }
+    .doc-upload-card svg { margin-bottom: 10px; color: #1FA9E6; }
+    .doc-upload-card p { margin: 5px 0 0 0; color: #777; font-size: 13px; }
+    .doc-upload-card strong { display: block; font-size: 16px; color: #0F3D56; }
+    #file-input { display: none; }
+    
+    .upload-form-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    @media (max-width: 600px) { .upload-form-fields { grid-template-columns: 1fr; } }
+    
+    .selected-file-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #eef7fc; color: #1FA9E6;
+      border-radius: 20px; padding: 8px 15px;
+      font-size: 13px; margin-top: 10px;
+      border: 1px solid #1FA9E6;
+    }
+    .selected-file-badge button {
+      background: none; border: none; cursor: pointer;
+      color: #e74c3c; font-size: 14px; padding: 0;
+    }
+    
+    .badge-jenis { display: inline-block; padding: 6px 15px; border-radius: 20px; font-size: 12px; color: white; font-weight: 500; }
+    .badge-SOP     { background: #1FA9E6; }
+    .badge-PROTAP  { background: #2ecc71; }
+    .badge-Regulasi { background: #f1c40f; }
+    .badge-Lainnya { background: #95a5a6; }
+    
+    .btn-lihat {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #2ecc71; color: #fff; border: none; border-radius: 10px;
+      padding: 8px 15px; font-size: 13px; cursor: pointer; text-decoration: none;
+      transition: .3s;
+    }
+    .btn-lihat:hover { background: #27ae60; }
+    
+    .btn-hapus-doc {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #e74c3c; color: white; border: none; border-radius: 10px;
+      padding: 8px 15px; font-size: 13px; cursor: pointer; transition: .3s;
+    }
+    .btn-hapus-doc:hover { background: #c0392b; }
+    
+    .search-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .upload-progress { display: none; margin-top: 15px; background: #eee; border-radius: 10px; height: 8px; overflow: hidden; }
+    .upload-progress-bar { height: 100%; background: #1FA9E6; width: 0%; transition: width .3s; }
+    
+    .stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .stat-chip {
+      background: white; border-radius: 10px; padding: 10px 20px; font-size: 13px; color: #555;
+      box-shadow: 0 4px 10px rgba(0,0,0,.03); border: 1px solid #eee;
+    }
+    .stat-chip strong { font-size: 16px; color: #0F3D56; }
+    
+    .card-box {
+      background: white; padding: 30px; border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.05); margin-bottom: 25px;
+    }
+    .card-title { font-size: 18px; color: #0F3D56; margin-bottom: 15px; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>OTSUKA K3</h2>
+    <ul>
+      <li><a href="index.html" style="color:white; text-decoration:none;">🏠 Dashboard</a></li>
+      <li><a href="karyawan.html" style="color:white; text-decoration:none;">👥 Data Karyawan</a></li>
+      <li><a href="struktur.html" style="color:white; text-decoration:none;">🏢 Struktur P2K3</a></li>
+      <li class="active"><a href="dokumen.html" style="color:white; text-decoration:none;">📄 Dokumen K3</a></li>
+      <li><a href="sop.html" style="color:white; text-decoration:none;">📋 Pelaksanaan SOP</a></li>
+      <li><a href="audit.html" style="color:white; text-decoration:none;">📊 Audit</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="navbar">
+      <h2>Dokumen Dasar K3</h2>
+      <div class="profile">Administrator</div>
+    </div>
+
+    <div class="content">
+      
+      <div class="card-box">
+        <div class="card-title">Upload Dokumen Baru</div>
+        <div class="doc-upload-card" id="drop-zone" onclick="document.getElementById('file-input').click()">
+          <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+          <strong>Klik atau seret file PDF ke sini</strong>
+          <p>Hanya file PDF, maks. 10 MB</p>
+        </div>
+        <input type="file" id="file-input" accept=".pdf" onchange="onFileSelected(this)" />
+        
+        <div id="selected-file-badge" style="display:none" class="selected-file-badge">
+          <span>📁 <span id="selected-file-name">file.pdf</span></span>
+          <button onclick="clearFile()" title="Hapus pilihan">✕</button>
+        </div>
+        
+        <div class="upload-form-fields">
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <label style="font-size:13px; font-weight:500; color:#555;">Nama Dokumen <span style="color:#e74c3c">*</span></label>
+            <input type="text" id="nama-dokumen" placeholder="Contoh: SOP Penggunaan APD" />
+          </div>
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <label style="font-size:13px; font-weight:500; color:#555;">Jenis Dokumen <span style="color:#e74c3c">*</span></label>
+            <select id="jenis-dokumen">
+              <option value="">-- Pilih Jenis --</option>
+              <option value="SOP">SOP</option>
+              <option value="PROTAP">PROTAP</option>
+              <option value="Regulasi">Regulasi</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="upload-progress" id="upload-progress">
+          <div class="upload-progress-bar" id="upload-progress-bar"></div>
+        </div>
+        
+        <div style="margin-top:20px;">
+          <button id="btn-upload" onclick="uploadDokumen()">Upload Dokumen</button>
+          <span id="upload-status" style="font-size:13px; color:#777; margin-left:10px;"></span>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom:20px;">
+          <div class="card-title" style="margin:0;">Daftar Repository Dokumen</div>
+          <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Cari nama dokumen…" oninput="filterDokumen()" style="margin:0;" />
+            <select id="filter-jenis" onchange="filterDokumen()" style="margin:0; padding:11px;">
+              <option value="">Semua Jenis</option>
+              <option value="SOP">SOP</option>
+              <option value="PROTAP">PROTAP</option>
+              <option value="Regulasi">Regulasi</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="stats-row" id="stats-row">
+          <div class="stat-chip"><strong id="stat-total">0</strong> Total Dokumen</div>
+          <div class="stat-chip"><strong id="stat-sop">0</strong> SOP</div>
+          <div class="stat-chip"><strong id="stat-protap">0</strong> PROTAP</div>
+          <div class="stat-chip"><strong id="stat-regulasi">0</strong> Regulasi</div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:60px;">#</th>
+              <th>Nama Dokumen</th>
+              <th>Jenis</th>
+              <th>Tanggal Upload</th>
+              <th style="width:200px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="doc-tbody">
+            <tr><td colspan="5">Memuat data…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast" style="display:none; position:fixed; bottom:1.5rem; right:1.5rem; background:#111827; color:#fff; padding:.75rem 1.25rem; border-radius:10px; font-size:.9rem; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,.25); max-width:320px;"></div>
+
+  <script src="js/supabase-config.js"></script>
+  <script src="js/dokumen.js"></script>
+</body>
+</html>

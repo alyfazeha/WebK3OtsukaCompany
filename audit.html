@@ -225,13 +225,14 @@
       <li><a href="dokumen.html" style="color:white; text-decoration:none;">📄 Dokumen K3</a></li>
       <li><a href="pelaksanaan.html" style="color:white; text-decoration:none;">📋 Pelaksanaan SOP</a></li>
       <li class="active"><a href="audit.html" style="color:white; text-decoration:none;">📊 Audit</a></li>
+        <li><a href="admin.html">⚙️ Kelola User</a></li>
     </ul>
   </div>
 
   <div class="main">
     <div class="navbar">
       <h2>Audit K3</h2>
-      <div class="profile">Administrator</div>
+      <div class="profile"></div>
     </div>
 
     <div class="content">
@@ -415,7 +416,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/sidebar.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
   <script src="js/audit.js"></script>
 </body>
 </html>

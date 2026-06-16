@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi — OTSUKA K3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
+
+<div class="login-wrapper">
+
+    <!-- Panel kiri: branding -->
+    <div class="login-brand">
+        <img src="images/logo otsuka.jpg" alt="Otsuka Logo">
+        <h1>OTSUKA K3</h1>
+        <p>Sistem Informasi Manajemen<br>Keselamatan & Kesehatan Kerja</p>
+        <ul class="brand-features">
+            <li>✅ Daftarkan akun Anda</li>
+            <li>📧 Verifikasi via email</li>
+            <li>⏳ Tunggu assignment role oleh Admin</li>
+            <li>🚀 Akses sistem sesuai role Anda</li>
+        </ul>
+    </div>
+
+    <!-- Panel kanan: form registrasi -->
+    <div class="login-form-panel">
+        <div class="login-card" style="max-width:440px;">
+            <h2>Buat Akun Baru</h2>
+            <p class="login-subtitle">Isi data diri Anda. Akun akan aktif setelah verifikasi email dan approval Admin.</p>
+
+            <div id="reg-alert" class="login-alert" style="display:none;"></div>
+
+            <div class="form-group">
+                <label>Nama Lengkap <span style="color:red">*</span></label>
+                <input type="text" id="nama" placeholder="Contoh: Budi Santoso" />
+            </div>
+
+            <div class="form-group">
+                <label>NIK Karyawan <span style="color:red">*</span></label>
+                <input type="text" id="nik" placeholder="Contoh: 0012345" />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Departemen <span style="color:red">*</span></label>
+                    <select id="departemen">
+                        <option value="">-- Pilih --</option>
+                        <option>Produksi</option>
+                        <option>Quality Assurance</option>
+                        <option>Quality Control</option>
+                        <option>Engineering</option>
+                        <option>Warehouse</option>
+                        <option>HSE / K3</option>
+                        <option>HRD</option>
+                        <option>Finance</option>
+                        <option>IT</option>
+                        <option>Manajemen</option>
+                        <option>Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Unit Kerja</label>
+                    <input type="text" id="work_unit" placeholder="Contoh: Lini Steril" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email <span style="color:red">*</span></label>
+                <input type="email" id="email" placeholder="nama@otsuka.co.id" autocomplete="email" />
+            </div>
+
+            <div class="form-group">
+                <label>Password <span style="color:red">*</span></label>
+                <div class="password-wrap">
+                    <input type="password" id="password" placeholder="Minimal 8 karakter" />
+                    <button type="button" class="toggle-pw" onclick="togglePw('password')">👁</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Konfirmasi Password <span style="color:red">*</span></label>
+                <div class="password-wrap">
+                    <input type="password" id="confirm_password" placeholder="Ulangi password" />
+                    <button type="button" class="toggle-pw" onclick="togglePw('confirm_password')">👁</button>
+                </div>
+            </div>
+
+            <button id="btn-reg" onclick="handleRegister()">
+                <span id="btn-text">Daftar Sekarang</span>
+                <span id="btn-spinner" style="display:none;">⏳ Memproses...</span>
+            </button>
+
+            <p class="login-note" style="margin-top:16px;">
+                Sudah punya akun? <a href="login.html" style="color:#176C8C;font-weight:600;">Masuk di sini</a>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal sukses -->
+<div id="modal-sukses" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:999; justify-content:center; align-items:center;">
+    <div style="background:white; border-radius:20px; padding:40px; max-width:400px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,.2);">
+        <div style="font-size:56px; margin-bottom:16px;">📧</div>
+        <h3 style="color:#0F3D56; margin-bottom:10px;">Registrasi Berhasil!</h3>
+        <p style="color:#555; line-height:1.6; margin-bottom:8px;">
+            Akun untuk <strong id="modal-email"></strong> berhasil dibuat.
+        </p>
+        <p style="color:#555; line-height:1.6; margin-bottom:24px; font-size:13px;">
+            Akun Anda sedang menunggu persetujuan <strong>Administrator K3</strong>. 
+            Anda akan bisa login setelah Admin mengaktifkan akun Anda.
+        </p>
+        <a href="login.html">
+            <button style="width:100%;">Kembali ke Login</button>
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script>
+    // Kalau sudah login, redirect
+    db.auth.getSession().then(({ data }) => {
+        if (data.session) window.location.href = 'index.html';
+    });
+
+    function togglePw(id) {
+        const el = document.getElementById(id);
+        el.type = el.type === 'password' ? 'text' : 'password';
+    }
+
+    function showAlert(msg, type = 'error') {
+        const el = document.getElementById('reg-alert');
+        el.textContent = msg;
+        el.className = 'login-alert ' + type;
+        el.style.display = 'block';
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function setLoading(on) {
+        document.getElementById('btn-text').style.display = on ? 'none' : 'inline';
+        document.getElementById('btn-spinner').style.display = on ? 'inline' : 'none';
+        document.getElementById('btn-reg').disabled = on;
+    }
+
+    async function handleRegister() {
+        const nama      = document.getElementById('nama').value.trim();
+        const nik       = document.getElementById('nik').value.trim();
+        const dept      = document.getElementById('departemen').value;
+        const unit      = document.getElementById('work_unit').value.trim();
+        const email     = document.getElementById('email').value.trim();
+        const password  = document.getElementById('password').value;
+        const confirm   = document.getElementById('confirm_password').value;
+
+        document.getElementById('reg-alert').style.display = 'none';
+
+        // Validasi
+        if (!nama || !nik || !dept || !email || !password || !confirm) {
+            showAlert('⚠️ Semua field wajib diisi kecuali Unit Kerja.');
+            return;
+        }
+        if (password.length < 8) {
+            showAlert('⚠️ Password minimal 8 karakter.');
+            return;
+        }
+        if (password !== confirm) {
+            showAlert('⚠️ Konfirmasi password tidak cocok.');
+            return;
+        }
+
+        setLoading(true);
+
+        // 1. Daftar ke Supabase Auth
+        const { data, error } = await db.auth.signUp({
+            email,
+            password,
+            options: {
+                data: { nama, nik, departemen: dept, work_unit: unit }
+            }
+        });
+
+        if (error) {
+            setLoading(false);
+            if (error.message.includes('already registered')) {
+                showAlert('❌ Email ini sudah terdaftar. Silakan login.');
+            } else {
+                showAlert('❌ Registrasi gagal: ' + error.message);
+            }
+            return;
+        }
+
+        // 2. Insert ke user_profiles dengan role default Viewer
+        const { error: profileError } = await db.from('user_profiles').insert({
+            id:          data.user.id,
+            karyawan_id: null,       // Admin yang link ke karyawan nanti
+            role:        'Viewer',   // Default sampai Admin assign
+            departemen:  dept,
+            work_unit:   unit,
+            is_active:   false,      // Belum aktif sampai Admin approve
+        });
+
+        setLoading(false);
+
+        if (profileError) {
+            showAlert('⚠️ Akun dibuat tapi gagal menyimpan profil: ' + profileError.message);
+            return;
+        }
+
+        // 3. Tampilkan modal sukses
+        document.getElementById('modal-email').textContent = email;
+        document.getElementById('modal-sukses').style.display = 'flex';
+    }
+</script>
+
+</body>
+</html>

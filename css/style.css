@@ -575,3 +575,290 @@ P2K3 STRUCTURE PAGE
         max-width: none;
     }
 }
+
+/* =======================
+LOGIN PAGE
+======================= */
+body.login-page {
+    display: flex;
+    min-height: 100vh;
+    background: var(--gradient-main);
+}
+.login-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Panel kiri — branding */
+.login-brand {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px;
+    color: white;
+}
+.login-brand img {
+    width: 110px;
+    border-radius: 14px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+}
+.login-brand h1 {
+    font-size: 38px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    line-height: 1.1;
+}
+.login-brand p {
+    font-size: 16px;
+    color: #cce8f4;
+    line-height: 1.7;
+    margin-bottom: 36px;
+}
+.brand-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.brand-features li {
+    font-size: 15px;
+    color: #d9f0f9;
+    background: rgba(255,255,255,.10);
+    padding: 12px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Panel kanan — form */
+.login-form-panel {
+    width: 480px;
+    background: #f4f8fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 30px;
+}
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background: white;
+    border-radius: 20px;
+    padding: 40px 36px;
+    box-shadow: 0 20px 50px rgba(15,61,86,.12);
+}
+.login-card h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--color-deep);
+    margin-bottom: 6px;
+}
+.login-subtitle {
+    font-size: 13px;
+    color: #7a8c99;
+    margin-bottom: 28px;
+    line-height: 1.5;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-deep);
+}
+.password-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.password-wrap input {
+    padding-right: 48px;
+}
+.toggle-pw {
+    position: absolute;
+    right: 10px;
+    background: transparent;
+    box-shadow: none;
+    padding: 4px 8px;
+    font-size: 16px;
+    color: #7a8c99;
+    border: none;
+    cursor: pointer;
+    width: auto;
+}
+.toggle-pw:hover {
+    background: transparent;
+    transform: none;
+    box-shadow: none;
+    color: var(--color-mid);
+}
+#btn-login {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 4px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+}
+.login-note {
+    font-size: 12px;
+    color: #7a8c99;
+    text-align: center;
+    margin-bottom: 24px;
+}
+.login-alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    display: none;
+}
+.login-alert.error {
+    background: #fef2f2;
+    color: #c0392b;
+    border: 1px solid #f5c6c6;
+}
+.login-alert.info {
+    background: #f0f9ff;
+    color: #176C8C;
+    border: 1px solid #b6dff2;
+}
+
+/* Role info box di bawah form */
+.role-info-box {
+    background: #f8fcff;
+    border: 1px solid #d6eaf5;
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 12px;
+    color: #555;
+}
+.role-info-box p {
+    margin-bottom: 10px;
+    color: var(--color-deep);
+}
+.role-info-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.role-info-box li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.role-chip {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.role-chip.admin   { background: #0F3D56; }
+.role-chip.manager { background: #176C8C; }
+.role-chip.officer { background: #23A7C7; }
+.role-chip.viewer  { background: #9B59B6; }
+
+@media(max-width: 860px) {
+    .login-brand { display: none; }
+    .login-form-panel { width: 100%; background: var(--gradient-main); }
+    .login-card { box-shadow: 0 30px 60px rgba(0,0,0,.2); }
+}
+
+/* =======================
+USER BADGE DI NAVBAR
+======================= */
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    line-height: 1;
+}
+.user-email {
+    font-size: 13px;
+    color: #555;
+    font-weight: 500;
+}
+.user-role-chip {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+}
+.btn-logout {
+    background: #fef2f2;
+    color: #c0392b;
+    border: 1px solid #f5c6c6;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-logout:hover {
+    background: #fee;
+    transform: none;
+    box-shadow: none;
+}
+
+/* =======================
+READONLY BANNER
+======================= */
+.readonly-banner {
+    background: linear-gradient(135deg, #f3e8ff, #ede9fe);
+    border: 1px solid #c4b5fd;
+    border-left: 5px solid #9B59B6;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #5b21b6;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* =======================
+FORM ROW (2 kolom)
+======================= */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+@media(max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+}

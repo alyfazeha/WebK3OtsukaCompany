@@ -318,13 +318,14 @@
       <li><a href="pelaksanaan.html">📋 Pelaksanaan SOP</a></li>
       <li><a href="insiden.html">🚨 Insiden & HIRARC</a></li>
       <li><a href="audit.html">📊 Audit</a></li>
+        <li><a href="admin.html">⚙️ Kelola User</a></li>
     </ul>
   </div>
 
   <div class="main">
     <div class="navbar">
       <h2>Insiden & HIRARC</h2>
-      <div class="profile">Administrator</div>
+      <div class="profile"></div>
     </div>
 
     <div class="content">
@@ -735,7 +736,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
   <script src="js/sidebar.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
   <script src="js/insiden.js"></script>
 </body>
 </html>

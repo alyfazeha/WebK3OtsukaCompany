@@ -195,6 +195,8 @@
         // 2. Insert ke user_profiles dengan role default Viewer
         const { error: profileError } = await db.from('user_profiles').insert({
             id:          data.user.id,
+            nama:        nama,
+            nik:         nik,
             karyawan_id: null,       // Admin yang link ke karyawan nanti
             role:        'Viewer',   // Default sampai Admin assign
             departemen:  dept,

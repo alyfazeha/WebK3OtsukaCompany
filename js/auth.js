@@ -95,9 +95,9 @@ function renderUserBadge(role, nama) {
                 <span class="user-email">${nama}</span>
                 <span class="user-role-chip" style="background:${badge.color}">${badge.label}</span>
             </div>
-            <button class="btn-logout" onclick="handleLogout()" title="Keluar">🚪</button>
         </div>`;
 }
+
 
 function restrictSidebar(role) {
     const allowed = ROLE_ACCESS.pages[role] || [];

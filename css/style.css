@@ -97,6 +97,42 @@ NAVBAR
 .profile{
     font-size:18px;
     font-weight:500;
+    cursor:pointer;
+    padding:12px 18px;
+    border-radius:10px;
+    transition:0.3s;
+}
+.profile:hover{
+    background:rgba(35,167,199,.1);
+    color:var(--color-mid);
+}
+
+/* =======================
+NAVBAR RIGHT SECTION
+======================= */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-logout-navbar {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(243, 156, 18, .12);
+}
+
+.btn-logout-navbar:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(243, 156, 18, .18);
 }
 
 /* =======================
@@ -178,6 +214,27 @@ BUTTON VARIANTS
     background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
     transform: translateY(-2px);
     box-shadow: 0 12px 24px rgba(231, 76, 60, .24);
+}
+
+.btn-logout {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 8px 18px rgba(243, 156, 18, .16);
+    font-size: 16px;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 16px;
+}
+
+.btn-logout:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(243, 156, 18, .24);
 }
 
 /* =======================

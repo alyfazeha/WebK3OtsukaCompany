@@ -31,9 +31,15 @@
 
         <div class="navbar">
             <h2>Pengaturan Profil</h2>
-            <div class="profile">
-                <span id="navbar-profile">Administrator</span>
+            <div class="navbar-right">
+                <div class="profile">
+                    <span id="navbar-profile">Administrator</span>
+                </div>
+                <button onclick="logout()" class="btn-logout-navbar">
+                    🚪 Logout
+                </button>
             </div>
+
         </div>
 
         <div class="content">
@@ -52,43 +58,42 @@
                 <div class="form-grid">
 
                     <div class="form-group">
-                        <label>Nama Lengkap</label>
-                        <input type="text" id="nama">
+                        <label>Nama Lengkap <span style="color:red">*</span></label>
+                        <input type="text" id="nama" />
                     </div>
 
                     <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="email" disabled>
+                        <label>NIK Karyawan <span style="color:red">*</span></label>
+                        <input type="text" id="nik" />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Departemen <span style="color:red">*</span></label>
+                            <select id="departemen">
+                                <option value="">-- Pilih --</option>
+                                <option>Produksi</option>
+                                <option>Quality Assurance</option>
+                                <option>Quality Control</option>
+                                <option>Engineering</option>
+                                <option>Warehouse</option>
+                                <option>HSE / K3</option>
+                                <option>HRD</option>
+                                <option>Finance</option>
+                                <option>IT</option>
+                                <option>Manajemen</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Kerja</label>
+                            <input type="text" id="work_unit" />
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label>No Handphone</label>
-                        <input type="text" id="no_hp">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Alamat</label>
-                        <textarea id="alamat"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>NIK</label>
-                        <input type="text" id="nik">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Role</label>
-                        <input type="text" id="role" disabled>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Departemen</label>
-                        <input type="text" id="departemen">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Jabatan</label>
-                        <input type="text" id="jabatan">
+                        <label>Email <span style="color:red">*</span></label>
+                        <input type="email" id="email" disabled />
                     </div>
 
                 </div>

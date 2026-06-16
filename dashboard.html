@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Utama - OTSUKA K3</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>OTSUKA K3</h2>
+        <ul>
+            <li class="active"><a href="index.html">🏠 Dashboard</a></li>
+            <li><a href="karyawan.html">👥 Data Karyawan</a></li>
+            <li><a href="p2k3.html">🏢 Struktur P2K3</a></li>
+            <li><a href="dokumen.html">📂 Dokumen K3</a></li>
+            <li><a href="pelaksanaan.html">📋 Pelaksanaan SOP</a></li>
+            <li><a href="audit.html">📊 Audit</a></li>
+                    <li><a href="admin.html">⚙️ Kelola User</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <div class="navbar">
+            <h2>Dashboard Sistem K3</h2>
+            <div class="profile">
+                Administrator
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="top"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 25px;">
+                <h3>Ringkasan Performa Keselamatan Kerja</h3>
+
+                <div class="filter-wrapper" style="display: flex; gap: 10px;">
+                    <select id="filter-dept"
+                        style="padding: 8px 12px; border: 1px solid #cdd7df; border-radius: 8px; font-family: inherit; font-size: 14px; color: #0F3D56; cursor: pointer;">
+                        <option value="All">Semua Departemen</option>
+                        <option value="Produksi">Produksi</option>
+                        <option value="QC">QC</option>
+                        <option value="HRD">HRD</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Warehouse">Warehouse</option>
+                    </select>
+
+                    <select id="filter-tahun"
+                        style="padding: 8px 12px; border: 1px solid #cdd7df; border-radius: 8px; font-family: inherit; font-size: 14px; color: #0F3D56; cursor: pointer;">
+                        <option value="All">Semua Tahun</option>
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card-stat">
+                    <div class="card-icon">📈</div>
+                    <div class="card-info">
+                        <h3 id="stat-kepatuhan">0%</h3>
+                        <p>Rata-rata Kepatuhan</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">🛡️</div>
+                    <div class="card-info">
+                        <h3 id="stat-safedays">0 Hari</h3>
+                        <p>Safe Days Counter</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">⚠️</div>
+                    <div class="card-info">
+                        <h3 id="stat-incidents">0</h3>
+                        <p>Insiden Terbuka (Open)</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">🛠️</div>
+                    <div class="card-info">
+                        <h3 id="stat-capa">0</h3>
+                        <p>Tindakan CAPA Terbuka</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">👥</div>
+                    <div class="card-info">
+                        <h3 id="stat-karyawan">0</h3>
+                        <p>Total Karyawan</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">📂</div>
+                    <div class="card-info">
+                        <h3 id="stat-dokumen">0</h3>
+                        <p>Total Dokumen K3</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-top: 30px;">
+                <div
+                    style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                    <h4 style="color: #0F3D56; margin-bottom: 15px; font-weight: 600;">📈 Tren Kepatuhan K3 Bulanan</h4>
+                    <canvas id="complianceChart" height="200"></canvas>
+                </div>
+                <div
+                    style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                    <h4 style="color: #0F3D56; margin-bottom: 15px; font-weight: 600;">🚨 Distribusi Kategori Insiden
+                    </h4>
+                    <canvas id="incidentChart" height="200"></canvas>
+                </div>
+            </div>
+
+            <div class="narrative-container" style="margin-top: 30px;">
+                <h3>🤖 Narasi Kesimpulan Otomatis (Sistem)</h3>
+                <div class="narrative-box" id="narasi-box">
+                    Memuat narasi kesimpulan dari database...
+                </div>
+            </div>
+
+            <div class="table-container" style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px;">📅 Riwayat Rekapitulasi Bulanan</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bulan / Tahun</th>
+                            <th>Rata-rata Kepatuhan</th>
+                            <th>Narasi Evaluasi Khusus</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel-rekap-body">
+                        <tr>
+                            <td colspan="3" style="text-align: center; color: #95a5a6;">Memuat data rekapitulasi…</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
+
+    <script src="js/dashboard.js"></script>
+
+</body>
+
+</html>

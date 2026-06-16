@@ -111,6 +111,11 @@ CONTENT
     align-items:center;
     margin-bottom:25px;
 }
+.top h3 {
+    font-size: 26px;
+    color: var(--color-deep);
+    font-weight: 700;
+}
 
 /* =======================
 BUTTON
@@ -128,6 +133,51 @@ button{
 button:hover{
     background:linear-gradient(135deg, #0B3348 0%, #125E7D 56%, #1D95B4 100%);
     transform:translateY(-1px);
+}
+
+/* =======================
+BUTTON VARIANTS
+======================= */
+.btn-primary {
+    background: var(--gradient-main);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 8px 18px rgba(15, 61, 86, .16);
+    font-size: 16px;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 16px;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0B3348 0%, #125E7D 56%, #1D95B4 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(15, 61, 86, .24);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 8px 18px rgba(231, 76, 60, .16);
+    font-size: 16px;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 16px;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(231, 76, 60, .24);
 }
 
 /* =======================
@@ -215,7 +265,9 @@ MODAL
     background:rgba(0,0,0,.4);
     justify-content:center;
     align-items:center;
+    z-index:9999;
 }
+
 .modal-content{
     background:white;
     width:450px;
@@ -429,29 +481,91 @@ P2K3 STRUCTURE PAGE
     max-width: 320px;
 }
 .org-chart {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(180px, 1fr));
-    gap: 16px;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    padding: 6px 8px 12px;
 }
-.role-column {
+.chart-level {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    min-width: min(100%, 760px);
+    position: relative;
+    width: 100%;
+}
+.chart-level-top .role-node,
+.chart-level-bottom .role-node {
+    max-width: 420px;
+}
+.chart-level-middle {
+    align-items: stretch;
+}
+.chart-connector {
+    position: relative;
+    width: min(100%, 760px);
+}
+.chart-connector-middle {
+    height: 56px;
+}
+.chart-connector-middle::before {
+    background: #c9d8e2;
+    content: "";
+    height: 56px;
+    left: 50%;
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    width: 2px;
+}
+.chart-connector-middle::after {
+    border-left: 2px solid #c9d8e2;
+    border-right: 2px solid #c9d8e2;
+    border-top: 2px solid #c9d8e2;
+    content: "";
+    height: 28px;
+    left: 25%;
+    position: absolute;
+    right: 25%;
+    top: 28px;
+}
+.chart-connector-bottom {
+    height: 48px;
+}
+.chart-connector-bottom::before {
+    background: #c9d8e2;
+    content: "";
+    height: 48px;
+    left: 50%;
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    width: 2px;
+}
+.role-node {
     border: 1px solid #e8eef3;
     border-top: 5px solid var(--color-bright);
     border-radius: 8px;
     background: #fbfdff;
     min-height: 210px;
     overflow: hidden;
+    position: relative;
+    width: min(100%, 360px);
+    z-index: 1;
 }
-.role-column.ketua {
+.role-node.ketua {
     border-top-color: var(--color-deep);
+    box-shadow: 0 12px 28px rgba(15, 61, 86, .12);
 }
-.role-column.wakil-ketua {
+.role-node.wakil-ketua {
     border-top-color: var(--color-bright);
 }
-.role-column.sekretaris {
+.role-node.sekretaris {
     border-top-color: #6D7D8B;
 }
-.role-column.anggota {
+.role-node.anggota {
     border-top-color: #2D9B73;
 }
 .role-header {
@@ -557,8 +671,9 @@ P2K3 STRUCTURE PAGE
 }
 
 @media(max-width:1100px) {
-    .org-chart {
-        grid-template-columns: repeat(2, minmax(180px, 1fr));
+    .chart-level,
+    .chart-connector {
+        min-width: 680px;
     }
 }
 @media(max-width:768px) {
@@ -567,11 +682,219 @@ P2K3 STRUCTURE PAGE
         align-items: stretch;
         flex-direction: column;
     }
-    .p2k3-summary,
-    .org-chart {
+    .p2k3-summary {
         grid-template-columns: 1fr;
+    }
+    .org-chart {
+        align-items: stretch;
+        overflow-x: visible;
+    }
+    .chart-level {
+        flex-direction: column;
+        gap: 18px;
+        min-width: 0;
+    }
+    .chart-connector {
+        min-width: 0;
+        width: 100%;
+    }
+    .chart-connector-middle {
+        height: 34px;
+    }
+    .chart-connector-middle::before {
+        height: 34px;
+    }
+    .chart-connector-middle::after {
+        display: none;
+    }
+    .chart-connector-bottom {
+        height: 34px;
+    }
+    .chart-connector-bottom::before {
+        height: 34px;
+    }
+    .role-node,
+    .chart-level-top .role-node,
+    .chart-level-bottom .role-node {
+        max-width: none;
+        width: 100%;
     }
     .panel-heading input {
         max-width: none;
     }
+
+    /* =======================
+PROFILE PAGE
+======================= */
+
+.profile-page {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* Sidebar profil */
+.profile-sidebar {
+    width: 260px;
+    background: white;
+    border: 1px solid #e8eef3;
+    border-radius: 8px;
+    padding: 22px 18px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .05);
+    position: sticky;
+    top: 100px;
+}
+
+.profile-sidebar h3 {
+    color: var(--color-deep);
+    font-size: 18px;
+    margin-bottom: 18px;
+    font-weight: 700;
+}
+
+.profile-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.profile-sidebar li {
+    margin-bottom: 8px;
+}
+
+/* Menu sidebar */
+.profile-sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 15px;
+    text-decoration: none;
+    color: #495866;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: .3s;
+}
+
+/* Hover */
+.profile-sidebar a:hover {
+    background: #f0f8fb;
+    color: var(--color-deep);
+    transform: translateX(3px);
+}
+
+/* Menu aktif */
+.profile-sidebar li.active a {
+    background: var(--gradient-main);
+    color: white;
+    box-shadow: 0 8px 18px rgba(15, 61, 86, .18);
+}
+
+/* Area konten profil */
+.profile-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+
+/* =======================
+FORM PROFILE
+======================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    color: var(--color-deep);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-group textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+/* Input yang tidak bisa diedit */
+input:disabled {
+    background: #f4f8fb;
+    color: #647481;
+    cursor: not-allowed;
+}
+
+
+/* =======================
+SECURITY CARD
+======================= */
+
+.security-box {
+    background: #f8fcff;
+    border: 1px solid #dbeaf1;
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.security-box h4 {
+    color: var(--color-deep);
+    margin-bottom: 8px;
+}
+
+.security-box p {
+    color: #647481;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =======================
+RESPONSIVE PROFILE
+======================= */
+
+@media (max-width: 900px) {
+
+    .profile-page {
+        flex-direction: column;
+    }
+
+    .profile-sidebar {
+        width: 100%;
+        position: static;
+    }
+
+    .profile-sidebar ul {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .profile-sidebar li {
+        margin-bottom: 0;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 550px) {
+
+    .profile-sidebar ul {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-sidebar a {
+        font-size: 14px;
+        padding: 12px;
+    }
+}
 }

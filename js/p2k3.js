@@ -118,10 +118,7 @@ function tampilkanRingkasan(data) {
 }
 
 function tampilkanStruktur(data) {
-    const urutanJabatan = ["Ketua", "Wakil Ketua", "Sekretaris", "Anggota"];
-    strukturBoard.innerHTML = "";
-
-    urutanJabatan.forEach(jabatan => {
+    const renderJabatan = jabatan => {
         const anggota = data.filter(item => item.jabatan_p2k3 == jabatan);
         const daftarAnggota = anggota.length > 0
             ? anggota.map(item => `
@@ -139,18 +136,33 @@ function tampilkanStruktur(data) {
                 </div>
             `;
 
-        strukturBoard.innerHTML += `
-        <section class="role-column ${kelasJabatan(jabatan)}">
-            <div class="role-header">
-                <span>${jabatan}</span>
-                <strong>${anggota.length}</strong>
-            </div>
-            <div class="member-list">
-                ${daftarAnggota}
-            </div>
-        </section>
+        return `
+            <section class="role-node ${kelasJabatan(jabatan)}">
+                <div class="role-header">
+                    <span>${jabatan}</span>
+                    <strong>${anggota.length}</strong>
+                </div>
+                <div class="member-list">
+                    ${daftarAnggota}
+                </div>
+            </section>
         `;
-    });
+    };
+
+    strukturBoard.innerHTML = `
+        <div class="chart-level chart-level-top">
+            ${renderJabatan("Ketua")}
+        </div>
+        <div class="chart-connector chart-connector-middle"></div>
+        <div class="chart-level chart-level-middle">
+            ${renderJabatan("Wakil Ketua")}
+            ${renderJabatan("Sekretaris")}
+        </div>
+        <div class="chart-connector chart-connector-bottom"></div>
+        <div class="chart-level chart-level-bottom">
+            ${renderJabatan("Anggota")}
+        </div>
+    `;
 }
 
 function namaKaryawan(item) {

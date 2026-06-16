@@ -10,4 +10,4 @@ const db = createClient(
   SUPABASE_ANON_KEY
 );
 
-console.log("✅ Supabase Connected");
+console.log("Supabase Connected");

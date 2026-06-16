@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Kelola User | OTSUKA K3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <img src="images/logo otsuka.jpg" alt="Logo">
+        <h2>OTSUKA K3</h2>
+        <p>Admin Panel</p>
+    </div>
+    <ul>
+        <li><a href="index.html">🏠 Dashboard</a></li>
+        <li><a href="karyawan.html">👥 Data Karyawan</a></li>
+        <li><a href="p2k3.html">🏢 Struktur P2K3</a></li>
+        <li><a href="dokumen.html">📂 Dokumen K3</a></li>
+        <li><a href="pelaksanaan.html">📋 Pelaksanaan SOP</a></li>
+        <li><a href="audit.html">📊 Audit</a></li>
+        <li class="active"><a href="admin.html">⚙️ Kelola User</a></li>
+    </ul>
+</div>
+
+<div class="main">
+    <div class="navbar">
+        <h2>⚙️ Manajemen User</h2>
+        <div class="profile"></div>
+    </div>
+
+    <div class="content">
+
+        <!-- Stats -->
+        <div class="dashboard-grid" style="margin-bottom:24px;">
+            <div class="card-stat">
+                <div class="card-icon">👥</div>
+                <div class="card-info">
+                    <h3 id="stat-total">0</h3>
+                    <p>Total User</p>
+                </div>
+            </div>
+            <div class="card-stat">
+                <div class="card-icon">⏳</div>
+                <div class="card-info">
+                    <h3 id="stat-pending">0</h3>
+                    <p>Menunggu Approval</p>
+                </div>
+            </div>
+            <div class="card-stat">
+                <div class="card-icon">✅</div>
+                <div class="card-info">
+                    <h3 id="stat-aktif">0</h3>
+                    <p>User Aktif</p>
+                </div>
+            </div>
+            <div class="card-stat">
+                <div class="card-icon">🚫</div>
+                <div class="card-info">
+                    <h3 id="stat-nonaktif">0</h3>
+                    <p>Dinonaktifkan</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Search -->
+        <div style="background:white; border-radius:16px; padding:20px 24px; margin-bottom:20px; box-shadow:0 4px 15px rgba(0,0,0,.05); display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+            <input type="text" id="search" placeholder="🔍 Cari nama atau email..." style="max-width:260px;" oninput="filterTabel()" />
+            <select id="filter-role" onchange="filterTabel()" style="max-width:180px;">
+                <option value="">Semua Role</option>
+                <option>Admin</option>
+                <option>K3Manager</option>
+                <option>K3Officer</option>
+                <option>DeptHead</option>
+                <option>Employee</option>
+                <option>Auditor</option>
+                <option>Viewer</option>
+            </select>
+            <select id="filter-status" onchange="filterTabel()" style="max-width:180px;">
+                <option value="">Semua Status</option>
+                <option value="true">Aktif</option>
+                <option value="false">Pending / Nonaktif</option>
+            </select>
+            <button onclick="muatUser()" style="margin-left:auto;">🔄 Refresh</button>
+        </div>
+
+        <!-- Tabel User -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama / Email</th>
+                        <th>NIK</th>
+                        <th>Departemen</th>
+                        <th>Unit Kerja</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Terdaftar</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabel-user">
+                    <tr><td colspan="8">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Edit User -->
+<div id="modal-edit" class="modal">
+    <div class="modal-content" style="width:500px; max-width:95vw;">
+        <h2>✏️ Edit User</h2>
+
+        <input type="hidden" id="edit-id" />
+
+        <div class="form-group">
+            <label>Nama</label>
+            <input type="text" id="edit-nama" disabled style="background:#f4f8fb;" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" id="edit-email" disabled style="background:#f4f8fb;" />
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Departemen</label>
+                <input type="text" id="edit-dept" />
+            </div>
+            <div class="form-group">
+                <label>Unit Kerja</label>
+                <input type="text" id="edit-unit" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label><strong>Assign Role</strong></label>
+            <select id="edit-role">
+                <option value="Viewer">Viewer — Read-only dashboard & dokumen</option>
+                <option value="Employee">Employee — Isi form & lapor insiden</option>
+                <option value="DeptHead">Dept. Head — Lihat laporan departemen</option>
+                <option value="K3Officer">K3 Officer — Kelola dokumen & form</option>
+                <option value="Auditor">Auditor — Read-only semua modul</option>
+                <option value="K3Manager">K3 Manager — Akses penuh K3</option>
+                <option value="Admin">Admin — Akses penuh sistem</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label><strong>Status Akun</strong></label>
+            <select id="edit-status">
+                <option value="true">✅ Aktif</option>
+                <option value="false">🚫 Nonaktif</option>
+            </select>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:8px;">
+            <button onclick="simpanEdit()" style="flex:1;">💾 Simpan</button>
+            <button onclick="tutupModal()" style="flex:1; background:#e0e0e0; color:#333; box-shadow:none;">Batal</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/sidebar.js"></script>
+<script>
+    let semuaUser = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await initAuth();
+        // Hanya Admin yang boleh akses halaman ini
+        const role = getCurrentRole();
+        if (role !== 'Admin') {
+            alert('⛔ Halaman ini hanya untuk Administrator.');
+            window.location.href = 'index.html';
+            return;
+        }
+        muatUser();
+    });
+
+    async function muatUser() {
+        document.getElementById('tabel-user').innerHTML = '<tr><td colspan="8">Memuat data...</td></tr>';
+
+        const { data, error } = await db
+            .from('user_profiles')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            document.getElementById('tabel-user').innerHTML = `<tr><td colspan="8">❌ Gagal memuat: ${error.message}</td></tr>`;
+            return;
+        }
+
+        semuaUser = data || [];
+        hitungStats();
+        renderTabel(semuaUser);
+    }
+
+    function hitungStats() {
+        document.getElementById('stat-total').textContent    = semuaUser.length;
+        document.getElementById('stat-pending').textContent  = semuaUser.filter(u => !u.is_active).length;
+        document.getElementById('stat-aktif').textContent    = semuaUser.filter(u => u.is_active).length;
+        document.getElementById('stat-nonaktif').textContent = semuaUser.filter(u => !u.is_active).length;
+    }
+
+    function renderTabel(data) {
+        const tbody = document.getElementById('tabel-user');
+        if (!data.length) {
+            tbody.innerHTML = '<tr><td colspan="8">Tidak ada user ditemukan.</td></tr>';
+            return;
+        }
+
+        const ROLE_COLOR = {
+            Admin: '#0F3D56', K3Manager: '#176C8C', K3Officer: '#23A7C7',
+            DeptHead: '#2D9B73', Employee: '#6D7D8B', Auditor: '#8B6914', Viewer: '#9B59B6'
+        };
+
+        tbody.innerHTML = data.map(u => {
+            const warna    = ROLE_COLOR[u.role] || '#555';
+            const tgl      = new Date(u.created_at).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+            const statusBadge = u.is_active
+                ? `<span class="badge fit">Aktif</span>`
+                : `<span class="badge unfit">Pending</span>`;
+            const nama  = u.nama  || '<em style="color:#aaa">—</em>';
+            const email = u.email || '<em style="color:#aaa">—</em>';
+            const nik   = u.nik   || '—';
+
+            return `
+            <tr>
+                <td style="text-align:left;">
+                    <strong style="display:block;">${nama}</strong>
+                    <small style="color:#777;">${email}</small>
+                </td>
+                <td>${nik}</td>
+                <td>${u.departemen || '—'}</td>
+                <td>${u.work_unit  || '—'}</td>
+                <td><span class="badge" style="background:${warna};">${u.role}</span></td>
+                <td>${statusBadge}</td>
+                <td style="font-size:13px;">${tgl}</td>
+                <td>
+                    <button onclick="bukaEdit('${u.id}')" style="padding:8px 14px; font-size:13px;">✏️ Edit</button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function filterTabel() {
+        const q      = document.getElementById('search').value.toLowerCase();
+        const role   = document.getElementById('filter-role').value;
+        const status = document.getElementById('filter-status').value;
+
+        const hasil = semuaUser.filter(u => {
+            const cocokQ      = !q || (u.nama||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q);
+            const cocokRole   = !role   || u.role === role;
+            const cocokStatus = status === '' ? true : String(u.is_active) === status;
+            return cocokQ && cocokRole && cocokStatus;
+        });
+
+        renderTabel(hasil);
+    }
+
+    function bukaEdit(id) {
+        const u = semuaUser.find(x => x.id === id);
+        if (!u) return;
+
+        document.getElementById('edit-id').value       = u.id;
+        document.getElementById('edit-nama').value     = u.nama  || '';
+        document.getElementById('edit-email').value    = u.email || '';
+        document.getElementById('edit-dept').value     = u.departemen || '';
+        document.getElementById('edit-unit').value     = u.work_unit  || '';
+        document.getElementById('edit-role').value     = u.role || 'Viewer';
+        document.getElementById('edit-status').value   = String(u.is_active);
+
+        document.getElementById('modal-edit').style.display = 'flex';
+    }
+
+    function tutupModal() {
+        document.getElementById('modal-edit').style.display = 'none';
+    }
+
+    async function simpanEdit() {
+        const id     = document.getElementById('edit-id').value;
+        const role   = document.getElementById('edit-role').value;
+        const status = document.getElementById('edit-status').value === 'true';
+        const dept   = document.getElementById('edit-dept').value.trim();
+        const unit   = document.getElementById('edit-unit').value.trim();
+
+        const { error } = await db
+            .from('user_profiles')
+            .update({ role, is_active: status, departemen: dept, work_unit: unit })
+            .eq('id', id);
+
+        if (error) {
+            alert('❌ Gagal update: ' + error.message);
+            return;
+        }
+
+        tutupModal();
+        muatUser();
+    }
+
+    // Tutup modal klik di luar
+    document.getElementById('modal-edit').addEventListener('click', function(e) {
+        if (e.target === this) tutupModal();
+    });
+</script>
+
+</body>
+</html>

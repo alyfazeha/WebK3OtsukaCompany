@@ -9,101 +9,209 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="css/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
-    /* Tabs System styling */
-    .tabs { display: flex; gap: 5px; border-bottom: 2px solid #eee; margin-bottom: 20px; }
-    .tab-btn {
-      padding: 10px 20px; background: none; border: none;
-      border-bottom: 3px solid transparent; margin-bottom: -2px;
-      font-size: 14px; font-weight: 500; color: #777;
-      cursor: pointer; transition: .3s; border-radius: 0;
+    /* ── Pengaturan Sistem Tab Navigasi ── */
+    .tabs { 
+      display: flex; 
+      gap: 5px; 
+      border-bottom: 2px solid #eee; 
+      margin-bottom: 20px; 
     }
-    .tab-btn.active { color: #1FA9E6; border-bottom-color: #1FA9E6; font-weight: 600; background: none; }
-    .tab-btn:hover:not(.active) { color: #0F3D56; }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+    .tab-btn {
+      padding: 10px 20px; 
+      background: none; 
+      border: none;
+      border-bottom: 3px solid transparent; 
+      margin-bottom: -2px;
+      font-size: 14px; 
+      font-weight: 500; 
+      color: #777;
+      cursor: pointer; 
+      transition: .3s; 
+      border-radius: 0;
+    }
+    .tab-btn.active { 
+      color: #1FA9E6; 
+      border-bottom-color: #1FA9E6; 
+      font-weight: 600; 
+      background: none; 
+    }
+    .tab-btn:hover:not(.active) { 
+      color: #0F3D56; 
+    }
+    .tab-panel { 
+      display: none; 
+    }
+    .tab-panel.active { 
+      display: block; 
+    }
 
-    /* Custom Badges */
+    /* ── Pengaturan Warna Badge Klasifikasi K3 ── */
+    .badge { 
+      padding: 5px 12px; 
+      border-radius: 20px; 
+      color: white; 
+      font-size: 11px; 
+      display: inline-block; 
+      font-weight: 500; 
+    }
     .badge-internal   { background: #1FA9E6; }
     .badge-eksternal  { background: #9b59b6; }
-    .badge-terjadwal  { background: #f1c40f; }
+    .badge-terjadwal  { background: #f1c40f; color: #333; }
     .badge-selesai    { background: #2ecc71; }
     .badge-open       { background: #e74c3c; }
     .badge-closed     { background: #2ecc71; }
     .badge-minor      { background: #e67e22; }
     .badge-mayor      { background: #c0392b; }
 
-    /* Action buttons adjustment inside table */
+    /* ── Ukuran Tombol Aksi Tabel ── */
     .btn-sm {
-      padding: 6px 12px; font-size: 12px; border-radius: 8px; margin: 2px;
+      padding: 6px 14px; 
+      font-size: 12px; 
+      border-radius: 8px; 
+      margin: 2px; 
+      border: none; 
+      cursor: pointer; 
+      color: white; 
+      font-weight: 500;
     }
     .btn-detail  { background: #0F3D56; }
     .btn-selesai { background: #2ecc71; }
-    .btn-hapus-audit { background: #e74c3c; }
-    .btn-closed  { background: #2ecc71; }
+    .btn-hapus   { background: #e74c3c; }
 
-    /* Modal layouting bridge */
+    /* ── Arsitektur Lapisan Popup Modal Custom ── */
     .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,.5); z-index: 1000;
-      align-items: center; justify-content: center; padding: 15px;
+      display: none; 
+      position: fixed; 
+      inset: 0;
+      background: rgba(0,0,0,.5); 
+      z-index: 1000; /* Dasar tumpukan standar */
+      align-items: center; 
+      justify-content: center; 
+      padding: 15px;
     }
-    .modal-overlay.open { display: flex; }
+    
+    /* SOLUSI NYATA: Set tingkat z-index modal temuan jauh lebih tinggi supaya menimpa detail */
+    #modal-temuan {
+      z-index: 2000 !important;
+    }
+    
+    .modal-overlay.open { 
+      display: flex; 
+    }
     .modal-custom {
-      background: #fff; border-radius: 20px;
-      padding: 30px; width: 100%; max-width: 550px;
-      max-height: 90vh; overflow-y: auto;
+      background: #fff; 
+      border-radius: 20px;
+      padding: 30px; 
+      width: 100%; 
+      max-width: 550px;
+      max-height: 90vh; 
+      overflow-y: auto;
       box-shadow: 0 10px 30px rgba(0,0,0,.15);
-      display: flex; flex-direction: column; gap: 15px;
+      display: flex; 
+      flex-direction: column; 
+      gap: 15px;
     }
     .modal-header-custom {
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #eee; padding-bottom: 10px;
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      border-bottom: 1px solid #eee; 
+      padding-bottom: 10px;
+      margin-bottom: 5px;
     }
     .modal-title-custom { font-size: 18px; font-weight: 600; color: #0F3D56; }
-    .modal-close-custom { background: none; border: none; cursor: pointer; font-size: 20px; color: #aaa; }
+    .modal-close-custom { background: none; border: none; cursor: pointer; font-size: 20px; color: #aaa; font-weight: bold; }
 
-    /* Form rows */
-    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    /* ── Penyusunan Baris Form Input ── */
+    .form-grid-2 { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 15px; 
+      width: 100%; 
+    }
     @media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
-    .form-group-custom { display: flex; flex-direction: column; gap: 5px; }
-    .form-group-custom label { font-size: 13px; font-weight: 500; color: #555; }
+    
+    .form-group-custom { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 5px; 
+      width: 100%; 
+      text-align: left; 
+    }
+    .form-group-custom label { 
+      font-size: 13px; 
+      font-weight: 500; 
+      color: #555; 
+    }
+    .form-group-custom input, .form-group-custom select {
+      padding: 10px; 
+      border-radius: 8px; 
+      border: 1px solid #ddd; 
+      font-family: Poppins; 
+      outline: none;
+    }
+    .form-group-custom input:focus, .form-group-custom select:focus { 
+      border-color: #1FA9E6; 
+    }
 
-    /* Summary Dashboard Row */
+    /* ── Grid Statistik Kotak Atas ── */
     .summary-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 15px; margin-bottom: 25px;
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px; 
+      margin-bottom: 25px;
     }
     .summary-card {
-      background: white; border: 1px solid #eee;
-      border-radius: 15px; padding: 15px; text-align: center;
+      background: white; 
+      border: 1px solid #eee;
+      border-radius: 15px; 
+      padding: 15px; 
+      text-align: center;
       box-shadow: 0 5px 15px rgba(0,0,0,.02);
     }
     .summary-card .num { font-size: 28px; font-weight: 700; color: #0F3D56; }
     .summary-card .lbl { font-size: 12px; color: #777; margin-top: 2px; }
 
-    /* Findings list inner container */
+    /* ── Komponen List Temuan Lapangan ── */
     .temuan-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
     .temuan-item {
-      background: #f9fbfd; border: 1px solid #e1ebf2;
-      border-radius: 12px; padding: 15px;
+      background: #f9fbfd; 
+      border: 1px solid #e1ebf2;
+      border-radius: 12px; 
+      padding: 15px; 
+      box-shadow: 0 2px 5px rgba(0,0,0,.01);
     }
     .temuan-item-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 8px; flex-wrap: wrap; gap: 5px;
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      margin-bottom: 8px; 
+      flex-wrap: wrap; 
+      gap: 5px;
     }
     .temuan-desc { font-size: 14px; color: #333; margin-bottom: 5px; text-align: left; }
     .temuan-tindakan { font-size: 13px; color: #666; font-style: italic; text-align: left; }
 
     .card-box {
-      background: white; padding: 30px; border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.05); margin-bottom: 25px;
+      background: white; 
+      padding: 30px; 
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.05); 
+      margin-bottom: 25px;
     }
-    .page-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    .page-title-text h1 { font-size: 24px; color: #0F3D56; font-weight: 600; }
-    .page-title-text p { font-size: 14px; color: #777; margin-top: 2px; }
+    .page-top-bar { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 25px; 
+    }
+    .page-title-text h1 { font-size: 24px; color: #0F3D56; font-weight: 600; text-align: left; }
+    .page-title-text p { font-size: 14px; color: #777; margin-top: 2px; text-align: left; }
+    
+    .empty-state { padding: 30px; text-align: center; color: #9ca3af; }
+    .empty-state p { margin-top: 10px; font-size: 14px; }
   </style>
 </head>
 <body>
@@ -113,17 +221,18 @@
     <ul>
       <li><a href="index.html" style="color:white; text-decoration:none;">🏠 Dashboard</a></li>
       <li><a href="karyawan.html" style="color:white; text-decoration:none;">👥 Data Karyawan</a></li>
-      <li><a href="struktur.html" style="color:white; text-decoration:none;">🏢 Struktur P2K3</a></li>
+      <li><a href="p2k3.html" style="color:white; text-decoration:none;">🏢 Struktur P2K3</a></li>
       <li><a href="dokumen.html" style="color:white; text-decoration:none;">📄 Dokumen K3</a></li>
-      <li><a href="sop.html" style="color:white; text-decoration:none;">📋 Pelaksanaan SOP</a></li>
+      <li><a href="pelaksanaan.html" style="color:white; text-decoration:none;">📋 Pelaksanaan SOP</a></li>
       <li class="active"><a href="audit.html" style="color:white; text-decoration:none;">📊 Audit</a></li>
+        <li><a href="admin.html">⚙️ Kelola User</a></li>
     </ul>
   </div>
 
   <div class="main">
     <div class="navbar">
       <h2>Audit K3</h2>
-      <div class="profile">Administrator</div>
+      <div class="profile"></div>
     </div>
 
     <div class="content">
@@ -133,7 +242,7 @@
           <h1>Manajemen Audit K3</h1>
           <p>Penjadwalan reguler (Internal 1 thn/sekali, Eksternal min. 3 thn/sekali) dan tindak lanjut temuan</p>
         </div>
-        <button id="openModal" onclick="openModalAudit()">+ Jadwalkan Audit Baru</button>
+        <button id="openModalBtn" onclick="openModalAudit()">+ Jadwalkan Audit Baru</button>
       </div>
 
       <div class="summary-grid" id="summary-grid">
@@ -161,7 +270,7 @@
                 <th>Tgl. Rencana</th>
                 <th>Tgl. Realisasi</th>
                 <th>Status</th>
-                <th style="width:240px;">Aksi</th>
+                <th style="width:240px; text-align: center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="tbody-jadwal">
@@ -191,7 +300,7 @@
                 <th>Kategori</th>
                 <th>Rencana Tindakan Koreksi</th>
                 <th>Status</th>
-                <th style="width:180px;">Aksi</th>
+                <th style="width:180px; text-align: center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="tbody-temuan">
@@ -221,20 +330,22 @@
         </div>
         <div class="form-group-custom">
           <label>Acuan Standar K3 <span style="color:#e74c3c">*</span></label>
-          <input type="text" id="inp-standar" placeholder="Contoh: SMK3 PP No. 50/2012 / ISO 45001" />
+          <input type="text" id="inp-standar" placeholder="Contoh: SMK3 PP No. 50/2012" />
         </div>
-        <div class="form-group-custom">
-          <label>Rencana Tanggal <span style="color:#e74c3c">*</span></label>
-          <input type="date" id="inp-tgl-rencana" />
-        </div>
-        <div class="form-group-custom">
-          <label>Nama Badan/Tim Auditor</label>
-          <input type="text" id="inp-auditor" placeholder="Contoh: Sucofindo / Internal Ahli K3" />
+        <div class="form-grid-2" style="grid-column: span 2;">
+          <div class="form-group-custom">
+            <label>Rencana Tanggal <span style="color:#e74c3c">*</span></label>
+            <input type="date" id="inp-tgl-rencana" />
+          </div>
+          <div class="form-group-custom">
+            <label>Nama Badan/Tim Auditor</label>
+            <input type="text" id="inp-auditor" placeholder="Contoh: Tim Ahli K3 Internal" />
+          </div>
         </div>
       </div>
-      <div style="margin-top:10px; display:flex; gap:10px; justify-content:flex-end;">
-        <button style="background:#95a5a6;" onclick="closeModalAudit()">Batal</button>
-        <button onclick="simpanAudit()">Simpan Jadwal</button>
+      <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end; width:100%;">
+        <button style="background:#95a5a6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="closeModalAudit()">Batal</button>
+        <button style="background:#1FA9E6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="simpanAudit()">Simpan Jadwal</button>
       </div>
     </div>
   </div>
@@ -248,7 +359,7 @@
       <input type="hidden" id="inp-audit-id-temuan" />
       <div class="form-group-custom">
         <label>Deskripsi Temuan Lapangan <span style="color:#e74c3c">*</span></label>
-        <textarea id="inp-deskripsi" rows="3" style="padding:12px; border-radius:10px; border:1px solid #ddd; font-family:Poppins;" placeholder="Uraikan ketidaksesuaian prosedur K3 yang ditemukan…"></textarea>
+        <textarea id="inp-deskripsi" rows="3" style="padding:12px; border-radius:10px; border:1px solid #ddd; font-family:Poppins; outline:none;" placeholder="Uraikan ketidaksesuaian prosedur K3 yang ditemukan…"></textarea>
       </div>
       <div class="form-grid-2">
         <div class="form-group-custom">
@@ -269,11 +380,11 @@
       </div>
       <div class="form-group-custom">
         <label>Rencana Tindakan Koreksi (Corrective Action)</label>
-        <textarea id="inp-tindakan" rows="2" style="padding:12px; border-radius:10px; border:1px solid #ddd; font-family:Poppins;" placeholder="Langkah perbaikan teknis yang wajib dilakukan…"></textarea>
+        <textarea id="inp-tindakan" rows="2" style="padding:12px; border-radius:10px; border:1px solid #ddd; font-family:Poppins; outline:none;" placeholder="Langkah perbaikan teknis yang wajib dilakukan…"></textarea>
       </div>
-      <div style="margin-top:10px; display:flex; gap:10px; justify-content:flex-end;">
-        <button style="background:#95a5a6;" onclick="closeModalTemuan()">Batal</button>
-        <button onclick="simpanTemuan()">Simpan Temuan</button>
+      <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end; width:100%;">
+        <button style="background:#95a5a6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="closeModalTemuan()">Batal</button>
+        <button style="background:#1FA9E6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="simpanTemuan()">Simpan Temuan</button>
       </div>
     </div>
   </div>
@@ -286,9 +397,9 @@
       </div>
       <div id="detail-info" style="margin-bottom:10px; text-align:left; background:#f4f8fb; padding:15px; border-radius:12px;"></div>
       
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
         <strong style="font-size:15px; color:#0F3D56;">Daftar Temuan Pada Event Ini</strong>
-        <button style="font-size:12px; padding:6px 15px;" onclick="openModalTemuan(currentAuditId)">+ Tambah Temuan Baru</button>
+        <button style="font-size:12px; padding:6px 15px; background:#1FA9E6; color:white; border:none; border-radius:8px; cursor:pointer;" onclick="openModalTemuan(currentAuditId)">+ Tambah Temuan Baru</button>
       </div>
       
       <div id="detail-temuan-list" class="temuan-list">
@@ -296,14 +407,18 @@
       </div>
       
       <div style="margin-top:15px; text-align:right; border-top:1px solid #eee; padding-top:15px;">
-        <button style="background:#95a5a6;" onclick="closeModalDetail()">Tutup Panel</button>
+        <button style="background:#95a5a6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="closeModalDetail()">Tutup Panel</button>
       </div>
     </div>
   </div>
 
   <div id="toast" style="display:none; position:fixed; bottom:1.5rem; right:1.5rem; background:#111827; color:#fff; padding:.75rem 1.25rem; border-radius:10px; font-size:.9rem; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,.25); max-width:320px;"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
   <script src="js/audit.js"></script>
 </body>
 </html>

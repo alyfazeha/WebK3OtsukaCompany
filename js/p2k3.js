@@ -1,5 +1,9 @@
 const modal = document.getElementById("modal");
 const tbody = document.getElementById("tbody");
+const strukturBoard = document.getElementById("strukturBoard");
+const totalAnggota = document.getElementById("totalAnggota");
+const periodeAktif = document.getElementById("periodeAktif");
+const pengurusInti = document.getElementById("pengurusInti");
 let editId = null;
 let semuaData = [];
 
@@ -62,12 +66,32 @@ async function loadP2K3() {
 
 function tampilkanData(data) {
     tbody.innerHTML = "";
+    tampilkanRingkasan(data);
+    tampilkanStruktur(data);
+
+    if (data.length == 0) {
+        tbody.innerHTML = `
+        <tr>
+            <td colspan="4" class="empty-row">
+                Belum ada anggota P2K3 yang sesuai.
+            </td>
+        </tr>
+        `;
+        return;
+    }
+
     data.forEach(item => {
         tbody.innerHTML += `
         <tr>
-            <td>${item.karyawan.nama}</td>
-            <td>${item.jabatan_p2k3}</td>
-            <td>${item.periode}</td>
+            <td>
+                <strong>${namaKaryawan(item)}</strong>
+            </td>
+            <td>
+                <span class="role-badge ${kelasJabatan(item.jabatan_p2k3)}">
+                    ${item.jabatan_p2k3}
+                </span>
+            </td>
+            <td>${item.periode || "-"}</td>
             <td>
                 <button onclick="editData(${item.id})">
                     Edit
@@ -82,6 +106,81 @@ function tampilkanData(data) {
         </tr>
         `;
     });
+}
+
+function tampilkanRingkasan(data) {
+    totalAnggota.innerText = data.length;
+    const periode = data.map(item => item.periode).filter(Boolean);
+    periodeAktif.innerText = periode.length > 0 ? periode[periode.length - 1] : "-";
+    pengurusInti.innerText = data.filter(item =>
+        ["Ketua", "Wakil Ketua", "Sekretaris"].includes(item.jabatan_p2k3)
+    ).length;
+}
+
+function tampilkanStruktur(data) {
+    const renderJabatan = jabatan => {
+        const anggota = data.filter(item => item.jabatan_p2k3 == jabatan);
+        const daftarAnggota = anggota.length > 0
+            ? anggota.map(item => `
+                <div class="member-card">
+                    <span class="member-avatar">${inisialNama(namaKaryawan(item))}</span>
+                    <div>
+                        <strong>${namaKaryawan(item)}</strong>
+                        <small>${item.periode || "Periode belum diisi"}</small>
+                    </div>
+                </div>
+            `).join("")
+            : `
+                <div class="empty-structure">
+                    Belum ada data untuk jabatan ini.
+                </div>
+            `;
+
+        return `
+            <section class="role-node ${kelasJabatan(jabatan)}">
+                <div class="role-header">
+                    <span>${jabatan}</span>
+                    <strong>${anggota.length}</strong>
+                </div>
+                <div class="member-list">
+                    ${daftarAnggota}
+                </div>
+            </section>
+        `;
+    };
+
+    strukturBoard.innerHTML = `
+        <div class="chart-level chart-level-top">
+            ${renderJabatan("Ketua")}
+        </div>
+        <div class="chart-connector chart-connector-middle"></div>
+        <div class="chart-level chart-level-middle">
+            ${renderJabatan("Wakil Ketua")}
+            ${renderJabatan("Sekretaris")}
+        </div>
+        <div class="chart-connector chart-connector-bottom"></div>
+        <div class="chart-level chart-level-bottom">
+            ${renderJabatan("Anggota")}
+        </div>
+    `;
+}
+
+function namaKaryawan(item) {
+    return item.karyawan && item.karyawan.nama ? item.karyawan.nama : "Karyawan tidak ditemukan";
+}
+
+function inisialNama(nama) {
+    return nama
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(kata => kata[0])
+        .join("")
+        .toUpperCase();
+}
+
+function kelasJabatan(jabatan) {
+    return jabatan.toLowerCase().replace(/\s+/g, "-");
 }
 
 async function simpanData() {
@@ -173,9 +272,9 @@ async function hapusData(id) {
 document.getElementById("search").addEventListener("keyup", function () {
     const keyword = this.value.toLowerCase();
     const hasil = semuaData.filter(item =>
-        item.karyawan.nama.toLowerCase().includes(keyword) ||
+        namaKaryawan(item).toLowerCase().includes(keyword) ||
         item.jabatan_p2k3.toLowerCase().includes(keyword) ||
-        item.periode.toLowerCase().includes(keyword)
+        (item.periode || "").toLowerCase().includes(keyword)
     );
     tampilkanData(hasil);
 });

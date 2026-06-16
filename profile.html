@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - OTSUKA K3</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>OTSUKA K3</h2>
+        <ul>
+            <li><a href="index.html">🏠 Dashboard</a></li>
+            <li><a href="karyawan.html">👥 Data Karyawan</a></li>
+            <li><a href="p2k3.html">🏢 Struktur P2K3</a></li>
+            <li><a href="dokumen.html">📂 Dokumen K3</a></li>
+            <li><a href="pelaksanaan.html">📋 Pelaksanaan SOP</a></li>
+            <li><a href="audit.html">📊 Audit</a></li>
+            <li class="active"><a href="profile.html">⚙️ Profil Saya</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <div class="navbar">
+            <h2>Pengaturan Profil</h2>
+            <div class="navbar-right">
+                <div class="profile">
+                    <span id="navbar-profile">Administrator</span>
+                </div>
+                <button onclick="logout()" class="btn-logout-navbar">
+                    🚪 Logout
+                </button>
+            </div>
+
+        </div>
+
+        <div class="content">
+            <div class="top">
+                <h3>Kelola Data Profil Anda</h3>
+            </div>
+
+            <!-- Informasi Profil -->
+            <div class="table-panel">
+
+                <div class="panel-heading">
+                    <span class="section-label">PROFIL SAYA</span>
+                    <h3>Informasi Akun</h3>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Nama Lengkap <span style="color:red">*</span></label>
+                        <input type="text" id="nama" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>NIK Karyawan <span style="color:red">*</span></label>
+                        <input type="text" id="nik" />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Departemen <span style="color:red">*</span></label>
+                            <select id="departemen">
+                                <option value="">-- Pilih --</option>
+                                <option>Produksi</option>
+                                <option>Quality Assurance</option>
+                                <option>Quality Control</option>
+                                <option>Engineering</option>
+                                <option>Warehouse</option>
+                                <option>HSE / K3</option>
+                                <option>HRD</option>
+                                <option>Finance</option>
+                                <option>IT</option>
+                                <option>Manajemen</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Kerja</label>
+                            <input type="text" id="work_unit" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email <span style="color:red">*</span></label>
+                        <input type="email" id="email" disabled />
+                    </div>
+
+                </div>
+
+
+                <button onclick="simpanProfil()" class="btn-primary">
+                    💾 Simpan Perubahan
+                </button>
+
+            </div>
+
+
+            <!-- Keamanan -->
+            <div class="table-panel">
+
+                <div class="panel-heading">
+                    <span class="section-label">
+                        KEAMANAN AKUN
+                    </span>
+                    <h3>Ubah Password</h3>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Password Baru</label>
+                    <input type="password" id="passwordBaru">
+                </div>
+
+
+                <button onclick="ubahPassword()" class="btn-danger">
+                    🔒 Ganti Password
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/sidebar.js"></script>
+
+    <script src="js/profile.js"></script>
+
+</body>
+
+</html>

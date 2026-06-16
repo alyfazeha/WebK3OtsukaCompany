@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — OTSUKA K3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="login-page">
+
+    <div class="login-wrapper">
+
+        <!-- Panel kiri: branding -->
+        <div class="login-brand">
+            <img src="images/logo otsuka.jpg" alt="Otsuka Logo">
+            <h1>OTSUKA K3</h1>
+            <p>Sistem Informasi Manajemen<br>Keselamatan & Kesehatan Kerja</p>
+            <ul class="brand-features">
+                <li>📂 Manajemen Dokumen SOP</li>
+                <li>📋 Monitoring Kepatuhan</li>
+                <li>📊 Dashboard Performa K3</li>
+                <li>🔍 Audit & Temuan</li>
+            </ul>
+        </div>
+
+        <!-- Panel kanan: form login -->
+        <div class="login-form-panel">
+            <div class="login-card">
+                <h2>Masuk ke Sistem</h2>
+                <p class="login-subtitle">Belum punya akun? Daftar dulu, lalu tunggu persetujuan Administrator.</p>
+
+                <div id="login-alert" class="login-alert" style="display:none;"></div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="nama@otsuka.co.id" autocomplete="email" />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="password" placeholder="Masukkan password"
+                            autocomplete="current-password" />
+                        <button type="button" class="toggle-pw" onclick="togglePassword()"
+                            title="Lihat password">👁</button>
+                    </div>
+                </div>
+
+                <button id="btn-login" onclick="handleLogin()">
+                    <span id="btn-text">Masuk</span>
+                    <span id="btn-spinner" style="display:none;">⏳ Memproses...</span>
+                </button>
+
+                <p class="login-note">
+                    Belum punya akun? <a href="register.html" style="color:#176C8C;font-weight:600;">Daftar di
+                        sini</a><br><br>
+                    Lupa password? Hubungi <strong>Administrator K3</strong> perusahaan Anda.
+                </p>
+
+                <div class="role-info-box">
+                    <p><strong>ℹ️ Informasi Akses:</strong></p>
+                    <ul>
+                        <li><span class="role-chip admin">Admin</span> Kelola seluruh sistem</li>
+                        <li><span class="role-chip manager">K3 Manager</span> Akses penuh modul K3</li>
+                        <li><span class="role-chip officer">K3 Officer</span> Kelola dokumen & form</li>
+                        <li><span class="role-chip viewer">Viewer</span> Baca dashboard & dokumen saja</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script>
+        // Jika sudah login, langsung redirect ke dashboard
+        db.auth.getSession().then(({ data }) => {
+            if (data.session) window.location.href = 'dashboard.html';
+        });
+
+        // Cek pesan redirect dari auth.js (akun pending)
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('msg') === 'pending') {
+            showAlert('⏳ Akun Anda masih menunggu persetujuan Administrator. Harap bersabar.', 'info');
+        }
+
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            pw.type = pw.type === 'password' ? 'text' : 'password';
+        }
+
+        function showAlert(message, type = 'error') {
+            const el = document.getElementById('login-alert');
+            el.textContent = message;
+            el.className = 'login-alert ' + type;
+            el.style.display = 'block';
+        }
+
+        function setLoading(loading) {
+            document.getElementById('btn-text').style.display = loading ? 'none' : 'inline';
+            document.getElementById('btn-spinner').style.display = loading ? 'inline' : 'none';
+            document.getElementById('btn-login').disabled = loading;
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            document.getElementById('login-alert').style.display = 'none';
+
+            if (!email || !password) {
+                showAlert('⚠️ Email dan password wajib diisi.');
+                return;
+            }
+
+            setLoading(true);
+
+            const { data, error } = await db.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                setLoading(false);
+                if (error.message.includes('Invalid login credentials')) {
+                    showAlert('❌ Email atau password salah. Silakan coba lagi.');
+                } else {
+                    showAlert('❌ Login gagal: ' + error.message);
+                }
+                return;
+            }
+
+            // Cek profil & status akun
+            const { data: profile } = await db
+                .from('user_profiles')
+                .select('role, is_active, nama')
+                .eq('id', data.user.id)
+                .single();
+
+            // Blokir jika belum diaktifkan Admin
+            if (!profile || !profile.is_active) {
+                await db.auth.signOut();
+                setLoading(false);
+                showAlert('⏳ Akun Anda masih menunggu persetujuan Administrator K3. Harap bersabar.');
+                return;
+            }
+
+            // Simpan ke sessionStorage
+            sessionStorage.setItem('k3_role', profile.role || 'Viewer');
+            sessionStorage.setItem('k3_email', data.user.email);
+            sessionStorage.setItem('k3_nama', profile.nama || data.user.email);
+
+            setLoading(false);
+            window.location.href = 'dashboard.html';
+        }
+
+        // Submit dengan Enter
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+    </script>
+
+</body>
+
+</html>

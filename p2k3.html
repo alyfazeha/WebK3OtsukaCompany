@@ -33,6 +33,7 @@
         <li>
             <a href="audit.html">📊 Audit</a>
         </li>
+        <li><a href="admin.html">⚙️ Kelola User</a></li>
     </ul>
 </div>
 <div class="main">
@@ -42,29 +43,70 @@
             Administrator
         </div>
     </div>
-    <div class="content">
-        <div class="top">
+    <div class="content p2k3-page">
+        <div class="p2k3-hero">
+            <div>
+                <span class="section-label">Komite Keselamatan dan Kesehatan Kerja</span>
+                <h3>Struktur Organisasi P2K3</h3>
+                <p>
+                    Pantau susunan pengurus, periode tugas, dan anggota pendukung dalam satu tampilan struktur yang rapi.
+                </p>
+            </div>
             <button id="openModal">
                 + Tambah Anggota
             </button>
-            <input
-                type="text"
-                id="search"
-                placeholder="Cari anggota..."
-            >
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nama Karyawan</th>
-                    <th>Jabatan P2K3</th>
-                    <th>Periode</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="tbody">
-            </tbody>
-        </table>
+
+        <div class="p2k3-summary">
+            <div class="summary-box">
+                <span>Total Anggota</span>
+                <strong id="totalAnggota">0</strong>
+            </div>
+            <div class="summary-box">
+                <span>Periode Aktif</span>
+                <strong id="periodeAktif">-</strong>
+            </div>
+            <div class="summary-box">
+                <span>Pengurus Inti</span>
+                <strong id="pengurusInti">0</strong>
+            </div>
+        </div>
+
+        <div class="org-panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="section-label">Bagan P2K3</span>
+                    <h3>Bagan Struktur Pengurus</h3>
+                </div>
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="Cari anggota..."
+                >
+            </div>
+            <div class="org-chart" id="strukturBoard">
+            </div>
+        </div>
+
+        <div class="table-panel">
+            <div class="panel-heading">
+                <div>
+                    <h3>Daftar Anggota P2K3</h3>
+                </div>
+            </div>
+            <table class="p2k3-table">
+                <thead>
+                    <tr>
+                        <th>Nama Karyawan</th>
+                        <th>Jabatan P2K3</th>
+                        <th>Periode</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <div class="modal" id="modal">
@@ -81,6 +123,7 @@
             <option value="Ketua">Ketua</option>
             <option value="Wakil Ketua">Wakil Ketua</option>
             <option value="Sekretaris">Sekretaris</option>
+            <option value="Bendahara">Bendahara</option>
             <option value="Anggota">Anggota</option>
         </select>
         <input
@@ -105,6 +148,9 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
 <script src="js/p2k3.js"></script>
 </body>
 </html>

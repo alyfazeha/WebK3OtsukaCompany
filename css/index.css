@@ -1,0 +1,503 @@
+/* ==========================================================================
+   CSS KHUSUS LANDING PAGE MODERN - PT OTSUKA INDONESIA
+   Menggunakan token warna global dari style.css
+   ========================================================================== */
+
+body.landing-page {
+    display: block;
+    background: #f8fafc;
+    min-height: 100vh;
+    color: #334155;
+    overflow-x: hidden;
+}
+
+section {
+    padding: 90px 80px;
+}
+
+.section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 60px auto;
+}
+
+.section-header h3 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color-deep);
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+}
+
+.section-header p {
+    font-size: 15px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* 1. NAVBAR */
+.landing-navbar {
+    height: 85px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 80px;
+    box-shadow: 0 4px 30px rgba(15, 61, 86, 0.03);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.landing-navbar .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.landing-navbar .brand img {
+    height: 48px;
+    object-fit: contain;
+}
+
+.landing-navbar .brand h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-deep);
+}
+
+.btn-login-nav {
+    background: var(--gradient-main);
+    color: white;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(23, 108, 140, 0.2);
+}
+
+.btn-login-nav:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(23, 108, 140, 0.35);
+}
+
+/* 2. HERO SECTION */
+.hero-section {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+    gap: 60px;
+    padding-bottom: 60px;
+}
+
+.hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.tagline-badge {
+    background: var(--gradient-soft);
+    color: var(--color-mid);
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+    width: fit-content;
+    border: 1px solid rgba(35, 167, 199, 0.2);
+}
+
+.hero-text h2 {
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--color-deep);
+    line-height: 1.25;
+}
+
+.hero-text h2 span {
+    background: var(--gradient-main);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-text p {
+    font-size: 16px;
+    color: #64748b;
+    line-height: 1.8;
+}
+
+.hero-cta-group {
+    display: flex;
+    gap: 16px;
+}
+
+.btn-primary-cta {
+    background: var(--gradient-main);
+    color: white;
+    padding: 15px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 8px 25px rgba(15, 61, 86, 0.15);
+}
+
+.btn-primary-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(15, 61, 86, 0.25);
+}
+
+.btn-secondary-cta {
+    background: white;
+    color: var(--color-deep);
+    padding: 15px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    border: 2px solid #e2e8f0;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-secondary-cta:hover {
+    background: #f1f5f9;
+    transform: translateY(-2px);
+}
+
+.hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.mockup-card {
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(15, 61, 86, 0.08);
+    border: 1px solid #f1f5f9;
+    width: 100%;
+    max-width: 400px;
+    z-index: 2;
+}
+
+.mockup-header {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.mockup-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ef4444;
+}
+
+.mockup-dot:nth-child(2) {
+    background: #f59e0b;
+}
+
+.mockup-dot:nth-child(3) {
+    background: #10b981;
+}
+
+.mockup-bar {
+    height: 44px;
+    background: var(--gradient-soft);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-mid);
+}
+
+/* 3. SAFETY MILESTONES (STATISTIK) */
+.stats-section {
+    background: white;
+    border-top: 1px solid #edf2f7;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.stats-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+}
+
+.stats-card {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 30px 20px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+.stats-card h4 {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--color-bright);
+    margin-bottom: 8px;
+}
+
+.stats-card p {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* 4. CORE VALUES (3 PILAR) */
+.pilar-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.pilar-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 30px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.pilar-icon {
+    font-size: 28px;
+    width: 55px;
+    height: 55px;
+    background: #f0fdf4;
+    color: #16a34a;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.pilar-card:nth-child(2) .pilar-icon {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.pilar-card:nth-child(3) .pilar-icon {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.pilar-card h4 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-deep);
+    margin-bottom: 12px;
+}
+
+.pilar-card p {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* 5. WORKFLOW PREVIEW */
+.workflow-section {
+    background: #f1f5f9;
+}
+
+.workflow-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    position: relative;
+}
+
+.workflow-step {
+    background: white;
+    border-radius: 16px;
+    padding: 30px 25px;
+    position: relative;
+    border: 1px solid #e2e8f0;
+}
+
+.step-number {
+    position: absolute;
+    top: -15px;
+    left: 25px;
+    width: 35px;
+    height: 35px;
+    background: var(--gradient-main);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(15, 61, 86, 0.2);
+}
+
+.workflow-step h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-deep);
+    margin: 10px 0 8px 0;
+}
+
+.workflow-step p {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* 6. DOKUMEN PUBLIK GRID */
+.docs-section {
+    background: white;
+}
+
+.doc-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 30px;
+}
+
+.doc-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 35px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.doc-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(15, 61, 86, 0.06);
+    border-color: #cbd5e1;
+}
+
+.doc-card-body h4 {
+    color: var(--color-deep);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.doc-card-body p {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.doc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 20px;
+}
+
+.doc-meta {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.btn-download {
+    background: #f1f5f9;
+    color: var(--color-deep);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.doc-card:hover .btn-download {
+    background: var(--gradient-main);
+    color: white;
+}
+
+/* 7. EMERGENCY STATIONS */
+.emergency-section {
+    background: #fdf2f2;
+    border-top: 2px dashed #fca5a5;
+}
+
+.emergency-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.emergency-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    border: 1px solid #fee2e2;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.emergency-icon {
+    width: 50px;
+    height: 50px;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.emergency-info h4 {
+    font-size: 15px;
+    color: #7f1d1d;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.emergency-info p {
+    font-size: 18px;
+    font-weight: 800;
+    color: #dc2626;
+}
+
+/* FOOTER */
+.landing-footer {
+    background: var(--color-deep);
+    color: #94a3b8;
+    padding: 60px 80px 40px 80px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.landing-footer strong {
+    color: white;
+}

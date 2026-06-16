@@ -7,265 +7,214 @@
     <title>Sistem Informasi K3 - PT Otsuka Indonesia</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Memanggil Global Style (Variabel Warna & Font) -->
     <link rel="stylesheet" href="css/style.css">
-
-    <style>
-        /* Pengaturan khusus halaman landing page publik agar tidak bentrok dengan layout dashboard */
-        body.landing-page {
-            display: block;
-            background: #f4f8fb;
-            min-height: 100vh;
-        }
-
-        .landing-navbar {
-            height: 80px;
-            background: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 60px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .landing-navbar .brand {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .landing-navbar .brand img {
-            height: 45px;
-            border-radius: 6px;
-        }
-
-        .landing-navbar .brand h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--color-deep);
-        }
-
-        .hero-section {
-            background: var(--gradient-main);
-            color: white;
-            padding: 80px 60px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            box-shadow: 0 8px 24px rgba(15, 61, 86, .12);
-        }
-
-        .hero-section h2 {
-            font-size: 36px;
-            font-weight: 700;
-            max-width: 800px;
-            line-height: 1.3;
-        }
-
-        .hero-section p {
-            font-size: 16px;
-            color: #d9f0f9;
-            max-width: 700px;
-            line-height: 1.7;
-        }
-
-        .public-container {
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 0 30px;
-        }
-
-        .section-title {
-            color: var(--color-deep);
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 25px;
-            border-bottom: 3px solid var(--color-bright);
-            display: inline-block;
-            padding-bottom: 8px;
-        }
-
-        .doc-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .doc-card {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, .04);
-            border: 1px solid #e8eef3;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: 0.3s;
-        }
-
-        .doc-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(15, 61, 86, .08);
-        }
-
-        .doc-info h3 {
-            color: var(--color-deep);
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .doc-info p {
-            color: #647481;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .doc-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: #95a5a6;
-        }
-
-        .btn-download {
-            background: var(--gradient-soft);
-            color: var(--color-mid);
-            box-shadow: none;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .btn-download:hover {
-            background: #23A7C7;
-            color: white;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px;
-            color: #7a8c99;
-            font-size: 13px;
-            margin-top: 80px;
-            border-top: 1px solid #e8eef3;
-            background: white;
-        }
-    </style>
+    <!-- Memanggil Landing Page Style Baru -->
+    <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body class="landing-page">
 
-    <!-- NAVIGATION BAR -->
+    <!-- 1. NAVBAR -->
     <nav class="landing-navbar">
         <div class="brand">
             <img src="images/logo otsuka.jpg" alt="Logo Otsuka">
-            <h1>PT Otsuka Indonesia — K3 IMS</h1>
+            <h1>PT Otsuka Indonesia</h1>
         </div>
-        <div class="nav-actions">
-            <!-- Tombol Login Pojok Kanan Atas -->
-            <button onclick="window.location.href='login.html'">🔑 Masuk ke Sistem</button>
+        <div>
+            <button class="btn-login-nav" onclick="window.location.href='login.html'">🔑 Masuk Ke Sistem</button>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <header class="hero-section">
-        <h2>Komitmen Keselamatan & Kesehatan Kerja (K3)</h2>
-        <p>
-            PT Otsuka Indonesia berkomitmen penuh untuk menciptakan lingkungan kerja yang aman, sehat, dan kondusif bagi
-            seluruh karyawan, mitra bisnis, serta pengunjung perusahaan melalui implementasi Sistem Manajemen K3 yang
-            terintegrasi.
-        </p>
-    </header>
+    <!-- 2. HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-text">
+            <div class="tagline-badge">🛡️ K3 Integrated Management System</div>
+            <h2>Sistem Terintegrasi Keselamatan & Kesehatan Kerja <span>Masyarakat Internal</span></h2>
+            <p>
+                Sentralisasi data K3, pemantauan kepatuhan SOP otomatis, manajemen berkas audit, pelaporan bahaya real-time, dan transparansi performa K3 dalam satu platform mutakhir PT Otsuka Indonesia.
+            </p>
+            <div class="hero-cta-group">
+                <button class="btn-primary-cta" onclick="window.location.href='login.html'">Masuk ke Dashboard</button>
+                <button class="btn-secondary-cta" onclick="document.getElementById('dokumen-publik').scrollIntoView({behavior: 'smooth'})">Jelajahi Berkas Umum</button>
+            </div>
+        </div>
 
-    <!-- MAIN CONTENT: DOKUMEN PUBLIK -->
-    <main class="public-container">
-        <h2 class="section-title">📂 Dokumen & Informasi K3 Terbuka (Publik)</h2>
-        <p style="color: #647481; margin-top: -15px; margin-bottom: 30px; font-size: 15px;">
-            Berikut adalah dokumen panduan, kebijakan, serta standar operasional keselamatan kerja PT Otsuka Indonesia
-            yang dapat diakses oleh masyarakat umum, vendor, tamu, praktisi, atau mahasiswa luar tanpa perlu hak akses
-            login internal.
-        </p>
-
-        <!-- GRID DAFTAR DOKUMEN -->
-        <div class="doc-grid" id="public-docs-grid">
-
-            <!-- Contoh Kartu Dokumen 1 -->
-            <div class="doc-card">
-                <div class="doc-info">
-                    <h3>Kebijakan Keselamatan & Kesehatan Kerja Perusahaan</h3>
-                    <p>Dokumen resmi komitmen jajaran direksi PT Otsuka Indonesia terhadap pemenuhan regulasi
-                        perlindungan tenaga kerja dan mitigasi risiko operasional.</p>
+        <div class="hero-visual">
+            <div class="mockup-card">
+                <div class="mockup-header">
+                    <div class="mockup-dot"></div>
+                    <div class="mockup-dot"></div>
+                    <div class="mockup-dot"></div>
                 </div>
-                <div class="doc-meta">
-                    <span>Format: PDF (1.2 MB)</span>
+                <div style="font-weight: 700; color: var(--color-deep); font-size: 15px; margin-bottom: 15px;">📊 Status Kepatuhan Pabrik</div>
+                <div class="mockup-bar">🟢 Produksi Line A — 94% Aman</div>
+                <div class="mockup-bar">🟢 Warehouse Sub-Depot — 100% Fit</div>
+                <div class="mockup-bar" style="background: #fff8f8; color: #cc5c5c;">🟡 Engineering Room — Perlu Audit</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SAFETY MILESTONES (STATISTIK CHIPS) -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stats-card">
+                <h4>1.2M+</h4>
+                <p>Jam Kerja Selamat (LTI Free)</p>
+            </div>
+            <div class="stats-card">
+                <h4>0</h4>
+                <p>Kasus Kecelakaan (*Zero Accident*)</p>
+            </div>
+            <div class="stats-card">
+                <h4>100%</h4>
+                <p>Karyawan Tersertifikasi K3</p>
+            </div>
+            <div class="stats-card">
+                <h4>Grade A</h4>
+                <p>Sertifikasi SMK3 Nasional</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. CORE VALUES (3 PILAR UTAMA) -->
+    <section class="pilars-section">
+        <div class="section-header">
+            <h3>🛡️ Tiga Pilar Budaya K3 Otsuka</h3>
+            <p>Prinsip fundamental utama kami dalam mengawal kelancaran operasional manufaktur yang nihil bahaya.</p>
+        </div>
+        <div class="pilar-grid">
+            <div class="pilar-card">
+                <div class="pilar-icon">🔬</div>
+                <h4>Tindakan Preventif</h4>
+                <p>Identifikasi dini dan inspeksi berkala di seluruh mesin serta area koridor produksi guna meminimalkan risiko sebelum muncul bahaya fisik.</p>
+            </div>
+            <div class="pilar-card">
+                <div class="pilar-icon">⚡</div>
+                <h4>Responsif Tangkas</h4>
+                <p>Kesiapsiagaan penuh dari tim K3 Officer dan First Aider yang dipersenjatai sistem alert digital otomatis selama 24 jam penuh.</p>
+            </div>
+            <div class="pilar-card">
+                <div class="pilar-icon">🎓</div>
+                <h4>Edukasi Berkelanjutan</h4>
+                <p>Pelatihan berkala, safety induction interaktif bagi tamu, serta sertifikasi kompetensi formal bagi seluruh operator internal pabrik.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. WORKFLOW PREVIEW (ALUR SISTEM) -->
+    <section class="workflow-section">
+        <div class="section-header">
+            <h3>🔀 Alur Singkat Pelaporan Bahaya</h3>
+            <p>Bagaimana sistem pintar kami membantu merespons temuan kondisi tidak aman di area pabrik dengan cepat.</p>
+        </div>
+        <div class="workflow-grid">
+            <div class="workflow-step">
+                <div class="step-number">1</div>
+                <h5>Temukan Bahaya</h5>
+                <p>Karyawan melihat unsafe action atau kerusakan sarana fisik di lapangan.</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">2</div>
+                <h5>Kirim Laporan</h5>
+                <p>Ambil foto kondisi tersebut dan unggah langsung melalui modul insiden aplikasi.</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">3</div>
+                <h5>Verifikasi Instan</h5>
+                <p>K3 Officer mendapatkan alert, melakukan survei, dan mengesahkan rencana aksi perbaikan.</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">4</div>
+                <h5>Mitigasi Selesai</h5>
+                <p>Bahaya diperbaiki di lapangan, status laporan berubah hijau aman secara real-time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. DOKUMEN PUBLIK GRID -->
+    <section class="docs-section" id="dokumen-publik">
+        <div class="section-header">
+            <h3>📂 Regulasi & Panduan Umum K3</h3>
+            <p>Berkas panduan resmi yang dapat diunduh bebas oleh tamu industri, praktisi akademik, maupun mitra kontraktor eksternal.</p>
+        </div>
+        <div class="doc-grid">
+            <div class="doc-card">
+                <div class="doc-card-body">
+                    <h4>Kebijakan Utama K3 Perusahaan</h4>
+                    <p>Dokumen komitmen fundamental jajaran direksi PT Otsuka Indonesia terhadap perlindungan tenaga kerja sesuai hukum regulasi.</p>
+                </div>
+                <div class="doc-footer">
+                    <span class="doc-meta">PDF • 1.2 MB</span>
                     <button class="btn-download" onclick="downloadFile('kebijakan-k3-otsuka.pdf')">📥 Unduh</button>
                 </div>
             </div>
-
-            <!-- Contoh Kartu Dokumen 2 -->
             <div class="doc-card">
-                <div class="doc-info">
-                    <h3>Panduan Keselamatan Kerja Bagi Kontraktor & Vendor (CSMS)</h3>
-                    <p>Aturan baku dan protokol wajib K3 yang harus dipahami dan dipatuhi oleh seluruh kontraktor luar
-                        sebelum melakukan pekerjaan fisik di area pabrik.</p>
+                <div class="doc-card-body">
+                    <h4>Aturan K3 Kontraktor (CSMS)</h4>
+                    <p>Standar aturan operasional serta manajemen risiko wajib dipatuhi mitra vendor sebelum memulai konstruksi fisik di area pabrik.</p>
                 </div>
-                <div class="doc-meta">
-                    <span>Format: PDF (2.4 MB)</span>
+                <div class="doc-footer">
+                    <span class="doc-meta">PDF • 2.4 MB</span>
                     <button class="btn-download" onclick="downloadFile('csms-guideline-otsuka.pdf')">📥 Unduh</button>
                 </div>
             </div>
-
-            <!-- Contoh Kartu Dokumen 3 -->
             <div class="doc-card">
-                <div class="doc-info">
-                    <h3>Prosedur Kesiapsiagaan Tanggap Darurat & Evakuasi Tamu</h3>
-                    <p>Instruksi keselamatan penting mengenai jalur evakuasi, titik kumpul aman (assembly point), serta
-                        tindakan darurat yang wajib dipahami oleh pengunjung pabrik.</p>
+                <div class="doc-card-body">
+                    <h4>Panduan Evakuasi & Jalur Darurat</h4>
+                    <p>Peta visual titik kumpul (*assembly point*) beserta instruksi penyelamatan mandiri apabila alarm evakuasi berbunyi.</p>
                 </div>
-                <div class="doc-meta">
-                    <span>Format: PDF (980 KB)</span>
+                <div class="doc-footer">
+                    <span class="doc-meta">PDF • 980 KB</span>
                     <button class="btn-download" onclick="downloadFile('tanggap-darurat-tamu.pdf')">📥 Unduh</button>
                 </div>
             </div>
-
         </div>
-    </main>
+    </section>
+
+    <!-- 7. EMERGENCY STATIONS (KONTAK CEPAT) -->
+    <section class="emergency-section">
+        <div class="section-header">
+            <h3 style="color: #991b1b;">🚨 Hubungi Posko Siaga Tanggap Darurat</h3>
+            <p style="color: #991b1b; opacity: 0.8;">Saluran khusus interkom internal dan darurat luar jikalau terjadi kecelakaan kerja atau kebakaran di dalam perimeter pabrik.</p>
+        </div>
+        <div class="emergency-grid">
+            <div class="emergency-card">
+                <div class="emergency-icon">📞</div>
+                <div class="emergency-info">
+                    <h4>Posko K3 Sentral</h4>
+                    <p>Ext. 112 / 115</p>
+                </div>
+            </div>
+            <div class="emergency-card">
+                <div class="emergency-icon">🏥</div>
+                <div class="emergency-info">
+                    <h4>Poliklinik Medis</h4>
+                    <p>Ext. 201 (Pabrik)</p>
+                </div>
+            </div>
+            <div class="emergency-card">
+                <div class="emergency-icon">🔥</div>
+                <div class="emergency-info">
+                    <h4>Tim Damkar Internal</h4>
+                    <p>Ext. 119 / Urgent</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- FOOTER -->
-    <footer>
-        &copy; 2026 PT Otsuka Indonesia - Health & Safety Integrated Management System. <br>
-        Dikembangkan oleh Tim K3 Specialist. All Rights Reserved.
+    <footer class="landing-footer">
+        <p>&copy; 2026 <strong>PT Otsuka Indonesia</strong> — Health & Safety Integrated Management System.</p>
+        <p style="font-size: 12px; margin-top: 10px; color: #64748b;">All Rights Reserved. Dikembangkan untuk standardisasi keselamatan lingkungan manufaktur modern.</p>
     </footer>
 
-    <!-- LOGIKA UTILS / BACKEND (OPSIONAL JIKA INGIN DINAMIS) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
     <script>
-        // Fungsi simulasi klik unduh dokumen publik
         function downloadFile(fileName) {
-            alert(`Mengeksekusi pengunduhan berkas umum: ${fileName}\n(Fungsi ini bisa dihubungkan ke Supabase Storage bucket publik nantinya)`);
+            alert(`Mengeksekusi pengunduhan aman berkas umum:\n${fileName}`);
         }
-
-        // Catatan Opsional: Jika kamu ingin daftar dokumen publik ditarik langsung dari Supabase tabel 'dokumen_k3' 
-        // dengan filter `.eq('kategori_akses', 'Publik')`, kamu bisa menggunakan fungsi fetch di bawah ini nanti.
-        /*
-        async function loadPublicDocuments() {
-            const { data, error } = await db.from('dokumen_k3').select('*').eq('is_public', true);
-            if(!error && data) {
-                // kode manipulasi DOM untuk merender ulang #public-docs-grid
-            }
-        }
-        document.addEventListener("DOMContentLoaded", loadPublicDocuments);
-        */
     </script>
 </body>
 

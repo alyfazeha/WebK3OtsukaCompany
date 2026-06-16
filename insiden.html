@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insiden & HIRARC - OTSUKA K3</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    /* ── Tab Navigation ── */
+    .tabs {
+      display: flex;
+      gap: 5px;
+      border-bottom: 2px solid #eee;
+      margin-bottom: 25px;
+    }
+    .tab-btn {
+      padding: 10px 22px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #777;
+      cursor: pointer;
+      transition: .3s;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .tab-btn.active {
+      color: #1FA9E6;
+      border-bottom-color: #1FA9E6;
+      font-weight: 600;
+      background: none;
+      transform: none;
+    }
+    .tab-btn:hover:not(.active) {
+      color: #0F3D56;
+      background: none;
+      transform: none;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Summary KPI ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    .kpi-card {
+      background: white;
+      border-radius: 14px;
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,.04);
+      border-top: 4px solid transparent;
+    }
+    .kpi-card.merah  { border-top-color: #e74c3c; }
+    .kpi-card.oranye { border-top-color: #e67e22; }
+    .kpi-card.hijau  { border-top-color: #2ecc71; }
+    .kpi-card.biru   { border-top-color: #1FA9E6; }
+    .kpi-card.abu    { border-top-color: #95a5a6; }
+    .kpi-num {
+      font-size: 32px;
+      font-weight: 700;
+      color: #0F3D56;
+      line-height: 1.1;
+    }
+    .kpi-lbl {
+      font-size: 12px;
+      color: #777;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    /* ── Card Box ── */
+    .card-box {
+      background: white;
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.05);
+      margin-bottom: 25px;
+    }
+    .card-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .card-box-header h3 {
+      font-size: 18px;
+      color: #0F3D56;
+      font-weight: 600;
+    }
+
+    /* ── Badge ── */
+    .badge-status {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+    .badge-open    { background: #fdecea; color: #c0392b; }
+    .badge-proses  { background: #fef9e7; color: #d68910; }
+    .badge-closed  { background: #eafaf1; color: #1e8449; }
+    .badge-ringan  { background: #e8f4fd; color: #1a5276; }
+    .badge-sedang  { background: #fef5e7; color: #a04000; }
+    .badge-berat   { background: #fdecea; color: #922b21; }
+    .badge-ekstrem { background: #2c3e50; color: white; }
+    .badge-rendah  { background: #eafaf1; color: #1e8449; }
+    .badge-menengah { background: #fef5e7; color: #a04000; }
+    .badge-tinggi  { background: #fdecea; color: #c0392b; }
+
+    /* ── Matriks Risiko ── */
+    .matriks-container {
+      overflow-x: auto;
+    }
+    .matriks-table {
+      border-collapse: separate;
+      border-spacing: 4px;
+      width: 100%;
+      box-shadow: none;
+    }
+    .matriks-table th, .matriks-table td {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .matriks-table th {
+      background: #0F3D56;
+      color: white;
+    }
+    .matriks-table td.axis-label {
+      background: #0F3D56;
+      color: white;
+      font-weight: 600;
+    }
+    .r-rendah  { background: #d5f5e3; color: #1e8449; font-weight: 600; }
+    .r-menengah { background: #fef9e7; color: #a04000; font-weight: 600; }
+    .r-tinggi  { background: #fdecea; color: #c0392b; font-weight: 600; }
+    .r-ekstrem { background: #c0392b; color: white; font-weight: 700; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-custom {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+    .modal-title { font-size: 17px; font-weight: 600; color: #0F3D56; }
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: #aaa;
+      font-weight: bold;
+      box-shadow: none;
+      padding: 0;
+    }
+    .modal-close:hover { background: none; transform: none; color: #e74c3c; }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    @media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+    }
+    .form-group.full { grid-column: span 2; }
+    @media (max-width: 600px) { .form-group.full { grid-column: span 1; } }
+
+    /* ── Filter Bar ── */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .filter-bar input, .filter-bar select {
+      width: auto;
+      min-width: 160px;
+      padding: 9px 12px;
+      font-size: 13px;
+    }
+
+    /* ── CAPA item ── */
+    .capa-item {
+      background: #f8fbfd;
+      border: 1px solid #e1ebf2;
+      border-left: 4px solid #1FA9E6;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .capa-item.closed { border-left-color: #2ecc71; }
+    .capa-item.proses { border-left-color: #e67e22; }
+    .capa-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .capa-desc { font-size: 14px; color: #333; }
+    .capa-meta { font-size: 12px; color: #888; margin-top: 5px; }
+
+    /* ── Action Buttons ── */
+    .btn-sm {
+      padding: 6px 13px;
+      font-size: 12px;
+      border-radius: 8px;
+      margin: 2px;
+      border: none;
+      cursor: pointer;
+      color: white;
+      font-weight: 500;
+      box-shadow: none;
+    }
+    .btn-sm:hover { transform: translateY(-1px); }
+    .btn-detail  { background: #0F3D56; }
+    .btn-hapus   { background: #e74c3c; }
+    .btn-selesai { background: #2ecc71; }
+    .btn-proses  { background: #e67e22; }
+
+    /* ── Toast ── */
+    #toast {
+      display: none;
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #111827;
+      color: white;
+      padding: .75rem 1.25rem;
+      border-radius: 10px;
+      font-size: .9rem;
+      z-index: 9999;
+      box-shadow: 0 4px 20px rgba(0,0,0,.25);
+      max-width: 320px;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #9ca3af;
+      padding: 30px;
+      font-size: 14px;
+    }
+
+    .section-divider {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: #1FA9E6;
+      margin: 20px 0 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e8f4fb;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="logo">
+      <img src="images/logo otsuka.jpg" alt="Logo Otsuka">
+      <h2>OTSUKA K3</h2>
+    </div>
+    <ul>
+      <li><a href="index.html">🏠 Dashboard</a></li>
+      <li><a href="karyawan.html">👥 Data Karyawan</a></li>
+      <li><a href="p2k3.html">🏢 Struktur P2K3</a></li>
+      <li><a href="dokumen.html">📂 Dokumen K3</a></li>
+      <li><a href="pelaksanaan.html">📋 Pelaksanaan SOP</a></li>
+      <li><a href="insiden.html">🚨 Insiden & HIRARC</a></li>
+      <li><a href="audit.html">📊 Audit</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="navbar">
+      <h2>Insiden & HIRARC</h2>
+      <div class="profile">Administrator</div>
+    </div>
+
+    <div class="content">
+
+      <!-- KPI Summary -->
+      <div class="kpi-grid">
+        <div class="kpi-card merah">
+          <div class="kpi-num" id="kpi-open">0</div>
+          <div class="kpi-lbl">Insiden Open</div>
+        </div>
+        <div class="kpi-card oranye">
+          <div class="kpi-num" id="kpi-proses">0</div>
+          <div class="kpi-lbl">Dalam Proses</div>
+        </div>
+        <div class="kpi-card hijau">
+          <div class="kpi-num" id="kpi-closed">0</div>
+          <div class="kpi-lbl">Insiden Closed</div>
+        </div>
+        <div class="kpi-card biru">
+          <div class="kpi-num" id="kpi-bahaya">0</div>
+          <div class="kpi-lbl">Bahaya Teridentifikasi</div>
+        </div>
+        <div class="kpi-card abu">
+          <div class="kpi-num" id="kpi-capa">0</div>
+          <div class="kpi-lbl">CAPA Belum Ditutup</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="card-box">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('tab-insiden', this)">🚨 Laporan Insiden</button>
+          <button class="tab-btn" onclick="switchTab('tab-hirarc', this)">⚠️ HIRARC / Identifikasi Bahaya</button>
+          <button class="tab-btn" onclick="switchTab('tab-capa', this)">🔧 CAPA Tracking</button>
+        </div>
+
+        <!-- TAB 1: LAPORAN INSIDEN -->
+        <div id="tab-insiden" class="tab-panel active">
+          <div class="card-box-header">
+            <h3>Daftar Laporan Insiden</h3>
+            <button onclick="openModalInsiden()">+ Laporkan Insiden</button>
+          </div>
+          <div class="filter-bar">
+            <input type="text" id="cari-insiden" placeholder="Cari insiden..." oninput="renderInsiden()">
+            <select id="filter-jenis-insiden" onchange="renderInsiden()">
+              <option value="">Semua Jenis</option>
+              <option value="Kecelakaan Kerja">Kecelakaan Kerja</option>
+              <option value="Near Miss">Near Miss</option>
+              <option value="Penyakit Akibat Kerja">Penyakit Akibat Kerja</option>
+              <option value="Kebakaran">Kebakaran</option>
+              <option value="Tumpahan B3">Tumpahan B3</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+            <select id="filter-status-insiden" onchange="renderInsiden()">
+              <option value="">Semua Status</option>
+              <option value="Open">Open</option>
+              <option value="Dalam Proses">Dalam Proses</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:40px">#</th>
+                <th>Tanggal</th>
+                <th>Jenis Insiden</th>
+                <th>Lokasi</th>
+                <th>Pelapor</th>
+                <th>Tingkat Keparahan</th>
+                <th>Status</th>
+                <th style="width:180px;text-align:center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-insiden">
+              <tr><td colspan="8" class="empty-state">Memuat data…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- TAB 2: HIRARC -->
+        <div id="tab-hirarc" class="tab-panel">
+          <div class="card-box-header">
+            <h3>Identifikasi Bahaya & Penilaian Risiko</h3>
+            <button onclick="openModalHirarc()">+ Tambah Bahaya</button>
+          </div>
+
+          <!-- Matriks Risiko -->
+          <div style="margin-bottom:25px;">
+            <p style="font-size:13px;color:#555;margin-bottom:12px;">
+              <strong>Matriks Risiko</strong> — Nilai Risiko = Kemungkinan × Keparahan
+            </p>
+            <div class="matriks-container">
+              <table class="matriks-table">
+                <thead>
+                  <tr>
+                    <th>Kemungkinan ↓ / Keparahan →</th>
+                    <th>1 – Tidak Signifikan</th>
+                    <th>2 – Minor</th>
+                    <th>3 – Sedang</th>
+                    <th>4 – Mayor</th>
+                    <th>5 – Katastrofik</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="axis-label">5 – Hampir Pasti</td>
+                    <td class="r-menengah">5</td><td class="r-tinggi">10</td>
+                    <td class="r-tinggi">15</td><td class="r-ekstrem">20</td><td class="r-ekstrem">25</td>
+                  </tr>
+                  <tr>
+                    <td class="axis-label">4 – Sering</td>
+                    <td class="r-menengah">4</td><td class="r-menengah">8</td>
+                    <td class="r-tinggi">12</td><td class="r-ekstrem">16</td><td class="r-ekstrem">20</td>
+                  </tr>
+                  <tr>
+                    <td class="axis-label">3 – Mungkin</td>
+                    <td class="r-rendah">3</td><td class="r-menengah">6</td>
+                    <td class="r-menengah">9</td><td class="r-tinggi">12</td><td class="r-tinggi">15</td>
+                  </tr>
+                  <tr>
+                    <td class="axis-label">2 – Jarang</td>
+                    <td class="r-rendah">2</td><td class="r-rendah">4</td>
+                    <td class="r-menengah">6</td><td class="r-menengah">8</td><td class="r-tinggi">10</td>
+                  </tr>
+                  <tr>
+                    <td class="axis-label">1 – Sangat Jarang</td>
+                    <td class="r-rendah">1</td><td class="r-rendah">2</td>
+                    <td class="r-rendah">3</td><td class="r-menengah">4</td><td class="r-menengah">5</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display:flex;gap:15px;flex-wrap:wrap;margin-top:10px;font-size:12px;">
+              <span><span style="display:inline-block;width:12px;height:12px;background:#d5f5e3;border-radius:3px;margin-right:4px;"></span>Rendah (1–4)</span>
+              <span><span style="display:inline-block;width:12px;height:12px;background:#fef9e7;border-radius:3px;margin-right:4px;"></span>Menengah (5–9)</span>
+              <span><span style="display:inline-block;width:12px;height:12px;background:#fdecea;border-radius:3px;margin-right:4px;"></span>Tinggi (10–15)</span>
+              <span><span style="display:inline-block;width:12px;height:12px;background:#c0392b;border-radius:3px;margin-right:4px;"></span>Ekstrem (16–25)</span>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <input type="text" id="cari-hirarc" placeholder="Cari bahaya atau lokasi..." oninput="renderHirarc()">
+            <select id="filter-risiko" onchange="renderHirarc()">
+              <option value="">Semua Level Risiko</option>
+              <option value="Rendah">Rendah</option>
+              <option value="Menengah">Menengah</option>
+              <option value="Tinggi">Tinggi</option>
+              <option value="Ekstrem">Ekstrem</option>
+            </select>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th style="width:40px">#</th>
+                <th>Uraian Bahaya</th>
+                <th>Lokasi / Tugas</th>
+                <th>Kemungkinan</th>
+                <th>Keparahan</th>
+                <th>Nilai Risiko</th>
+                <th>Level Risiko</th>
+                <th>Pengendalian</th>
+                <th style="width:120px;text-align:center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-hirarc">
+              <tr><td colspan="9" class="empty-state">Memuat data…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- TAB 3: CAPA -->
+        <div id="tab-capa" class="tab-panel">
+          <div class="card-box-header">
+            <h3>CAPA – Corrective & Preventive Action</h3>
+          </div>
+          <div class="filter-bar">
+            <select id="filter-status-capa" onchange="renderCapa()">
+              <option value="">Semua Status</option>
+              <option value="Open">Open</option>
+              <option value="Dalam Proses">Dalam Proses</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+          <div id="capa-list">
+            <div class="empty-state">Memuat data CAPA…</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== MODAL: LAPORAN INSIDEN ===== -->
+  <div class="modal-overlay" id="modal-insiden">
+    <div class="modal-custom">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-insiden-title">Laporan Insiden Baru</span>
+        <button class="modal-close" onclick="closeModalInsiden()">✕</button>
+      </div>
+      <input type="hidden" id="inp-insiden-id">
+
+      <div class="section-divider">Informasi Kejadian</div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label>Tanggal Kejadian <span style="color:red">*</span></label>
+          <input type="date" id="inp-tgl-insiden">
+        </div>
+        <div class="form-group">
+          <label>Waktu Kejadian</label>
+          <input type="time" id="inp-waktu-insiden">
+        </div>
+        <div class="form-group">
+          <label>Jenis Insiden <span style="color:red">*</span></label>
+          <select id="inp-jenis-insiden">
+            <option value="">-- Pilih --</option>
+            <option>Kecelakaan Kerja</option>
+            <option>Near Miss</option>
+            <option>Penyakit Akibat Kerja</option>
+            <option>Kebakaran</option>
+            <option>Tumpahan B3</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Lokasi Kejadian <span style="color:red">*</span></label>
+          <input type="text" id="inp-lokasi-insiden" placeholder="Contoh: Area Produksi Lantai 2">
+        </div>
+        <div class="form-group">
+          <label>Nama Pelapor <span style="color:red">*</span></label>
+          <input type="text" id="inp-pelapor" placeholder="Nama karyawan pelapor">
+        </div>
+        <div class="form-group">
+          <label>Departemen</label>
+          <select id="inp-dept-insiden">
+            <option value="">-- Pilih Departemen --</option>
+            <option>Produksi</option><option>QA</option><option>QC</option>
+            <option>HRD</option><option>Engineering</option><option>Warehouse</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Uraian Kronologis Kejadian <span style="color:red">*</span></label>
+          <textarea id="inp-kronologi" rows="3" placeholder="Jelaskan urutan kejadian secara rinci…"></textarea>
+        </div>
+      </div>
+
+      <div class="section-divider">Dampak & Klasifikasi</div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label>Tingkat Keparahan <span style="color:red">*</span></label>
+          <select id="inp-keparahan-insiden">
+            <option value="">-- Pilih --</option>
+            <option value="Ringan">Ringan (P3K)</option>
+            <option value="Sedang">Sedang (Perawatan Medis)</option>
+            <option value="Berat">Berat (LTI / Rawat Inap)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Jumlah Korban</label>
+          <input type="number" id="inp-korban" min="0" placeholder="0">
+        </div>
+        <div class="form-group full">
+          <label>Akar Masalah / Root Cause</label>
+          <textarea id="inp-root-cause" rows="2" placeholder="Identifikasi penyebab dasar kejadian…"></textarea>
+        </div>
+      </div>
+
+      <div class="section-divider">Tindak Lanjut</div>
+      <div class="form-grid-2">
+        <div class="form-group full">
+          <label>Tindakan Perbaikan (Corrective Action)</label>
+          <textarea id="inp-corrective" rows="2" placeholder="Langkah perbaikan yang sudah atau akan dilakukan…"></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Tindakan Pencegahan (Preventive Action)</label>
+          <textarea id="inp-preventive" rows="2" placeholder="Langkah pencegahan agar tidak terulang…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Target Selesai</label>
+          <input type="date" id="inp-target-insiden">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="inp-status-insiden">
+            <option value="Open">Open</option>
+            <option value="Dalam Proses">Dalam Proses</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end;">
+        <button style="background:#95a5a6;box-shadow:none;" onclick="closeModalInsiden()">Batal</button>
+        <button onclick="simpanInsiden()">Simpan Laporan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: HIRARC ===== -->
+  <div class="modal-overlay" id="modal-hirarc">
+    <div class="modal-custom">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-hirarc-title">Identifikasi Bahaya Baru</span>
+        <button class="modal-close" onclick="closeModalHirarc()">✕</button>
+      </div>
+      <input type="hidden" id="inp-hirarc-id">
+
+      <div class="section-divider">Detail Bahaya</div>
+      <div class="form-grid-2">
+        <div class="form-group full">
+          <label>Uraian Bahaya / Hazard <span style="color:red">*</span></label>
+          <input type="text" id="inp-bahaya" placeholder="Contoh: Lantai licin di area pencucian">
+        </div>
+        <div class="form-group">
+          <label>Lokasi / Tugas <span style="color:red">*</span></label>
+          <input type="text" id="inp-lokasi-hirarc" placeholder="Lokasi atau jenis pekerjaan">
+        </div>
+        <div class="form-group">
+          <label>Departemen</label>
+          <select id="inp-dept-hirarc">
+            <option value="">-- Pilih --</option>
+            <option>Produksi</option><option>QA</option><option>QC</option>
+            <option>HRD</option><option>Engineering</option><option>Warehouse</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-divider">Penilaian Risiko (Sebelum Pengendalian)</div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label>Kemungkinan (1–5) <span style="color:red">*</span></label>
+          <select id="inp-kemungkinan" onchange="hitungRisiko()">
+            <option value="">-- Pilih --</option>
+            <option value="1">1 – Sangat Jarang</option>
+            <option value="2">2 – Jarang</option>
+            <option value="3">3 – Mungkin</option>
+            <option value="4">4 – Sering</option>
+            <option value="5">5 – Hampir Pasti</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Keparahan (1–5) <span style="color:red">*</span></label>
+          <select id="inp-keparahan-hirarc" onchange="hitungRisiko()">
+            <option value="">-- Pilih --</option>
+            <option value="1">1 – Tidak Signifikan</option>
+            <option value="2">2 – Minor</option>
+            <option value="3">3 – Sedang</option>
+            <option value="4">4 – Mayor</option>
+            <option value="5">5 – Katastrofik</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nilai Risiko</label>
+          <input type="text" id="inp-nilai-risiko" readonly placeholder="Otomatis dihitung" style="background:#f4f8fb;font-weight:600;">
+        </div>
+        <div class="form-group">
+          <label>Level Risiko</label>
+          <input type="text" id="inp-level-risiko" readonly placeholder="Otomatis" style="background:#f4f8fb;font-weight:600;">
+        </div>
+      </div>
+
+      <div class="section-divider">Pengendalian Risiko</div>
+      <div class="form-grid-2">
+        <div class="form-group full">
+          <label>Tindakan Pengendalian <span style="color:red">*</span></label>
+          <textarea id="inp-pengendalian" rows="2" placeholder="Hierarki pengendalian: eliminasi, substitusi, rekayasa, administrasi, APD…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Penanggung Jawab</label>
+          <input type="text" id="inp-pj-hirarc" placeholder="Nama atau jabatan PJ">
+        </div>
+        <div class="form-group">
+          <label>Target Penyelesaian</label>
+          <input type="date" id="inp-target-hirarc">
+        </div>
+        <div class="form-group">
+          <label>Status Pengendalian</label>
+          <select id="inp-status-hirarc">
+            <option value="Open">Belum Dikendalikan</option>
+            <option value="Dalam Proses">Dalam Proses</option>
+            <option value="Closed">Sudah Dikendalikan</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end;">
+        <button style="background:#95a5a6;box-shadow:none;" onclick="closeModalHirarc()">Batal</button>
+        <button onclick="simpanHirarc()">Simpan Bahaya</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: DETAIL INSIDEN ===== -->
+  <div class="modal-overlay" id="modal-detail-insiden">
+    <div class="modal-custom" style="max-width:650px;">
+      <div class="modal-header">
+        <span class="modal-title">Detail Laporan Insiden</span>
+        <button class="modal-close" onclick="document.getElementById('modal-detail-insiden').classList.remove('open')">✕</button>
+      </div>
+      <div id="detail-insiden-body"></div>
+      <div style="margin-top:15px;text-align:right;border-top:1px solid #eee;padding-top:15px;">
+        <button style="background:#95a5a6;box-shadow:none;" onclick="document.getElementById('modal-detail-insiden').classList.remove('open')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/insiden.js"></script>
+</body>
+</html>

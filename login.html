@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login — OTSUKA K3</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -43,8 +44,10 @@
                 <div class="form-group">
                     <label for="password">Password</label>
                     <div class="password-wrap">
-                        <input type="password" id="password" placeholder="Masukkan password" autocomplete="current-password" />
-                        <button type="button" class="toggle-pw" onclick="togglePassword()" title="Lihat password">👁</button>
+                        <input type="password" id="password" placeholder="Masukkan password"
+                            autocomplete="current-password" />
+                        <button type="button" class="toggle-pw" onclick="togglePassword()"
+                            title="Lihat password">👁</button>
                     </div>
                 </div>
 
@@ -54,7 +57,8 @@
                 </button>
 
                 <p class="login-note">
-                    Belum punya akun? <a href="register.html" style="color:#176C8C;font-weight:600;">Daftar di sini</a><br><br>
+                    Belum punya akun? <a href="register.html" style="color:#176C8C;font-weight:600;">Daftar di
+                        sini</a><br><br>
                     Lupa password? Hubungi <strong>Administrator K3</strong> perusahaan Anda.
                 </p>
 
@@ -77,7 +81,7 @@
     <script>
         // Jika sudah login, langsung redirect ke dashboard
         db.auth.getSession().then(({ data }) => {
-            if (data.session) window.location.href = 'index.html';
+            if (data.session) window.location.href = 'dashboard.html';
         });
 
         // Cek pesan redirect dari auth.js (akun pending)
@@ -105,7 +109,7 @@
         }
 
         async function handleLogin() {
-            const email    = document.getElementById('email').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
             document.getElementById('login-alert').style.display = 'none';
@@ -145,12 +149,12 @@
             }
 
             // Simpan ke sessionStorage
-            sessionStorage.setItem('k3_role',  profile.role  || 'Viewer');
+            sessionStorage.setItem('k3_role', profile.role || 'Viewer');
             sessionStorage.setItem('k3_email', data.user.email);
-            sessionStorage.setItem('k3_nama',  profile.nama  || data.user.email);
+            sessionStorage.setItem('k3_nama', profile.nama || data.user.email);
 
             setLoading(false);
-            window.location.href = 'index.html';
+            window.location.href = 'dashboard.html';
         }
 
         // Submit dengan Enter
@@ -160,4 +164,5 @@
     </script>
 
 </body>
+
 </html>

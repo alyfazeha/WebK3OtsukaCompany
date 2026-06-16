@@ -5,12 +5,12 @@
 
 const ROLE_ACCESS = {
     pages: {
-        Admin:      ['index.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html', 'admin.html'],
-        K3Manager:  ['index.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html'],
-        K3Officer:  ['index.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html'],
-        DeptHead:   ['index.html', 'dokumen.html', 'pelaksanaan.html', 'insiden.html'],
-        Employee:   ['index.html', 'pelaksanaan.html', 'insiden.html'],
-        Auditor:    ['index.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html'],
+        Admin:      ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html', 'admin.html'],
+        K3Manager:  ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html'],
+        K3Officer:  ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html'],
+        DeptHead:   ['dashboard.html', 'dokumen.html', 'pelaksanaan.html', 'insiden.html'],
+        Employee:   ['dashboard.html', 'pelaksanaan.html', 'insiden.html'],
+        Auditor:    ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html'],
         Viewer:     ['index.html', 'dokumen.html'],
     },
     readOnly: {
@@ -64,11 +64,11 @@ async function initAuth() {
     }
 
     // Cek akses halaman
-    const currentPage  = window.location.pathname.split('/').pop() || 'index.html';
+    const currentPage  = window.location.pathname.split('/').pop() || 'dashboard.html';
     const allowedPages = ROLE_ACCESS.pages[role] || ROLE_ACCESS.pages['Viewer'];
 
     if (!allowedPages.includes(currentPage)) {
-        window.location.href = allowedPages[0] || 'index.html';
+        window.location.href = allowedPages[0] || 'dashboard.html';
         return;
     }
 

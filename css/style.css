@@ -28,10 +28,23 @@ body{
     position:fixed;
     box-shadow:8px 0 24px rgba(15,61,86,.18);
 }
-.sidebar h2{
-    margin-bottom:40px;
-    font-size:22px;
-    text-align:center;
+
+.logo{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-bottom:35px;
+}
+
+.logo img{
+    width:140px;
+    height:auto;
+    margin-bottom:15px;
+}
+
+.logo h2{
+    color:white;
+    font-size:28px;
     font-weight:700;
     margin-bottom:5px;
 }
@@ -41,6 +54,7 @@ body{
     font-size:13px;
     text-align:center;
 }
+
 .sidebar ul{
     list-style:none;
     padding:0;
@@ -62,13 +76,12 @@ body{
     transition:0.3s;
 }
 .sidebar li a:hover{
-    background:rgba(255,255,255,.16);
+    background:#1FA9E6;
 }
 .sidebar li.active a{
-    background:rgba(255,255,255,.22);
-    box-shadow:inset 4px 0 0 #ffffff;
+    background:#1FA9E6;
 }
-/* menghilangkan warna biru dan underline */
+
 .sidebar a,
 .sidebar a:hover,
 .sidebar a:visited,
@@ -104,18 +117,10 @@ body{
 .profile{
     font-size:18px;
     font-weight:500;
-    cursor:pointer;
-    padding:12px 18px;
-    border-radius:10px;
-    transition:0.3s;
-}
-.profile:hover{
-    background:rgba(35,167,199,.1);
-    color:var(--color-mid);
 }
 
 /* =======================
-NAVBAR RIGHT SECTION
+   NAVBAR RIGHT SECTION
 ======================= */
 .navbar-right {
     display: flex;
@@ -179,7 +184,7 @@ button:hover{
 }
 
 /* =======================
-BUTTON VARIANTS
+   BUTTON VARIANTS
 ======================= */
 .btn-primary {
     background: var(--gradient-main);
@@ -224,24 +229,21 @@ BUTTON VARIANTS
 }
 
 .btn-logout {
-    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
+    background: #fef2f2;
+    color: #c0392b;
+    border: 1px solid #f5c6c6;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: none;
     cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 8px 18px rgba(243, 156, 18, .16);
-    font-size: 16px;
-    font-weight: 600;
-    display: inline-block;
-    margin-top: 16px;
+    transition: 0.2s;
 }
 
 .btn-logout:hover {
-    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 24px rgba(243, 156, 18, .24);
+    background: #fee;
+    transform: none;
+    box-shadow: none;
 }
 
 /* =======================
@@ -346,32 +348,6 @@ tbody tr:hover{
     margin-bottom:10px;
 }
 
-/* =========================
- LOGO SIDEBAR
-========================= */
-.logo{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    margin-bottom:35px;
-}
-.logo img{
-    width:140px;
-    height:auto;
-    margin-bottom:15px;
-}
-.logo h2{
-    color:white;
-    font-size:28px;
-    font-weight:700;
-    margin-bottom:5px;
-}
-.logo p{
-    color:#d9e8f2;
-    font-size:13px;
-    text-align:center;
-}
-
 /* =======================
    RESPONSIVE
 ======================= */
@@ -379,20 +355,25 @@ tbody tr:hover{
     .sidebar{
         width:80px;
     }
-    .sidebar h2{
+
+    .sidebar .logo h2,
+    .sidebar .logo p,
+    .sidebar .logo img{
         display:none;
     }
+
     .sidebar li a{
         justify-content:center;
         font-size:14px;
     }
+
     .main{
         margin-left:80px;
     }
 }
 
 /* =======================
-ADDITIONAL DASHBOARD STYLE
+   ADDITIONAL DASHBOARD STYLE
 ======================= */
 .dashboard-grid {
     display: grid;
@@ -448,7 +429,7 @@ ADDITIONAL DASHBOARD STYLE
 }
 
 /* =======================
-P2K3 STRUCTURE PAGE
+   P2K3 STRUCTURE PAGE
 ======================= */
 .p2k3-page {
     display: flex;
@@ -789,7 +770,7 @@ P2K3 STRUCTURE PAGE
 }
 
 /* =======================
-LOGIN PAGE
+   LOGIN PAGE
 ======================= */
 body.login-page {
     display: flex;
@@ -802,7 +783,6 @@ body.login-page {
     min-height: 100vh;
 }
 
-/* Panel kiri — branding */
 .login-brand {
     flex: 1;
     display: flex;
@@ -847,7 +827,6 @@ body.login-page {
     gap: 10px;
 }
 
-/* Panel kanan — form */
 .login-form-panel {
     width: 480px;
     background: #f4f8fb;
@@ -946,7 +925,6 @@ body.login-page {
     border: 1px solid #b6dff2;
 }
 
-/* Role info box di bawah form */
 .role-info-box {
     background: #f8fcff;
     border: 1px solid #d6eaf5;
@@ -991,7 +969,7 @@ body.login-page {
 }
 
 /* =======================
-USER BADGE DI NAVBAR
+   USER BADGE DI NAVBAR
 ======================= */
 .user-badge {
     display: flex;
@@ -1029,25 +1007,9 @@ USER BADGE DI NAVBAR
     font-size: 11px;
     font-weight: 600;
 }
-.btn-logout {
-    background: #fef2f2;
-    color: #c0392b;
-    border: 1px solid #f5c6c6;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    box-shadow: none;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.btn-logout:hover {
-    background: #fee;
-    transform: none;
-    box-shadow: none;
-}
 
 /* =======================
-READONLY BANNER
+   READONLY BANNER
 ======================= */
 .readonly-banner {
     background: linear-gradient(135deg, #f3e8ff, #ede9fe);
@@ -1064,7 +1026,7 @@ READONLY BANNER
 }
 
 /* =======================
-FORM ROW (2 kolom)
+   FORM ROW (2 kolom)
 ======================= */
 .form-row {
     display: grid;
@@ -1073,18 +1035,17 @@ FORM ROW (2 kolom)
 }
 @media(max-width: 600px) {
     .form-row { grid-template-columns: 1fr; }
+}
 
-    /* =======================
-PROFILE PAGE
+/* =======================
+   PROFILE PAGE
 ======================= */
-
 .profile-page {
     display: flex;
     gap: 24px;
     align-items: flex-start;
 }
 
-/* Sidebar profil */
 .profile-sidebar {
     width: 260px;
     background: white;
@@ -1112,7 +1073,6 @@ PROFILE PAGE
     margin-bottom: 8px;
 }
 
-/* Menu sidebar */
 .profile-sidebar a {
     display: flex;
     align-items: center;
@@ -1126,21 +1086,18 @@ PROFILE PAGE
     transition: .3s;
 }
 
-/* Hover */
 .profile-sidebar a:hover {
     background: #f0f8fb;
     color: var(--color-deep);
     transform: translateX(3px);
 }
 
-/* Menu aktif */
 .profile-sidebar li.active a {
     background: var(--gradient-main);
     color: white;
     box-shadow: 0 8px 18px rgba(15, 61, 86, .18);
 }
 
-/* Area konten profil */
 .profile-content {
     flex: 1;
     display: flex;
@@ -1148,11 +1105,9 @@ PROFILE PAGE
     gap: 24px;
 }
 
-
 /* =======================
-FORM PROFILE
+   FORM PROFILE
 ======================= */
-
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1176,18 +1131,15 @@ FORM PROFILE
     resize: vertical;
 }
 
-/* Input yang tidak bisa diedit */
 input:disabled {
     background: #f4f8fb;
     color: #647481;
     cursor: not-allowed;
 }
 
-
 /* =======================
-SECURITY CARD
+   SECURITY CARD
 ======================= */
-
 .security-box {
     background: #f8fcff;
     border: 1px solid #dbeaf1;
@@ -1206,13 +1158,10 @@ SECURITY CARD
     line-height: 1.5;
 }
 
-
 /* =======================
-RESPONSIVE PROFILE
+   RESPONSIVE PROFILE
 ======================= */
-
 @media (max-width: 900px) {
-
     .profile-page {
         flex-direction: column;
     }
@@ -1238,7 +1187,6 @@ RESPONSIVE PROFILE
 }
 
 @media (max-width: 550px) {
-
     .profile-sidebar ul {
         grid-template-columns: 1fr;
     }
@@ -1247,6 +1195,35 @@ RESPONSIVE PROFILE
         font-size: 14px;
         padding: 12px;
     }
+}
+
+/* ================================================================
+   HALAMAN PELAKSANAAN K3  (pelaksanaan.html)
+   Semua class di bawah ini hanya dipakai di halaman pelaksanaan
+================================================================ */
+
+.pel-page-header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:28px;
+}
+
+.pel-page-header .pel-icon-wrap{
+    width:48px;
+    height:48px;
+    background:#0F3D56;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.pel-page-header h1{
+    font-size:1.4rem;
+    font-weight:700;
+    color:#0F3D56;
 }
 
 .pel-page-header p{
@@ -1690,7 +1667,7 @@ RESPONSIVE PROFILE
     from{ opacity:0; transform:translateY(16px); }
     to  { opacity:1; transform:translateY(0); }
 }
-}
+
 /* ================================================================
    END OF PELAKSANAAN K3 STYLES
 ================================================================ */

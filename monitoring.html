@@ -6,50 +6,26 @@
   <title>Monitoring Kepatuhan & Form Builder K3</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
-
-  <!-- Menggunakan file CSS baru khusus untuk komponen interaktif monitoring -->
-  <link rel="stylesheet" href="css/auth.css" /> 
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<!-- ================= SIDEBAR ================= -->
-<div class="sidebar">
-    <div class="logo">
-        <img src="images/logo otsuka.jpg" alt="Logo Otsuka">
-        <h2>OTSUKA K3</h2>
-    </div>
+<div class="sidebar"></div>
 
-    <ul>
-        <li><a href="index.html">🏠 Dashboard</a></li>
-        <li><a href="karyawan.html">👥 Data Karyawan</a></li>
-        <li><a href="p2k3.html">🏢 Struktur P2K3</a></li>
-        <li><a href="dokumen.html">📂 Dokumen K3</a></li>
-        <li><a href="pelaksanaan.html">📋 Pelaksanaan SOP</a></li>
-        <li class="active"><a href="monitoring.html">🛡️ Monitoring Kepatuhan</a></li>
-        <li><a href="insiden.html">⚠️ Laporan Insiden</a></li>
-        <li><a href="audit.html">📊 Audit</a></li>
-    </ul>
-</div>
-
-<!-- ================= MAIN AREA ================= -->
 <div class="main">
 
-  <!-- NAVBAR -->
   <div class="navbar">
-    <h3>Form-based Compliance Monitoring</h3>
-    <span id="navbar-date" style="color:#6b7280;font-size:.88rem;"></span>
+    <h2>Monitoring Kepatuhan K3</h2>
+    <div class="profile"></div>
   </div>
 
-  <!-- CONTENT -->
   <div class="content">
 
-    <!-- Page Header -->
-    <div class="pel-page-header" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+    <div class="pel-page-header">
       <div class="pel-icon-wrap">
         <svg width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -63,16 +39,12 @@
     </div>
 
     <!-- Tab Navigation -->
-    <div class="mon-tabs-container" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem;">
-      <button class="mon-tab-btn active" id="tab-list-btn" style="padding: 0.75rem 1.5rem; font-weight: 600; border: none; background: none; cursor: pointer; color: #0284c7; border-bottom: 3px solid #0284c7; font-family: 'Poppins', sans-serif;">
-        📋 Jadwal & Form Aktif
-      </button>
-      <button class="mon-tab-btn" id="tab-builder-btn" style="padding: 0.75rem 1.5rem; font-weight: 500; border: none; background: none; cursor: pointer; color: #6b7280; font-family: 'Poppins', sans-serif;">
-        🛠️ Buat Form Builder Baru
-      </button>
+    <div class="mon-tabs-container">
+      <button class="mon-tab-btn active" id="tab-list-btn">📋 Jadwal & Form Aktif</button>
+      <button class="mon-tab-btn" id="tab-builder-btn">🛠️ Buat Form Builder Baru</button>
     </div>
 
-    <!-- ================= TAB 1: LIST JADWAL & TEMPLATE FORM ================= -->
+    <!-- TAB 1: LIST JADWAL & TEMPLATE FORM -->
     <div id="section-form-list" class="mon-tab-content">
       <div class="pel-card">
         <h2>
@@ -94,7 +66,6 @@
               </tr>
             </thead>
             <tbody id="tbody-template-forms">
-              <!-- Data akan di-load secara dinamis menggunakan monitoring.js -->
               <tr>
                 <td colspan="6">
                   <div class="pel-empty-state">
@@ -111,11 +82,10 @@
       </div>
     </div>
 
-    <!-- ================= TAB 2: INTERFACE FORM BUILDER ================= -->
-    <div id="section-form-builder" class="mon-tab-content" style="display: none;">
+    <!-- TAB 2: FORM BUILDER -->
+    <div id="section-form-builder" class="mon-tab-content" style="display:none;">
       <form id="form-builder-main" novalidate>
-        
-        <!-- Langkah 1: Konfigurasi Penjadwalan & Identitas -->
+
         <div class="pel-card">
           <h2>
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -123,13 +93,11 @@
             </svg>
             1. Identitas & Aturan Penjadwalan Form
           </h2>
-
           <div class="pel-form-grid">
             <div class="pel-form-group">
               <label for="form-title">Nama Form Checklist <span class="req">*</span></label>
               <input type="text" id="form-title" placeholder="Contoh: Inspeksi Kepatuhan 5R Ruang Produksi" required />
             </div>
-
             <div class="pel-form-group">
               <label for="form-frequency">Frekuensi Pengisian <span class="req">*</span></label>
               <select id="form-frequency" required>
@@ -141,7 +109,6 @@
                 <option value="Ad-Hoc">Ad-Hoc / Mendadak</option>
               </select>
             </div>
-
             <div class="pel-form-group">
               <label for="form-target-dept">Target Departemen Pelaksana <span class="req">*</span></label>
               <select id="form-target-dept" required>
@@ -154,7 +121,6 @@
                 <option value="HSE">HSE / P2K3 Team</option>
               </select>
             </div>
-
             <div class="pel-form-group">
               <label for="form-desc">Deskripsi / Instruksi Singkat Pengisian</label>
               <textarea id="form-desc" placeholder="Tulis instruksi keselamatan atau panduan ringkas bagi petugas pemeriksa di lapangan..."></textarea>
@@ -162,7 +128,6 @@
           </div>
         </div>
 
-        <!-- Langkah 2: Konstruksi Field Dinamis -->
         <div class="pel-card">
           <h2>
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -170,17 +135,14 @@
             </svg>
             2. Struktur Komponen Checklist (Form Elements)
           </h2>
-          
-          <p style="color: #4b5563; font-size: 0.9rem; margin-bottom: 1.5rem;">
+          <p style="color:#4b5563;font-size:.9rem;margin-bottom:1.5rem;">
             Gunakan panel kontrol di bawah untuk menambahkan butir pertanyaan atau field isian ke dalam template form digital.
           </p>
 
-          <!-- Control Panel Tambah Field -->
-          <div class="mon-control-panel" style="background: #f8fafc; border: 1px dashed #cbd5e1; padding: 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
-            
-            <div class="pel-form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
-              <label style="font-weight: 600;">Pilih Tipe Komponen Input</label>
-              <select id="builder-field-type" style="width: 100%;">
+          <div class="mon-control-panel">
+            <div class="pel-form-group" style="flex:1;min-width:200px;margin-bottom:0;">
+              <label style="font-weight:600;">Pilih Tipe Komponen Input</label>
+              <select id="builder-field-type">
                 <option value="text">Text Input (Jawaban Terbuka/Deskripsi)</option>
                 <option value="number">Number (Parameter Angka/Suhu/Jumlah)</option>
                 <option value="boolean">Yes/No (Cek Kepatuhan Biner)</option>
@@ -192,44 +154,35 @@
                 <option value="rating">Rating Scale (Skala Penilaian Kepatuhan 1-5)</option>
               </select>
             </div>
-
-            <button type="button" id="btn-add-field" style="background: #0284c7; color: white; border: none; padding: 0.65rem 1.25rem; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'Poppins', sans-serif;">
-              ➕ Sisipkan Field
-            </button>
+            <button type="button" id="btn-add-field">➕ Sisipkan Field</button>
           </div>
 
-          <!-- Container Utama Tempat Komponen Form Ditumpuk secara Dinamis -->
-          <div id="mon-builder-fields-container" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
-            <!-- State Kosong Awal -->
-            <div class="mon-fields-empty-state" style="text-align: center; padding: 3rem 1rem; border: 2px dashed #e2e8f0; border-radius: 8px; color: #94a3b8;">
-              <p style="margin: 0; font-weight: 500;">Belum ada komponen yang ditambahkan.</p>
-              <p style="font-size: 0.85rem; margin-top: 0.25rem;">Silakan pilih tipe komponen di atas lalu klik "Sisipkan Field".</p>
+          <div id="mon-builder-fields-container">
+            <div class="mon-fields-empty-state">
+              <p style="margin:0;font-weight:500;">Belum ada komponen yang ditambahkan.</p>
+              <p style="font-size:.85rem;margin-top:.25rem;">Silakan pilih tipe komponen di atas lalu klik "Sisipkan Field".</p>
             </div>
           </div>
 
-          <!-- Section Aksi Simpan Template -->
           <hr class="pel-divider" />
-          <div style="display: flex; justify-content: flex-end; gap: 1rem;">
-            <button type="button" id="btn-reset-builder" style="background: #ef4444; color: white; border: none; padding: 0.75rem 1.5rem; font-weight: 600; border-radius: 6px; cursor: pointer; font-family: 'Poppins', sans-serif;">
-              🗑️ Reset Desain
-            </button>
-            <button type="submit" id="btn-save-template" style="background: #10b981; color: white; border: none; padding: 0.75rem 1.5rem; font-weight: 600; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'Poppins', sans-serif;">
-              💾 Terbitkan Template Form
-            </button>
+          <div style="display:flex;justify-content:flex-end;gap:1rem;">
+            <button type="button" id="btn-reset-builder" class="btn-danger">🗑️ Reset Desain</button>
+            <button type="submit" id="btn-save-template">💾 Terbitkan Template Form</button>
           </div>
-
         </div>
+
       </form>
     </div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
+  </div>
+</div>
 
-<!-- Toast Notification Container -->
 <div id="pel-toast-container"></div>
 
-<!-- Integrasi Skrip Pendukung -->
 <script src="js/supabase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/sidebar.js"></script>
+<script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
 <script src="js/utils.js"></script>
 <script src="js/monitoring.js"></script>
 </body>

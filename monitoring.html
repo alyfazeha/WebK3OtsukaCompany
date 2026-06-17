@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitoring Kepatuhan & Form Builder K3</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+<div class="sidebar"></div>
+
+<div class="main">
+
+  <div class="navbar">
+    <h2>Monitoring Kepatuhan K3</h2>
+    <div class="profile"></div>
+  </div>
+
+  <div class="content">
+
+    <div class="pel-page-header">
+      <div class="pel-icon-wrap">
+        <svg width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </div>
+      <div>
+        <h1>Manajemen Kepatuhan & Form Builder</h1>
+        <p>Rancang form inspeksi kustom, jadwalkan pengisian rutin, dan pantau status pemenuhan regulasi K3.</p>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="mon-tabs-container">
+      <button class="mon-tab-btn active" id="tab-list-btn">📋 Jadwal & Form Aktif</button>
+      <button class="mon-tab-btn" id="tab-builder-btn">🛠️ Buat Form Builder Baru</button>
+    </div>
+
+    <!-- TAB 1: LIST JADWAL & TEMPLATE FORM -->
+    <div id="section-form-list" class="mon-tab-content">
+      <div class="pel-card">
+        <h2>
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m4 4V3m4 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Master Jadwal Checklist K3
+        </h2>
+        <div class="pel-history-wrap">
+          <table class="pel-history-table">
+            <thead>
+              <tr>
+                <th>Nama Form Inspeksi</th>
+                <th>Frekuensi</th>
+                <th>Target Departemen / Objek</th>
+                <th>Jumlah Komponen</th>
+                <th>Dibuat Oleh</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-template-forms">
+              <tr>
+                <td colspan="6">
+                  <div class="pel-empty-state">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+                    </svg>
+                    <p>Memuat daftar template checklist K3...</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: FORM BUILDER -->
+    <div id="section-form-builder" class="mon-tab-content" style="display:none;">
+      <form id="form-builder-main" novalidate>
+
+        <div class="pel-card">
+          <h2>
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            1. Identitas & Aturan Penjadwalan Form
+          </h2>
+          <div class="pel-form-grid">
+            <div class="pel-form-group">
+              <label for="form-title">Nama Form Checklist <span class="req">*</span></label>
+              <input type="text" id="form-title" placeholder="Contoh: Inspeksi Kepatuhan 5R Ruang Produksi" required />
+            </div>
+            <div class="pel-form-group">
+              <label for="form-frequency">Frekuensi Pengisian <span class="req">*</span></label>
+              <select id="form-frequency" required>
+                <option value="">-- Pilih Frekuensi --</option>
+                <option value="Daily">Harian (Daily Check)</option>
+                <option value="Weekly">Mingguan (Weekly Check)</option>
+                <option value="Monthly">Bulanan (Monthly Audit Support)</option>
+                <option value="Per-Event">Per-Event / Kondisional</option>
+                <option value="Ad-Hoc">Ad-Hoc / Mendadak</option>
+              </select>
+            </div>
+            <div class="pel-form-group">
+              <label for="form-target-dept">Target Departemen Pelaksana <span class="req">*</span></label>
+              <select id="form-target-dept" required>
+                <option value="">-- Pilih Departemen --</option>
+                <option value="All">Semua Departemen (General)</option>
+                <option value="Production">Production & Manufacturing</option>
+                <option value="Quality Assurance">Quality Assurance (QA/QC)</option>
+                <option value="Logistics">Logistics & Warehouse</option>
+                <option value="Engineering">Engineering & Maintenance</option>
+                <option value="HSE">HSE / P2K3 Team</option>
+              </select>
+            </div>
+            <div class="pel-form-group">
+              <label for="form-desc">Deskripsi / Instruksi Singkat Pengisian</label>
+              <textarea id="form-desc" placeholder="Tulis instruksi keselamatan atau panduan ringkas bagi petugas pemeriksa di lapangan..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="pel-card">
+          <h2>
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            2. Struktur Komponen Checklist (Form Elements)
+          </h2>
+          <p style="color:#4b5563;font-size:.9rem;margin-bottom:1.5rem;">
+            Gunakan panel kontrol di bawah untuk menambahkan butir pertanyaan atau field isian ke dalam template form digital.
+          </p>
+
+          <div class="mon-control-panel">
+            <div class="pel-form-group" style="flex:1;min-width:200px;margin-bottom:0;">
+              <label style="font-weight:600;">Pilih Tipe Komponen Input</label>
+              <select id="builder-field-type">
+                <option value="text">Text Input (Jawaban Terbuka/Deskripsi)</option>
+                <option value="number">Number (Parameter Angka/Suhu/Jumlah)</option>
+                <option value="boolean">Yes/No (Cek Kepatuhan Biner)</option>
+                <option value="checklist">Checklist (Multi-Pilihan Komponen)</option>
+                <option value="dropdown">Dropdown Options (Pilih Opsi Terstruktur)</option>
+                <option value="datetime">Date / Time (Format Waktu Kejadian)</option>
+                <option value="photo">Photo Upload (Lampiran Bukti Foto Lapangan)</option>
+                <option value="signature">Signature (Tanda Tangan Digital Pemeriksa)</option>
+                <option value="rating">Rating Scale (Skala Penilaian Kepatuhan 1-5)</option>
+              </select>
+            </div>
+            <button type="button" id="btn-add-field">➕ Sisipkan Field</button>
+          </div>
+
+          <div id="mon-builder-fields-container">
+            <div class="mon-fields-empty-state">
+              <p style="margin:0;font-weight:500;">Belum ada komponen yang ditambahkan.</p>
+              <p style="font-size:.85rem;margin-top:.25rem;">Silakan pilih tipe komponen di atas lalu klik "Sisipkan Field".</p>
+            </div>
+          </div>
+
+          <hr class="pel-divider" />
+          <div style="display:flex;justify-content:flex-end;gap:1rem;">
+            <button type="button" id="btn-reset-builder" class="btn-danger">🗑️ Reset Desain</button>
+            <button type="submit" id="btn-save-template">💾 Terbitkan Template Form</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<div id="pel-toast-container"></div>
+
+<script src="js/supabase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/sidebar.js"></script>
+<script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
+<script src="js/utils.js"></script>
+<script src="js/monitoring.js"></script>
+</body>
+</html>

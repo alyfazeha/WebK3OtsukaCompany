@@ -19,7 +19,7 @@ async function loadProfil() {
     // ambil data user_profiles berdasarkan auth user id
     const { data, error } = await supabase
         .from("user_profiles")
-        .select("id, nama, nik, departemen, work_unit, role, is_active")
+        .select("nama, nik, email, departemen, work_unit, role, is_active") // ✅ tambah email
         .eq("id", user.id)
         .maybeSingle();
 
@@ -31,6 +31,7 @@ async function loadProfil() {
     // catatan: karena kolom nama/nik belum tersimpan (sesuai info), fallback ke metadata auth
     const nama = data?.nama || authMeta?.nama || "";
     const nik = data?.nik || authMeta?.nik || "";
+    const email = data?.email || user.email || "";
 
     document.getElementById("nama").value = nama;
     document.getElementById("email").value = user.email || "";

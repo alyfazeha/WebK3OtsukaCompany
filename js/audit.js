@@ -6,8 +6,8 @@
 /* ─────────────────────────────────────────────
    STATE
 ───────────────────────────────────────────── */
-let allAudit   = [];
-let allTemuan  = [];
+let allAudit       = [];
+let allTemuan      = [];
 let currentAuditId = null;
 
 /* ─────────────────────────────────────────────
@@ -26,7 +26,7 @@ function switchTab(tabId, btn) {
 
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  
+
   panel.classList.add('active');
   if (btn) btn.classList.add('active');
 
@@ -46,7 +46,6 @@ async function loadAudit() {
   }
 
   try {
-    // Langsung menembak variabel db dari config kamu
     const { data, error } = await db
       .from('audit_k3')
       .select('*')
@@ -54,7 +53,7 @@ async function loadAudit() {
 
     if (error) throw error;
     allAudit = data || [];
-    
+
     updateSummaryAudit(allAudit);
     renderJadwalTable(allAudit);
     updateSummaryTemuan();
@@ -77,21 +76,23 @@ function renderJadwalTable(data) {
   }
 
   tbody.innerHTML = data.map((a, idx) => {
-    const tglRencana    = formatDate(a.tanggal_rencana);
-    const tglRealisasi  = a.tanggal_realisasi ? formatDate(a.tanggal_realisasi) : '<span style="color:#9ca3af">–</span>';
-    const jenisClass    = a.jenis_audit === 'Internal' ? 'badge-internal' : 'badge-eksternal';
-    const statusClass   = a.status === 'Selesai' ? 'badge-selesai' : 'badge-terjadwal';
+    const tglRencana   = formatDate(a.tanggal_rencana);
+    const tglRealisasi = a.tanggal_realisasi
+      ? formatDate(a.tanggal_realisasi)
+      : '<span class="text-muted-sm">–</span>';
+    const jenisClass  = a.jenis_audit === 'Internal' ? 'badge-internal' : 'badge-eksternal';
+    const statusClass = a.status === 'Selesai' ? 'badge-selesai' : 'badge-terjadwal';
 
     return `<tr>
-      <td style="color:#9ca3af; font-size:.8rem;">${idx + 1}</td>
+      <td class="text-muted-sm">${idx + 1}</td>
       <td><span class="badge ${jenisClass}">${escapeHtml(a.jenis_audit)}</span></td>
-      <td style="max-width:180px; word-break:break-word; font-weight:500; color:#0F3D56;">${escapeHtml(a.standar_k3)}</td>
+      <td class="td-standar">${escapeHtml(a.standar_k3)}</td>
       <td>${escapeHtml(a.auditor || '–')}</td>
       <td>${tglRencana}</td>
       <td>${tglRealisasi}</td>
       <td><span class="badge ${statusClass}">${escapeHtml(a.status)}</span></td>
       <td>
-        <div style="display:flex; gap:5px; justify-content:center;">
+        <div class="aksi-group">
           <button class="btn-sm btn-detail" onclick="openModalDetail(${a.id})">🔍 Detail</button>
           ${a.status !== 'Selesai'
             ? `<button class="btn-sm btn-selesai" onclick="tandaiSelesai(${a.id})">✅ Selesai</button>`
@@ -109,12 +110,12 @@ function renderJadwalTable(data) {
 function openModalAudit() {
   const modal = document.getElementById('modal-audit');
   if (!modal) return;
-  
-  if(document.getElementById('inp-jenis-audit')) document.getElementById('inp-jenis-audit').value = '';
-  if(document.getElementById('inp-standar')) document.getElementById('inp-standar').value = '';
-  if(document.getElementById('inp-tgl-rencana')) document.getElementById('inp-tgl-rencana').value = '';
-  if(document.getElementById('inp-auditor')) document.getElementById('inp-auditor').value = '';
-  
+
+  document.getElementById('inp-jenis-audit').value  = '';
+  document.getElementById('inp-standar').value      = '';
+  document.getElementById('inp-tgl-rencana').value  = '';
+  document.getElementById('inp-auditor').value      = '';
+
   modal.classList.add('open');
 }
 
@@ -124,19 +125,19 @@ function closeModalAudit() {
 }
 
 async function simpanAudit() {
-  const jenisAudit  = document.getElementById('inp-jenis-audit')?.value;
-  const standar     = document.getElementById('inp-standar')?.value?.trim();
-  const tglRencana  = document.getElementById('inp-tgl-rencana')?.value;
-  const auditor     = document.getElementById('inp-auditor')?.value?.trim();
+  const jenisAudit = document.getElementById('inp-jenis-audit')?.value;
+  const standar    = document.getElementById('inp-standar')?.value?.trim();
+  const tglRencana = document.getElementById('inp-tgl-rencana')?.value;
+  const auditor    = document.getElementById('inp-auditor')?.value?.trim();
 
-  if (!jenisAudit) { showToast('Pilih jenis audit.', 'error');        return; }
-  if (!standar)    { showToast('Standar K3 wajib diisi.', 'error');   return; }
+  if (!jenisAudit) { showToast('Pilih jenis audit.', 'error');            return; }
+  if (!standar)    { showToast('Standar K3 wajib diisi.', 'error');       return; }
   if (!tglRencana) { showToast('Tanggal rencana wajib diisi.', 'error'); return; }
 
   try {
     const { error } = await db.from('audit_k3').insert([{
-      jenis_audit:    jenisAudit,
-      standar_k3:     standar,
+      jenis_audit:     jenisAudit,
+      standar_k3:      standar,
       tanggal_rencana: tglRencana,
       auditor:         auditor || null,
       status:          'Terjadwal',
@@ -202,12 +203,13 @@ async function openModalDetail(auditId) {
 
   const infoEl = document.getElementById('detail-info');
   if (infoEl) {
+    const statusClass = audit.status === 'Selesai' ? 'badge-selesai' : 'badge-terjadwal';
     infoEl.innerHTML = `
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:.5rem .75rem; font-size:.88rem;">
-        <div><span style="color:#9ca3af;">Auditor:</span> ${escapeHtml(audit.auditor || '–')}</div>
-        <div><span style="color:#9ca3af;">Status:</span> <span class="badge ${audit.status==='Selesai'?'badge-selesai':'badge-terjadwal'}" style="font-size:.75rem;">${escapeHtml(audit.status)}</span></div>
-        <div><span style="color:#9ca3af;">Tgl. Rencana:</span> ${formatDate(audit.tanggal_rencana)}</div>
-        <div><span style="color:#9ca3af;">Tgl. Realisasi:</span> ${audit.tanggal_realisasi ? formatDate(audit.tanggal_realisasi) : '–'}</div>
+      <div class="detail-info-grid">
+        <div><span class="lbl-muted">Auditor:</span> ${escapeHtml(audit.auditor || '–')}</div>
+        <div><span class="lbl-muted">Status:</span> <span class="badge ${statusClass}" style="font-size:.75rem;">${escapeHtml(audit.status)}</span></div>
+        <div><span class="lbl-muted">Tgl. Rencana:</span> ${formatDate(audit.tanggal_rencana)}</div>
+        <div><span class="lbl-muted">Tgl. Realisasi:</span> ${audit.tanggal_realisasi ? formatDate(audit.tanggal_realisasi) : '–'}</div>
       </div>`;
   }
 
@@ -225,7 +227,7 @@ function closeModalDetail() {
 async function loadTemuanForDetail(auditId) {
   const container = document.getElementById('detail-temuan-list');
   if (!container) return;
-  container.innerHTML = '<p style="color:#9ca3af; font-size:.88rem;">Memuat temuan…</p>';
+  container.innerHTML = '<p class="text-muted-sm">Memuat temuan…</p>';
 
   try {
     const { data, error } = await db
@@ -237,7 +239,7 @@ async function loadTemuanForDetail(auditId) {
     if (error) throw error;
 
     if (!data || data.length === 0) {
-      container.innerHTML = '<p style="color:#9ca3af; font-size:.88rem;">Belum ada temuan untuk audit ini.</p>';
+      container.innerHTML = '<p class="text-muted-sm">Belum ada temuan untuk audit ini.</p>';
       return;
     }
 
@@ -247,7 +249,7 @@ async function loadTemuanForDetail(auditId) {
       return `<div class="temuan-item">
         <div class="temuan-item-header">
           <span class="badge ${katClass}">${escapeHtml(t.kategori || 'Minor')}</span>
-          <div style="display:flex; gap:.4rem; align-items:center;">
+          <div class="temuan-item-actions">
             <span class="badge ${statusClass}">${escapeHtml(t.status_perbaikan)}</span>
             ${t.status_perbaikan === 'Open'
               ? `<button class="btn-sm btn-selesai" onclick="tutupTemuan(${t.id})">Tutup</button>`
@@ -256,14 +258,16 @@ async function loadTemuanForDetail(auditId) {
           </div>
         </div>
         <div class="temuan-desc"><b>Temuan:</b> ${escapeHtml(t.deskripsi_temuan)}</div>
-        ${t.tindakan_koreksi ? `<div class="temuan-tindakan">🔧 <b>Koreksi:</b> ${escapeHtml(t.tindakan_koreksi)}</div>` : ''}
+        ${t.tindakan_koreksi
+          ? `<div class="temuan-tindakan">🔧 <b>Koreksi:</b> ${escapeHtml(t.tindakan_koreksi)}</div>`
+          : ''}
       </div>`;
     }).join('');
 
     updateSummaryTemuan();
 
   } catch (err) {
-    container.innerHTML = `<p style="color:#dc2626; font-size:.88rem;">Gagal memuat temuan: ${err.message}</p>`;
+    container.innerHTML = `<p class="text-muted-sm" style="color:#dc2626;">Gagal memuat temuan: ${err.message}</p>`;
   }
 }
 
@@ -272,7 +276,7 @@ async function loadTemuanForDetail(auditId) {
 ───────────────────────────────────────────── */
 function populateAuditFilter() {
   const sel = document.getElementById('filter-audit');
-  if(!sel) return;
+  if (!sel) return;
   const current = sel.value;
   sel.innerHTML = '<option value="">-- Semua Audit --</option>';
   allAudit.forEach(a => {
@@ -311,7 +315,7 @@ async function loadTemuan() {
 }
 
 function filterTemuan() {
-  const status = document.getElementById('filter-status-temuan')?.value;
+  const status   = document.getElementById('filter-status-temuan')?.value;
   const filtered = !status ? allTemuan : allTemuan.filter(t => t.status_perbaikan === status);
   renderTemuanTable(filtered);
 }
@@ -326,21 +330,21 @@ function renderTemuanTable(data) {
   }
 
   tbody.innerHTML = data.map((t, idx) => {
-    const auditLabel = t.audit_k3
+    const auditLabel  = t.audit_k3
       ? `${escapeHtml(t.audit_k3.jenis_audit)} – ${escapeHtml(t.audit_k3.standar_k3)}`
       : `Audit #${t.audit_id}`;
     const katClass    = t.kategori === 'Mayor' ? 'badge-mayor' : 'badge-minor';
     const statusClass = t.status_perbaikan === 'Closed' ? 'badge-closed' : 'badge-open';
 
     return `<tr>
-      <td style="color:#9ca3af; font-size:.8rem;">${idx + 1}</td>
-      <td style="font-size:.82rem; max-width:160px; word-break:break-word;">${auditLabel}</td>
-      <td style="max-width:220px; word-break:break-word; text-align:left; font-weight:500; color:#0F3D56;">${escapeHtml(t.deskripsi_temuan)}</td>
+      <td class="text-muted-sm">${idx + 1}</td>
+      <td class="td-ref">${auditLabel}</td>
+      <td class="td-desc">${escapeHtml(t.deskripsi_temuan)}</td>
       <td><span class="badge ${katClass}">${escapeHtml(t.kategori || '–')}</span></td>
-      <td style="max-width:180px; word-break:break-word; font-size:.85rem; color:#6b7280; text-align:left;">${escapeHtml(t.tindakan_koreksi || '–')}</td>
+      <td class="td-tindakan">${escapeHtml(t.tindakan_koreksi || '–')}</td>
       <td><span class="badge ${statusClass}">${escapeHtml(t.status_perbaikan)}</span></td>
       <td>
-        <div style="display:flex; gap:5px; justify-content:center;">
+        <div class="aksi-group">
           ${t.status_perbaikan === 'Open'
             ? `<button class="btn-sm btn-selesai" onclick="tutupTemuan(${t.id})">Tutup</button>`
             : ''}
@@ -358,12 +362,12 @@ function openModalTemuan(auditId) {
   const modal = document.getElementById('modal-temuan');
   if (!modal) return;
 
-  if(document.getElementById('inp-audit-id-temuan')) document.getElementById('inp-audit-id-temuan').value = auditId;
-  if(document.getElementById('inp-deskripsi')) document.getElementById('inp-deskripsi').value        = '';
-  if(document.getElementById('inp-kategori')) document.getElementById('inp-kategori').value         = '';
-  if(document.getElementById('inp-status-perbaikan')) document.getElementById('inp-status-perbaikan').value = 'Open';
-  if(document.getElementById('inp-tindakan')) document.getElementById('inp-tindakan').value         = '';
-  
+  document.getElementById('inp-audit-id-temuan').value  = auditId;
+  document.getElementById('inp-deskripsi').value        = '';
+  document.getElementById('inp-kategori').value         = '';
+  document.getElementById('inp-status-perbaikan').value = 'Open';
+  document.getElementById('inp-tindakan').value         = '';
+
   modal.classList.add('open');
 }
 
@@ -379,16 +383,16 @@ async function simpanTemuan() {
   const status    = document.getElementById('inp-status-perbaikan')?.value;
   const tindakan  = document.getElementById('inp-tindakan')?.value?.trim();
 
-  if (!deskripsi) { showToast('Deskripsi temuan wajib diisi.', 'error'); return; }
+  if (!deskripsi) { showToast('Deskripsi temuan wajib diisi.', 'error');   return; }
   if (!kategori)  { showToast('Kategori temuan wajib dipilih.', 'error'); return; }
 
   try {
     const { error } = await db.from('temuan_audit').insert([{
-      audit_id:          parseInt(auditId),
-      deskripsi_temuan:  deskripsi,
-      kategori:          kategori,
-      tindakan_koreksi:  tindakan || null,
-      status_perbaikan:  status,
+      audit_id:         parseInt(auditId),
+      deskripsi_temuan: deskripsi,
+      kategori:         kategori,
+      tindakan_koreksi: tindakan || null,
+      status_perbaikan: status,
     }]);
 
     if (error) throw error;
@@ -447,17 +451,17 @@ async function hapusTemuan(id) {
    SUMMARY COUNTS
 ───────────────────────────────────────────── */
 function updateSummaryAudit(data) {
-  const totalEl = document.getElementById('sum-total');
+  const totalEl    = document.getElementById('sum-total');
   const terjadwalEl = document.getElementById('sum-terjadwal');
-  const selesaiEl = document.getElementById('sum-selesai');
+  const selesaiEl  = document.getElementById('sum-selesai');
 
-  if (totalEl) totalEl.textContent = data.length;
+  if (totalEl)     totalEl.textContent    = data.length;
   if (terjadwalEl) terjadwalEl.textContent = data.filter(a => a.status === 'Terjadwal').length;
-  if (selesaiEl) selesaiEl.textContent = data.filter(a => a.status === 'Selesai').length;
+  if (selesaiEl)   selesaiEl.textContent  = data.filter(a => a.status === 'Selesai').length;
 }
 
 async function updateSummaryTemuan() {
-  const openEl = document.getElementById('sum-open');
+  const openEl   = document.getElementById('sum-open');
   const closedEl = document.getElementById('sum-closed');
   if (!openEl && !closedEl) return;
 
@@ -468,9 +472,9 @@ async function updateSummaryTemuan() {
 
     if (error) throw error;
     const items = data || [];
-    if (openEl) openEl.textContent = items.filter(t => t.status_perbaikan === 'Open').length;
+    if (openEl)   openEl.textContent   = items.filter(t => t.status_perbaikan === 'Open').length;
     if (closedEl) closedEl.textContent = items.filter(t => t.status_perbaikan === 'Closed').length;
-  } catch (_) { /* ignore */ }
+  } catch (_) { /* abaikan error summary */ }
 }
 
 /* ─────────────────────────────────────────────
@@ -478,15 +482,15 @@ async function updateSummaryTemuan() {
 ───────────────────────────────────────────── */
 function formatDate(dateStr) {
   if (!dateStr) return '–';
-  return new Date(dateStr).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+  return new Date(dateStr).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
 function showToast(msg, type = 'info') {
   const toast = document.getElementById('toast');
-  if(!toast) return;
+  if (!toast) return;
   toast.textContent = msg;
   toast.style.background = type === 'error' ? '#dc2626' : type === 'success' ? '#16a34a' : '#111827';
-  toast.style.display = 'block';
+  toast.style.display    = 'block';
   setTimeout(() => { toast.style.display = 'none'; }, 3500);
 }
 
@@ -497,13 +501,13 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// Menutup modal dengan aman klik overlay luar
+// Menutup modal dengan klik overlay luar
 document.addEventListener('click', (e) => {
   ['modal-audit', 'modal-temuan', 'modal-detail'].forEach(id => {
     const el = document.getElementById(id);
     if (el && e.target === el) {
       el.classList.remove('open');
-      if(id === 'modal-detail') currentAuditId = null;
+      if (id === 'modal-detail') currentAuditId = null;
     }
   });
 });

@@ -2269,3 +2269,562 @@ tr.row-expiring td { background: #fff7ed; }
     gap: 3px;
   }
 }
+
+
+/* ============================================================
+   AUDIT K3 — css/style.css
+   ============================================================ */
+/* ── Fix Layout Global: cegah konten meluber saat zoom ── */
+/* Tambahkan properti ini ke selector .main yang sudah ada di style.css */
+.main {
+  min-width: 0;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Tambahkan properti ini ke selector .content yang sudah ada di style.css */
+.content {
+  min-width: 0;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Tombol Jadwalkan Audit (Header Bar) ── */
+.btn-jadwal {
+  background: #0F3D56;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-family: Poppins, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.btn-jadwal:hover {
+  background: #1FA9E6;
+}
+
+/* ── Pengaturan Sistem Tab Navigasi ── */
+.tabs {
+  display: flex;
+  gap: 5px;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #777;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0;
+  font-family: Poppins, sans-serif;
+  white-space: nowrap;
+}
+.tab-btn.active {
+  color: #1FA9E6;
+  border-bottom-color: #1FA9E6;
+  font-weight: 600;
+  background: none;
+}
+.tab-btn:hover:not(.active) {
+  color: #0F3D56;
+}
+.tab-panel {
+  display: none;
+}
+.tab-panel.active {
+  display: block;
+}
+
+/* ── Wrapper Tabel Responsif ── */
+/* min-width tabel diperkecil agar zoom in tidak memicu horizontal scroll halaman */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-responsive table {
+  min-width: 600px;
+  width: 100%;
+  table-layout: auto;
+}
+
+/* ── Filter Bar Tab Temuan ── */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  align-items: center;
+}
+.filter-select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  outline: none;
+  background: white;
+  min-width: 0;
+  flex: 1 1 150px;
+  box-sizing: border-box;
+}
+.filter-select:focus {
+  border-color: #1FA9E6;
+}
+.filter-select--wide {
+  flex: 2 1 200px;
+  max-width: 100%;
+}
+
+/* ── Kolom Tabel Tertentu ── */
+.col-no      { width: 40px; }
+.col-aksi    { width: 200px; text-align: center; }
+.col-aksi-sm { width: 160px; text-align: center; }
+
+/* ── Pengaturan Warna Badge Klasifikasi K3 ── */
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: white;
+  font-size: 11px;
+  display: inline-block;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge-internal  { background: #1FA9E6; }
+.badge-eksternal { background: #9b59b6; }
+.badge-terjadwal { background: #f1c40f; color: #333; }
+.badge-selesai   { background: #2ecc71; }
+.badge-open      { background: #e74c3c; }
+.badge-closed    { background: #2ecc71; }
+.badge-minor     { background: #e67e22; }
+.badge-mayor     { background: #c0392b; }
+
+/* ── Ukuran Tombol Aksi Tabel ── */
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 11px;
+  border-radius: 8px;
+  margin: 2px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-weight: 500;
+  font-family: Poppins, sans-serif;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.btn-sm:hover  { opacity: 0.85; }
+.btn-detail    { background: #0F3D56; }
+.btn-selesai   { background: #2ecc71; }
+.btn-hapus     { background: #e74c3c; }
+
+/* ── Grup tombol aksi di dalam sel tabel ── */
+.aksi-group {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Grid Statistik Kotak Atas ── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 25px;
+  min-width: 0;
+}
+.summary-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 15px;
+  padding: 15px 10px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
+  min-width: 0;
+  overflow: hidden;
+}
+.summary-card .num {
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 700;
+  color: #0F3D56;
+}
+.summary-card .lbl {
+  font-size: clamp(10px, 1.2vw, 12px);
+  color: #777;
+  margin-top: 4px;
+  word-break: break-word;
+}
+
+/* ── Card Wrapper Konten Utama ── */
+.card-box {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 25px;
+  overflow: hidden;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* ── Header Bar Atas Halaman ── */
+.page-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.page-title-text {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.page-title-text h1 {
+  font-size: clamp(16px, 2vw, 22px);
+  color: #0F3D56;
+  font-weight: 600;
+  text-align: left;
+  word-break: break-word;
+}
+.page-title-text p {
+  font-size: clamp(11px, 1.2vw, 13px);
+  color: #777;
+  margin-top: 4px;
+  text-align: left;
+  word-break: break-word;
+}
+
+/* ── Komponen List Temuan Lapangan ── */
+.temuan-list {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.temuan-item {
+  background: #f9fbfd;
+  border: 1px solid #e1ebf2;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.01);
+}
+.temuan-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.temuan-item-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.temuan-desc {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+  text-align: left;
+}
+.temuan-tindakan {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+  text-align: left;
+}
+
+/* ── Arsitektur Lapisan Popup Modal Custom ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  box-sizing: border-box;
+}
+#modal-temuan {
+  z-index: 2000;
+}
+.modal-overlay.open {
+  display: flex;
+}
+.modal-custom {
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px;
+  width: 100%;
+  max-width: 550px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-sizing: border-box;
+}
+.modal-custom--wide {
+  max-width: 650px;
+}
+.modal-header-custom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 5px;
+}
+.modal-title-custom {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0F3D56;
+}
+.modal-close-custom {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #aaa;
+  font-weight: bold;
+}
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+.modal-footer--border {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+  margin-top: 10px;
+}
+
+/* ── Tombol Batal & Simpan Modal ── */
+.btn-modal-batal {
+  background: #95a5a6;
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+.btn-modal-batal:hover { opacity: 0.85; }
+
+.btn-modal-simpan {
+  background: #1FA9E6;
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.btn-modal-simpan:hover { background: #0F3D56; }
+
+/* ── Penyusunan Baris Form Input ── */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  width: 100%;
+}
+.form-group-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+}
+.form-group-custom label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+}
+.form-group-custom input,
+.form-group-custom select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+.form-group-custom input:focus,
+.form-group-custom select:focus {
+  border-color: #1FA9E6;
+}
+.form-textarea {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+.form-textarea:focus {
+  border-color: #1FA9E6;
+}
+.required { color: #e74c3c; }
+
+
+/* ── Detail Audit Info Box ── */
+.detail-info-box {
+  margin-bottom: 10px;
+  text-align: left;
+  background: #f4f8fb;
+  padding: 15px;
+  border-radius: 12px;
+}
+.detail-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.88rem;
+}
+.lbl-muted {
+  color: #9ca3af;
+}
+.detail-temuan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.detail-temuan-title {
+  font-size: 15px;
+  color: #0F3D56;
+}
+.btn-tambah-temuan {
+  font-size: 12px;
+  padding: 6px 15px;
+  background: #1FA9E6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.btn-tambah-temuan:hover { background: #0F3D56; }
+
+/* ── State Kosong & Teks Tambahan ── */
+.empty-state {
+  padding: 30px;
+  text-align: center;
+  color: #9ca3af;
+}
+.empty-state p {
+  margin-top: 10px;
+  font-size: 14px;
+}
+.text-muted-sm {
+  color: #9ca3af;
+  font-size: 0.88rem;
+}
+
+/* ── Toast Notifikasi ── */
+.toast {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: #111827;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  max-width: 320px;
+  font-family: Poppins, sans-serif;
+}
+
+/* ── Responsif: Tablet (≤900px) ── */
+@media (max-width: 900px) {
+  .summary-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Responsif: Mobile (≤600px) ── */
+@media (max-width: 600px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .page-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-jadwal {
+    width: 100%;
+    text-align: center;
+  }
+  .card-box {
+    padding: 15px;
+  }
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .detail-info-grid {
+    grid-template-columns: 1fr;
+  }
+  .tabs {
+    gap: 0;
+  }
+  .tab-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  .modal-custom {
+    padding: 20px;
+  }
+  .filter-select {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+  .toast {
+    left: 1rem;
+    right: 1rem;
+    max-width: unset;
+  }
+}

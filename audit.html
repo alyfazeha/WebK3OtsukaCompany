@@ -10,210 +10,6 @@
   
   <link rel="stylesheet" href="css/style.css" />
   <script src="js/sidebar.js"></script> 
-  
-  <style>
-    /* ── Pengaturan Sistem Tab Navigasi ── */
-    .tabs { 
-      display: flex; 
-      gap: 5px; 
-      border-bottom: 2px solid #eee; 
-      margin-bottom: 20px; 
-    }
-    .tab-btn {
-      padding: 10px 20px; 
-      background: none; 
-      border: none;
-      border-bottom: 3px solid transparent; 
-      margin-bottom: -2px;
-      font-size: 14px; 
-      font-weight: 500; 
-      color: #777;
-      cursor: pointer; 
-      transition: .3s; 
-      border-radius: 0;
-    }
-    .tab-btn.active { 
-      color: #1FA9E6; 
-      border-bottom-color: #1FA9E6; 
-      font-weight: 600; 
-      background: none; 
-    }
-    .tab-btn:hover:not(.active) { 
-      color: #0F3D56; 
-    }
-    .tab-panel { 
-      display: none; 
-    }
-    .tab-panel.active { 
-      display: block; 
-    }
-
-    /* ── Pengaturan Warna Badge Klasifikasi K3 ── */
-    .badge { 
-      padding: 5px 12px; 
-      border-radius: 20px; 
-      color: white; 
-      font-size: 11px; 
-      display: inline-block; 
-      font-weight: 500; 
-    }
-    .badge-internal   { background: #1FA9E6; }
-    .badge-eksternal  { background: #9b59b6; }
-    .badge-terjadwal  { background: #f1c40f; color: #333; }
-    .badge-selesai    { background: #2ecc71; }
-    .badge-open       { background: #e74c3c; }
-    .badge-closed     { background: #2ecc71; }
-    .badge-minor      { background: #e67e22; }
-    .badge-mayor      { background: #c0392b; }
-
-    /* ── Ukuran Tombol Aksi Tabel ── */
-    .btn-sm {
-      padding: 6px 14px; 
-      font-size: 12px; 
-      border-radius: 8px; 
-      margin: 2px; 
-      border: none; 
-      cursor: pointer; 
-      color: white; 
-      font-weight: 500;
-    }
-    .btn-detail  { background: #0F3D56; }
-    .btn-selesai { background: #2ecc71; }
-    .btn-hapus   { background: #e74c3c; }
-
-    /* ── Arsitektur Lapisan Popup Modal Custom ── */
-    .modal-overlay {
-      display: none; 
-      position: fixed; 
-      inset: 0;
-      background: rgba(0,0,0,.5); 
-      z-index: 1000; /* Dasar tumpukan standar */
-      align-items: center; 
-      justify-content: center; 
-      padding: 15px;
-    }
-    
-    /* SOLUSI NYATA: Set tingkat z-index modal temuan jauh lebih tinggi supaya menimpa detail */
-    #modal-temuan {
-      z-index: 2000 !important;
-    }
-    
-    .modal-overlay.open { 
-      display: flex; 
-    }
-    .modal-custom {
-      background: #fff; 
-      border-radius: 20px;
-      padding: 30px; 
-      width: 100%; 
-      max-width: 550px;
-      max-height: 90vh; 
-      overflow-y: auto;
-      box-shadow: 0 10px 30px rgba(0,0,0,.15);
-      display: flex; 
-      flex-direction: column; 
-      gap: 15px;
-    }
-    .modal-header-custom {
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center;
-      border-bottom: 1px solid #eee; 
-      padding-bottom: 10px;
-      margin-bottom: 5px;
-    }
-    .modal-title-custom { font-size: 18px; font-weight: 600; color: #0F3D56; }
-    .modal-close-custom { background: none; border: none; cursor: pointer; font-size: 20px; color: #aaa; font-weight: bold; }
-
-    /* ── Penyusunan Baris Form Input ── */
-    .form-grid-2 { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 15px; 
-      width: 100%; 
-    }
-    @media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
-    
-    .form-group-custom { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 5px; 
-      width: 100%; 
-      text-align: left; 
-    }
-    .form-group-custom label { 
-      font-size: 13px; 
-      font-weight: 500; 
-      color: #555; 
-    }
-    .form-group-custom input, .form-group-custom select {
-      padding: 10px; 
-      border-radius: 8px; 
-      border: 1px solid #ddd; 
-      font-family: Poppins; 
-      outline: none;
-    }
-    .form-group-custom input:focus, .form-group-custom select:focus { 
-      border-color: #1FA9E6; 
-    }
-
-    /* ── Grid Statistik Kotak Atas ── */
-    .summary-grid {
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 15px; 
-      margin-bottom: 25px;
-    }
-    .summary-card {
-      background: white; 
-      border: 1px solid #eee;
-      border-radius: 15px; 
-      padding: 15px; 
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,.02);
-    }
-    .summary-card .num { font-size: 28px; font-weight: 700; color: #0F3D56; }
-    .summary-card .lbl { font-size: 12px; color: #777; margin-top: 2px; }
-
-    /* ── Komponen List Temuan Lapangan ── */
-    .temuan-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
-    .temuan-item {
-      background: #f9fbfd; 
-      border: 1px solid #e1ebf2;
-      border-radius: 12px; 
-      padding: 15px; 
-      box-shadow: 0 2px 5px rgba(0,0,0,.01);
-    }
-    .temuan-item-header {
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center;
-      margin-bottom: 8px; 
-      flex-wrap: wrap; 
-      gap: 5px;
-    }
-    .temuan-desc { font-size: 14px; color: #333; margin-bottom: 5px; text-align: left; }
-    .temuan-tindakan { font-size: 13px; color: #666; font-style: italic; text-align: left; }
-
-    .card-box {
-      background: white; 
-      padding: 30px; 
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.05); 
-      margin-bottom: 25px;
-    }
-    .page-top-bar { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 25px; 
-    }
-    .page-title-text h1 { font-size: 24px; color: #0F3D56; font-weight: 600; text-align: left; }
-    .page-title-text p { font-size: 14px; color: #777; margin-top: 2px; text-align: left; }
-    
-    .empty-state { padding: 30px; text-align: center; color: #9ca3af; }
-    .empty-state p { margin-top: 10px; font-size: 14px; }
-  </style>
 </head>
 <body>
 
@@ -232,7 +28,7 @@
           <h1>Manajemen Audit K3</h1>
           <p>Penjadwalan reguler (Internal 1 thn/sekali, Eksternal min. 3 thn/sekali) dan tindak lanjut temuan</p>
         </div>
-        <button id="openModalBtn" onclick="openModalAudit()">+ Jadwalkan Audit Baru</button>
+        <button id="openModalBtn" class="btn-jadwal" onclick="openModalAudit()">+ Jadwalkan Audit Baru</button>
       </div>
 
       <div class="summary-grid" id="summary-grid">
@@ -249,60 +45,67 @@
           <button class="tab-btn" onclick="switchTab('tab-temuan', this)">Daftar Log Temuan Audit</button>
         </div>
 
+        <!-- Tab: Jadwal -->
         <div id="tab-jadwal" class="tab-panel active">
-          <table>
-            <thead>
-              <tr>
-                <th style="width:50px;">#</th>
-                <th>Jenis Audit</th>
-                <th>Standar Regulasi K3</th>
-                <th>Tim Auditor</th>
-                <th>Tgl. Rencana</th>
-                <th>Tgl. Realisasi</th>
-                <th>Status</th>
-                <th style="width:240px; text-align: center;">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-jadwal">
-              <tr><td colspan="8">Memuat data pelaksanaan…</td></tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-no">#</th>
+                  <th>Jenis Audit</th>
+                  <th>Standar Regulasi K3</th>
+                  <th>Tim Auditor</th>
+                  <th>Tgl. Rencana</th>
+                  <th>Tgl. Realisasi</th>
+                  <th>Status</th>
+                  <th class="col-aksi">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-jadwal">
+                <tr><td colspan="8">Memuat data pelaksanaan…</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
+        <!-- Tab: Temuan -->
         <div id="tab-temuan" class="tab-panel">
-          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; align-items:center;">
-            <select id="filter-audit" onchange="loadTemuan()" style="max-width:280px; margin:0; padding:11px;">
+          <div class="filter-bar">
+            <select id="filter-audit" onchange="loadTemuan()" class="filter-select filter-select--wide">
               <option value="">-- Semua Event Audit --</option>
             </select>
-            <select id="filter-status-temuan" onchange="filterTemuan()" style="max-width:180px; margin:0; padding:11px;">
+            <select id="filter-status-temuan" onchange="filterTemuan()" class="filter-select">
               <option value="">Semua Status Temuan</option>
               <option value="Open">Open</option>
               <option value="Closed">Closed</option>
             </select>
           </div>
           
-          <table>
-            <thead>
-              <tr>
-                <th style="width:50px;">#</th>
-                <th>Referensi Event Audit</th>
-                <th>Deskripsi Malfungsi/Temuan</th>
-                <th>Kategori</th>
-                <th>Rencana Tindakan Koreksi</th>
-                <th>Status</th>
-                <th style="width:180px; text-align: center;">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-temuan">
-              <tr><td colspan="7">Silakan pilih parameter filter untuk menampilkan log temuan.</td></tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-no">#</th>
+                  <th>Referensi Event Audit</th>
+                  <th>Deskripsi Malfungsi/Temuan</th>
+                  <th>Kategori</th>
+                  <th>Rencana Tindakan Koreksi</th>
+                  <th>Status</th>
+                  <th class="col-aksi-sm">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-temuan">
+                <tr><td colspan="7">Silakan pilih parameter filter untuk menampilkan log temuan.</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
     </div>
   </div>
 
+  <!-- Modal: Jadwal Audit Baru -->
   <div class="modal-overlay" id="modal-audit">
     <div class="modal-custom">
       <div class="modal-header-custom">
@@ -311,7 +114,7 @@
       </div>
       <div class="form-grid-2">
         <div class="form-group-custom">
-          <label>Jenis Siklus Audit <span style="color:#e74c3c">*</span></label>
+          <label>Jenis Siklus Audit <span class="required">*</span></label>
           <select id="inp-jenis-audit">
             <option value="">-- Pilih Siklus --</option>
             <option value="Internal">Internal (1x / Tahun)</option>
@@ -319,27 +122,26 @@
           </select>
         </div>
         <div class="form-group-custom">
-          <label>Acuan Standar K3 <span style="color:#e74c3c">*</span></label>
+          <label>Acuan Standar K3 <span class="required">*</span></label>
           <input type="text" id="inp-standar" placeholder="Contoh: SMK3 PP No. 50/2012" />
         </div>
-        <div class="form-grid-2" style="grid-column: span 2;">
-          <div class="form-group-custom">
-            <label>Rencana Tanggal <span style="color:#e74c3c">*</span></label>
-            <input type="date" id="inp-tgl-rencana" />
-          </div>
-          <div class="form-group-custom">
-            <label>Nama Badan/Tim Auditor</label>
-            <input type="text" id="inp-auditor" placeholder="Contoh: Tim Ahli K3 Internal" />
-          </div>
+        <div class="form-group-custom">
+          <label>Rencana Tanggal <span class="required">*</span></label>
+          <input type="date" id="inp-tgl-rencana" />
+        </div>
+        <div class="form-group-custom">
+          <label>Nama Badan/Tim Auditor</label>
+          <input type="text" id="inp-auditor" placeholder="Contoh: Tim Ahli K3 Internal" />
         </div>
       </div>
-      <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end; width:100%;">
-        <button style="background:#95a5a6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="closeModalAudit()">Batal</button>
-        <button style="background:#1FA9E6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="simpanAudit()">Simpan Jadwal</button>
+      <div class="modal-footer">
+        <button class="btn-modal-batal" onclick="closeModalAudit()">Batal</button>
+        <button class="btn-modal-simpan" onclick="simpanAudit()">Simpan Jadwal</button>
       </div>
     </div>
   </div>
 
+  <!-- Modal: Catat Temuan -->
   <div class="modal-overlay" id="modal-temuan">
     <div class="modal-custom">
       <div class="modal-header-custom">
@@ -348,12 +150,12 @@
       </div>
       <input type="hidden" id="inp-audit-id-temuan" />
       <div class="form-group-custom">
-        <label>Deskripsi Temuan Lapangan <span style="color:#e74c3c">*</span></label>
-        <textarea id="inp-deskripsi" rows="3" style="padding:12px; border-radius:10px; border:1px solid #ddd; font-family:Poppins; outline:none;" placeholder="Uraikan ketidaksesuaian prosedur K3 yang ditemukan…"></textarea>
+        <label>Deskripsi Temuan Lapangan <span class="required">*</span></label>
+        <textarea id="inp-deskripsi" rows="3" class="form-textarea" placeholder="Uraikan ketidaksesuaian prosedur K3 yang ditemukan…"></textarea>
       </div>
       <div class="form-grid-2">
         <div class="form-group-custom">
-          <label>Kategori Temuan <span style="color:#e74c3c">*</span></label>
+          <label>Kategori Temuan <span class="required">*</span></label>
           <select id="inp-kategori">
             <option value="">-- Pilih --</option>
             <option value="Minor">Minor (Penyimpangan Ringan)</option>
@@ -370,45 +172,47 @@
       </div>
       <div class="form-group-custom">
         <label>Rencana Tindakan Koreksi (Corrective Action)</label>
-        <textarea id="inp-tindakan" rows="2" style="padding:12px; border-radius:10px; border:1px solid #ddd; font-family:Poppins; outline:none;" placeholder="Langkah perbaikan teknis yang wajib dilakukan…"></textarea>
+        <textarea id="inp-tindakan" rows="2" class="form-textarea" placeholder="Langkah perbaikan teknis yang wajib dilakukan…"></textarea>
       </div>
-      <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end; width:100%;">
-        <button style="background:#95a5a6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="closeModalTemuan()">Batal</button>
-        <button style="background:#1FA9E6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="simpanTemuan()">Simpan Temuan</button>
+      <div class="modal-footer">
+        <button class="btn-modal-batal" onclick="closeModalTemuan()">Batal</button>
+        <button class="btn-modal-simpan" onclick="simpanTemuan()">Simpan Temuan</button>
       </div>
     </div>
   </div>
 
+  <!-- Modal: Detail Audit -->
   <div class="modal-overlay" id="modal-detail">
-    <div class="modal-custom" style="max-width:650px;">
+    <div class="modal-custom modal-custom--wide">
       <div class="modal-header-custom">
         <span class="modal-title-custom" id="detail-title">Detail Pelaksanaan Audit</span>
         <button class="modal-close-custom" onclick="closeModalDetail()">✕</button>
       </div>
-      <div id="detail-info" style="margin-bottom:10px; text-align:left; background:#f4f8fb; padding:15px; border-radius:12px;"></div>
+      <div id="detail-info" class="detail-info-box"></div>
       
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
-        <strong style="font-size:15px; color:#0F3D56;">Daftar Temuan Pada Event Ini</strong>
-        <button style="font-size:12px; padding:6px 15px; background:#1FA9E6; color:white; border:none; border-radius:8px; cursor:pointer;" onclick="openModalTemuan(currentAuditId)">+ Tambah Temuan Baru</button>
+      <div class="detail-temuan-header">
+        <strong class="detail-temuan-title">Daftar Temuan Pada Event Ini</strong>
+        <button class="btn-tambah-temuan" onclick="openModalTemuan(currentAuditId)">+ Tambah Temuan Baru</button>
       </div>
       
       <div id="detail-temuan-list" class="temuan-list">
-        <p style="color:#95a5a6; font-size:13px;">Belum tercatat adanya temuan pada agenda audit ini.</p>
+        <p class="text-muted-sm">Belum tercatat adanya temuan pada agenda audit ini.</p>
       </div>
       
-      <div style="margin-top:15px; text-align:right; border-top:1px solid #eee; padding-top:15px;">
-        <button style="background:#95a5a6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="closeModalDetail()">Tutup Panel</button>
+      <div class="modal-footer modal-footer--border">
+        <button class="btn-modal-batal" onclick="closeModalDetail()">Tutup Panel</button>
       </div>
     </div>
   </div>
 
-  <div id="toast" style="display:none; position:fixed; bottom:1.5rem; right:1.5rem; background:#111827; color:#fff; padding:.75rem 1.25rem; border-radius:10px; font-size:.9rem; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,.25); max-width:320px;"></div>
+  <!-- Toast Notifikasi -->
+  <div id="toast" class="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/sidebar.js"></script>
-    <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
+  <script src="js/auth.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
   <script src="js/audit.js"></script>
 </body>
 </html>

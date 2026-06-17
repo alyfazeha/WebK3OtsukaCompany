@@ -5,44 +5,155 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadProfil() {
 
-    const {
-        data: { user }
-    } = await supabase.auth.getUser();
+    try {
+        console.log("🔄 [PROFILE] Loading profil...");
+        
+        const {
+            data: { user }
+        } = await db.auth.getUser();
 
-    if (!user) {
-        alert("Silakan login");
-        return;
-    }
+        if (!user) {
+            console.error("❌ [PROFILE] User not authenticated");
+            alert("Silakan login terlebih dahulu");
+            window.location.href = "login.html";
+            return;
+        }
 
-    const authMeta = user.user_metadata || {};
+        console.log("✓ [PROFILE] User authenticated:", {
+            id: user.id,
+            email: user.email,
+            metadata: user.user_metadata
+        });
 
-    // ambil data user_profiles berdasarkan auth user id
-    const { data, error } = await supabase
-        .from("user_profiles")
-        .select("id, nama, nik, departemen, work_unit, role, is_active")
-        .eq("id", user.id)
-        .maybeSingle();
+        const authMeta = user.user_metadata || {};
 
-    if (error) {
-        console.log(error);
-        return;
-    }
+        // 1. Ambil data user_profiles berdasarkan auth user id
+        console.log("📊 [PROFILE] Querying user_profiles for id:", user.id);
+        let { data, error } = await db
+            .from("user_profiles")
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle();
 
-    // catatan: karena kolom nama/nik belum tersimpan (sesuai info), fallback ke metadata auth
-    const nama = data?.nama || authMeta?.nama || "";
-    const nik = data?.nik || authMeta?.nik || "";
+        console.log("📋 [PROFILE] Query result:", { data, error });
 
-    document.getElementById("nama").value = nama;
-    document.getElementById("email").value = user.email || "";
-    document.getElementById("nik").value = nik;
+        if (error) {
+            console.error("❌ [PROFILE] Error fetching user profile:", error);
+        }
 
-    document.getElementById("departemen").value = data?.departemen || authMeta?.departemen || "";
-    document.getElementById("work_unit").value = data?.work_unit || authMeta?.work_unit || "";
+        // 2. Jika profile belum ada, buat profile baru untuk user ini
+        if (!data) {
+            console.warn("⚠️ [PROFILE] Profile tidak ditemukan, membuat baru...");
+            
+            const newProfileData = {
+                id: user.id,
+                email: user.email,
+                nama: authMeta?.nama || "",
+                nik: authMeta?.nik || "",
+                departemen: authMeta?.departemen || "",
+                work_unit: authMeta?.work_unit || "",
+                role: "Viewer",
+                is_active: true,
+                created_at: new Date().toISOString()
+            };
 
-    // Update navbar profile dengan nama user
-    const navbar = document.getElementById("navbar-profile");
-    if (navbar) {
-        navbar.textContent = nama || "User";
+            console.log("📝 [PROFILE] Inserting new profile:", newProfileData);
+
+            const { data: newProfile, error: insertError } = await db
+                .from("user_profiles")
+                .insert([newProfileData])
+                .select()
+                .single();
+
+            console.log("📝 [PROFILE] Insert result:", { newProfile, insertError });
+
+            if (insertError) {
+                console.error("❌ [PROFILE] Error creating user profile:", insertError);
+                data = null;
+            } else {
+                data = newProfile;
+                console.log("✅ [PROFILE] Profile berhasil dibuat");
+            }
+        }
+
+        // 3. Siapkan data dengan fallback
+        const nama = data?.nama || authMeta?.nama || "";
+        const nik = data?.nik || authMeta?.nik || "";
+        const departemen = data?.departemen || authMeta?.departemen || "";
+        const work_unit = data?.work_unit || authMeta?.work_unit || "";
+        const email = data?.email || user.email || "";
+
+        console.log("📋 [PROFILE] Data yang akan ditampilkan:", {
+            nama,
+            nik,
+            departemen,
+            work_unit,
+            email,
+            dbData: data
+        });
+
+        // 4. Isi form fields dengan data
+        const namaEl = document.getElementById("nama");
+        const emailEl = document.getElementById("email");
+        const nikEl = document.getElementById("nik");
+        const departemenEl = document.getElementById("departemen");
+        const workUnitEl = document.getElementById("work_unit");
+
+        console.log("🎯 [PROFILE] Form elements found:", {
+            nama: !!namaEl,
+            email: !!emailEl,
+            nik: !!nikEl,
+            departemen: !!departemenEl,
+            workUnit: !!workUnitEl
+        });
+
+        if (namaEl) {
+            namaEl.value = nama;
+            console.log("✓ [PROFILE] Nama field diisi:", nama);
+        }
+        
+        if (emailEl) {
+            emailEl.value = email;
+            console.log("✓ [PROFILE] Email field diisi:", email);
+        }
+        
+        if (nikEl) {
+            nikEl.value = nik;
+            console.log("✓ [PROFILE] NIK field diisi:", nik);
+        }
+        
+        if (departemenEl) {
+            departemenEl.value = departemen;
+            console.log("✓ [PROFILE] Departemen field diisi:", departemen);
+        }
+        
+        if (workUnitEl) {
+            workUnitEl.value = work_unit;
+            console.log("✓ [PROFILE] Work Unit field diisi:", work_unit);
+        }
+
+        // 5. Status password (password tidak bisa ditampilkan ulang dari Supabase)
+        const passwordStatusEl = document.getElementById("password-status");
+        if (passwordStatusEl) {
+            // Jika user login berarti password kemungkinan sudah ter-set.
+            // Kita tampilkan status saja, bukan isi password.
+            passwordStatusEl.textContent = "Password akun Anda: sudah di-set (tidak ditampilkan). Isi password baru untuk mengganti.";
+        }
+
+        // 6. Update navbar profile
+
+        const navbar = document.getElementById("navbar-profile");
+        if (navbar) {
+            navbar.textContent = nama || email || "User";
+            console.log("✓ [PROFILE] Navbar updated dengan:", nama || email || "User");
+        }
+
+        console.log("✅ [PROFILE] Profile page loaded successfully!");
+
+    } catch (err) {
+        console.error("❌ [PROFILE] Error di loadProfil:", err);
+        console.error("Stack:", err.stack);
+        alert("Gagal memuat profil. Cek console untuk detail error.");
     }
 }
 
@@ -51,43 +162,72 @@ async function loadProfil() {
 
 async function simpanProfil() {
 
-    const nama = document.getElementById("nama").value.trim();
-    const nik = document.getElementById("nik").value.trim();
-    const departemen = document.getElementById("departemen").value;
-    const work_unit = document.getElementById("work_unit").value.trim();
+    try {
+        const nama = document.getElementById("nama").value.trim();
+        const nik = document.getElementById("nik").value.trim();
+        const departemen = document.getElementById("departemen").value.trim();
+        const work_unit = document.getElementById("work_unit").value.trim();
 
-    if (!nama || !nik || !departemen) {
-        alert("Nama, NIK, dan Departemen wajib diisi.");
-        return;
+        // Validasi field yang wajib
+        if (!nama) {
+            alert("⚠️ Nama lengkap wajib diisi");
+            document.getElementById("nama").focus();
+            return;
+        }
+
+        if (!nik) {
+            alert("⚠️ NIK karyawan wajib diisi");
+            document.getElementById("nik").focus();
+            return;
+        }
+
+        if (!departemen) {
+            alert("⚠️ Departemen wajib dipilih");
+            document.getElementById("departemen").focus();
+            return;
+        }
+
+        // Ambil user yang sedang login
+        const { data: { user } } = await db.auth.getUser();
+
+        if (!user) {
+            alert("❌ Silakan login terlebih dahulu");
+            return;
+        }
+
+        // Update user_profiles dengan data baru
+        const { error } = await db
+            .from("user_profiles")
+            .update({
+                nama,
+                nik,
+                departemen,
+                work_unit
+            })
+            .eq("id", user.id);
+
+
+        if (error) {
+            console.error("Error saat menyimpan profil:", error);
+            alert("❌ Gagal menyimpan data!\n\nError: " + error.message);
+            return;
+        }
+
+        // Update navbar dengan nama baru
+        const navbar = document.getElementById("navbar-profile");
+        if (navbar) {
+            navbar.textContent = nama;
+        }
+
+        // Update sessionStorage untuk konsistensi
+        sessionStorage.setItem('k3_nama', nama);
+
+        alert("✅ Profil berhasil diperbarui!");
+
+    } catch (err) {
+        console.error("Error di simpanProfil:", err);
+        alert("❌ Terjadi kesalahan: " + err.message);
     }
-
-    const {
-        data: { user }
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-        alert("Silakan login");
-        return;
-    }
-
-    // update user_profiles: kolom nama/nik bisa jadi belum ada isinya, tapi kita tetap coba
-    const { error } = await supabase
-        .from("user_profiles")
-        .update({
-            nama,
-            nik,
-            departemen,
-            work_unit,
-        })
-        .eq("id", user.id);
-
-    if (error) {
-        alert("Gagal menyimpan data! (cek kolom di user_profiles)");
-        console.log(error);
-        return;
-    }
-
-    alert("Profil berhasil diperbarui!");
 }
 
 
@@ -95,38 +235,40 @@ async function simpanProfil() {
 
 async function ubahPassword(){
 
-    const passwordBaru =
-        document.getElementById("passwordBaru").value;
+    try {
+        const passwordBaru = document.getElementById("passwordBaru").value;
 
+        if (!passwordBaru) {
+            alert("⚠️ Password baru wajib diisi");
+            return;
+        }
 
-    if(passwordBaru.length < 6){
-        alert("Password minimal 6 karakter");
-        return;
-    }
+        if (passwordBaru.length < 6) {
+            alert("⚠️ Password minimal harus 6 karakter");
+            return;
+        }
 
-
-    const { error } =
-        await supabase.auth.updateUser({
-
+        // Update password di Supabase Auth
+        const { error } = await db.auth.updateUser({
             password: passwordBaru
-
         });
 
+        if (error) {
+            console.error("Error saat mengubah password:", error);
+            alert("❌ Gagal mengubah password!\n\nError: " + error.message);
+            return;
+        }
 
-    if(error){
-        alert("Gagal mengubah password");
-        console.log(error);
+        // Kosongkan field password
+        document.getElementById("passwordBaru").value = "";
+
+        alert("✅ Password berhasil diperbarui!");
+        console.log("Password berhasil diubah");
+
+    } catch (err) {
+        console.error("Error di ubahPassword:", err);
+        alert("❌ Terjadi kesalahan: " + err.message);
     }
-    else{
-
-        alert("Password berhasil diperbarui");
-
-        document
-        .getElementById("passwordBaru")
-        .value = "";
-
-    }
-
 }
 
 
@@ -139,22 +281,25 @@ async function logout() {
     }
 
     try {
-        // Cek apakah supabase sudah tersedia
-        if (typeof supabase === 'undefined') {
+        // Cek apakah db sudah tersedia
+        if (typeof db === 'undefined') {
             alert("Sistem belum siap. Silahkan refresh halaman.");
-            console.error("Supabase not initialized");
+            console.error("DB not initialized");
             return;
         }
 
-        const { error } = await supabase.auth.signOut();
+        const { error } = await db.auth.signOut();
 
         if (error) {
-            alert("Gagal logout: " + error.message);
-            console.log(error);
+            alert("❌ Gagal logout: " + error.message);
+            console.error("Logout error:", error);
             return;
         }
 
-        alert("Anda telah logout");
+        // Hapus session storage
+        sessionStorage.clear();
+
+        alert("✅ Anda telah logout");
         
         // Tunggu sebentar sebelum redirect
         setTimeout(() => {
@@ -162,8 +307,8 @@ async function logout() {
         }, 500);
         
     } catch (err) {
-        alert("Error logout: " + err.message);
-        console.log(err);
+        alert("❌ Error logout: " + err.message);
+        console.error("Logout error:", err);
     }
 
 }

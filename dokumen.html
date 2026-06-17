@@ -4,154 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dokumen Dasar K3 - OTSUKA K3</title>
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="css/style.css" />
-  
+  <!-- Tambahan CSS khusus halaman dokumen -->
+  <link rel="stylesheet" href="css/dokumen.css" />
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/sidebar.js"></script> 
-  
-  <style>
-    .doc-upload-card {
-      background: #fff;
-      border: 2px dashed #1FA9E6;
-      border-radius: 15px;
-      padding: 40px 30px;
-      text-align: center;
-      transition: .3s;
-      cursor: pointer;
-      margin-bottom: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,.02);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 250px;
-    }
-    .doc-upload-card:hover, .doc-upload-card.dragover {
-      border-color: #0F3D56;
-      background: #eff8fc;
-    }
-    .doc-upload-card svg { 
-      margin-bottom: 15px; 
-      color: #1FA9E6; 
-    }
-    .doc-upload-card p { 
-      margin: 5px 0; 
-      color: #7f8c8d; 
-      font-size: 14px; 
-    }
-    .doc-upload-card strong { 
-      display: block; 
-      font-size: 16px; 
-      color: #0F3D56; 
-      margin-bottom: 5px;
-    }
-
-    /* Badge Indikator File Terpilih (Tampilan Full Card) */
-    #selected-file-badge {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-    }
-    #selected-file-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #0288d1;
-      text-align: center;
-      word-break: break-all;
-      margin-bottom: 15px;
-      max-width: 85%;
-    }
-    .btn-clear-file {
-      background: #ef4444;
-      color: white;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      border: none;
-      cursor: pointer;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: .2s;
-    }
-    .btn-clear-file:hover {
-      background: #dc2626;
-    }
-
-    .form-box {
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.04);
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #0F3D56;
-      font-size: 14px;
-    }
-    .form-group input, .form-group select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      outline: none;
-      font-family: 'Poppins', sans-serif;
-    }
-    .form-group input:focus, .form-group select:focus {
-      border-color: #1FA9E6;
-    }
-    
-    .stats-row {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-    }
-    .stat-chip {
-      background: white;
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-size: 14px;
-      box-shadow: 0 4px 10px rgba(0,0,0,.03);
-      color: #555;
-    }
-    .stat-chip strong {
-      color: #1FA9E6;
-      font-size: 16px;
-    }
-    
-    /* Progress Bar Upload */
-    #upload-progress {
-      width: 100%;
-      background: #eee;
-      border-radius: 10px;
-      height: 8px;
-      margin-top: 15px;
-      overflow: hidden;
-    }
-    #upload-progress-bar {
-      background: #1FA9E6;
-      width: 0%;
-      height: 100%;
-      transition: width 0.2s;
-    }
-
-    .btn-lihat { background: #2ecc71; color: white; padding: 6px 12px; border-radius: 6px; border:none; cursor:pointer; }
-    .btn-hapus-doc { background: #e74c3c; color: white; padding: 6px 12px; border-radius: 6px; border:none; cursor:pointer; }
-  </style>
+  <script src="js/sidebar.js"></script>
 </head>
 <body>
 
@@ -164,106 +26,204 @@
     </div>
 
     <div class="content">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
-        
+
+      <!-- ═══════════════════════════════════════
+           FORM UPLOAD
+      ═══════════════════════════════════════ -->
+      <div class="upload-grid">
+
+        <!-- Kolom Kiri: Form Metadata -->
         <div class="form-box">
-          <div class="form-group">
-            <label>Nama Dokumen <span style="color:red">*</span></label>
-            <input type="text" id="nama-dokumen" placeholder="Contoh: SOP Tanggap Darurat Kebakaran" />
+          <h3 class="form-section-title">Informasi Dokumen</h3>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Nama Dokumen <span class="required">*</span></label>
+              <input type="text" id="nama-dokumen" placeholder="Contoh: SOP Tanggap Darurat Kebakaran" />
+            </div>
+            <div class="form-group">
+              <label>Nomor Dokumen <span class="required">*</span></label>
+              <input type="text" id="nomor-dokumen" placeholder="Contoh: K3-SOP-001" />
+            </div>
           </div>
-          
-          <div class="form-group">
-            <label>Jenis Klasifikasi <span style="color:red">*</span></label>
-            <select id="jenis-dokumen">
-              <option value="" disabled selected>-- Pilih Jenis --</option>
-              <option value="SOP">SOP (Standard Operating Procedure)</option>
-              <option value="PROTAP">PROTAP (Prosedur Tetap)</option>
-              <option value="Regulasi">Regulasi / Kebijakan</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Jenis / Kategori <span class="required">*</span></label>
+              <select id="jenis-dokumen">
+                <option value="" disabled selected>-- Pilih Kategori --</option>
+                <option value="Kebijakan K3">Kebijakan K3</option>
+                <option value="SOP">SOP (Standard Operating Procedure)</option>
+                <option value="PROTAP">PROTAP (Prosedur Tetap)</option>
+                <option value="Standar">Standar Kerja / Keselamatan</option>
+                <option value="Regulasi">Regulasi / Kebijakan Hukum</option>
+                <option value="Form & Template">Form & Template K3</option>
+                <option value="Rekaman">Rekaman & Bukti</option>
+                <option value="Tanggap Darurat">Rencana Tanggap Darurat</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status Dokumen <span class="required">*</span></label>
+              <select id="status-dokumen">
+                <option value="" disabled selected>-- Pilih Status --</option>
+                <option value="Draft">Draft</option>
+                <option value="Under Review">Under Review</option>
+                <option value="Approved">Approved</option>
+                <option value="Obsolete">Obsolete</option>
+              </select>
+            </div>
           </div>
-          
-          <button id="btn-upload" onclick="uploadDokumen()" style="width:100%; font-weight:500;">Upload Dokumen</button>
-          
-          <div id="upload-progress" style="display:none;">
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Departemen Pemilik <span class="required">*</span></label>
+              <select id="departemen-dokumen">
+                <option value="" disabled selected>-- Pilih Departemen --</option>
+                <option value="K3 / EHS">K3 / EHS</option>
+                <option value="Produksi">Produksi</option>
+                <option value="HR & GA">HR & GA</option>
+                <option value="QA / QC">QA / QC</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Warehouse">Warehouse</option>
+                <option value="Management">Management</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>No. Revisi</label>
+              <input type="text" id="nomor-revisi" placeholder="Contoh: Rev.00, Rev.01" />
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Tanggal Efektif <span class="required">*</span></label>
+              <input type="date" id="tanggal-efektif" />
+            </div>
+            <div class="form-group">
+              <label>Tanggal Review Berikutnya</label>
+              <input type="date" id="tanggal-review" />
+              <span class="field-hint">Notifikasi akan dikirim 30 hari sebelum tanggal ini</span>
+            </div>
+          </div>
+
+          <button id="btn-upload" onclick="uploadDokumen()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            Upload Dokumen
+          </button>
+
+          <div id="upload-progress">
             <div id="upload-progress-bar"></div>
           </div>
         </div>
 
+        <!-- Kolom Kanan: Drop Zone -->
         <div class="doc-upload-card" id="drop-zone" onclick="document.getElementById('file-input').click()">
-          
-          <div id="upload-prompt" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+          <div id="upload-prompt">
+            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
-            <strong>Tarik & Jatuhkan Berkas PDF Di Sini</strong>
-            <p>atau klik area ini untuk memilih berkas dari komputer</p>
-            <p style="font-size:12px; color:#aaa; margin-top:5px;">Format berkas wajib: PDF (Maksimal 10 MB)</p>
+            <strong>Tarik & Jatuhkan Berkas Di Sini</strong>
+            <p>atau klik area ini untuk memilih dari komputer</p>
+            <div class="upload-format-chips">
+              <span>PDF</span><span>DOCX</span><span>XLSX</span><span>JPG/PNG</span>
+            </div>
+            <p class="upload-size-note">Maksimal 50 MB per file</p>
           </div>
-          
+
           <div id="selected-file-badge">
-            <div style="font-size: 4.5rem; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">📄</div>
+            <div class="file-icon-wrap">📄</div>
             <span id="selected-file-name">nama_file.pdf</span>
             <button class="btn-clear-file" type="button" onclick="event.stopPropagation(); clearFile();">
               ✕ Batalkan Pilihan
             </button>
           </div>
 
-          <input type="file" id="file-input" accept=".pdf" style="display:none;" onchange="onFileSelected(this)" />
+          <input type="file" id="file-input" accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png,.mp4" style="display:none;" onchange="onFileSelected(this)" />
         </div>
 
-      </div>
+      </div><!-- /upload-grid -->
 
-      <div class="form-box" style="margin-top: 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-          <h3 style="color: #0F3D56;">Daftar Dokumen Terdaftar</h3>
-          
-          <div style="display: flex; gap: 10px;">
-            <input type="text" id="search-input" oninput="filterDokumen()" placeholder="Cari nama dokumen..." style="padding: 8px 12px; font-size:14px;" />
-            <select id="filter-jenis" onchange="filterDokumen()" style="padding: 8px 12px; border-radius:10px; border:1px solid #ddd; font-size:14px;">
-              <option value="">Semua Jenis</option>
+
+      <!-- ═══════════════════════════════════════
+           DAFTAR DOKUMEN
+      ═══════════════════════════════════════ -->
+      <div class="form-box" style="margin-top: 28px;">
+        <div class="list-header">
+          <h3>Daftar Dokumen Terdaftar</h3>
+          <div class="list-controls">
+            <input type="text" id="search-input" oninput="filterDokumen()" placeholder="Cari nama / nomor dokumen..." />
+            <select id="filter-jenis" onchange="filterDokumen()">
+              <option value="">Semua Kategori</option>
+              <option value="Kebijakan K3">Kebijakan K3</option>
               <option value="SOP">SOP</option>
               <option value="PROTAP">PROTAP</option>
+              <option value="Standar">Standar</option>
               <option value="Regulasi">Regulasi</option>
+              <option value="Form & Template">Form & Template</option>
+              <option value="Rekaman">Rekaman</option>
+              <option value="Tanggap Darurat">Tanggap Darurat</option>
               <option value="Lainnya">Lainnya</option>
+            </select>
+            <select id="filter-status" onchange="filterDokumen()">
+              <option value="">Semua Status</option>
+              <option value="Draft">Draft</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Approved">Approved</option>
+              <option value="Obsolete">Obsolete</option>
             </select>
           </div>
         </div>
 
+        <!-- Stats chips -->
         <div class="stats-row" id="stats-row">
-          <div class="stat-chip"><strong id="stat-total">0</strong> Total Dokumen</div>
-          <div class="stat-chip"><strong id="stat-sop">0</strong> SOP</div>
-          <div class="stat-chip"><strong id="stat-protap">0</strong> PROTAP</div>
-          <div class="stat-chip"><strong id="stat-regulasi">0</strong> Regulasi</div>
+          <div class="stat-chip"><strong id="stat-total">0</strong> Total</div>
+          <div class="stat-chip chip-approved"><strong id="stat-approved">0</strong> Approved</div>
+          <div class="stat-chip chip-review"><strong id="stat-review">0</strong> Under Review</div>
+          <div class="stat-chip chip-draft"><strong id="stat-draft">0</strong> Draft</div>
+          <div class="stat-chip chip-expiring"><strong id="stat-expiring">0</strong> Akan Kedaluwarsa</div>
         </div>
 
-        <table style="margin-top: 10px;">
-          <thead>
-            <tr>
-              <th style="width:60px;">#</th>
-              <th>Nama Dokumen</th>
-              <th style="text-align: center;">Jenis</th>
-              <th style="text-align: center;">Tanggal Upload</th>
-              <th style="width:200px; text-align: center;">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="doc-tbody">
-            <tr><td colspan="5" style="text-align: center; color: #95a5a6;">Memuat data…</td></tr>
-          </tbody>
-        </table>
-      </div>
+        <!-- Expiry Alert Banner (muncul kalau ada) -->
+        <div id="expiry-alert" class="expiry-alert" style="display:none;">
+          ⚠️ <span id="expiry-alert-text"></span>
+        </div>
 
-    </div>
-  </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:44px;">#</th>
+                <th style="width:110px;">No. Dokumen</th>
+                <th>Nama Dokumen</th>
+                <th style="width:130px;">Kategori</th>
+                <th style="width:110px;">Departemen</th>
+                <th style="width:70px; text-align:center;">Rev.</th>
+                <th style="width:100px; text-align:center;">Status</th>
+                <th style="width:115px; text-align:center;">Tgl Efektif</th>
+                <th style="width:115px; text-align:center;">Review</th>
+                <th style="width:130px; text-align:center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="doc-tbody">
+              <tr><td colspan="10" class="table-empty">Memuat data…</td></tr>
+            </tbody>
+          </table>
+        </div>
 
-  <div id="toast" style="display:none; position:fixed; bottom:1.5rem; right:1.5rem; color:#fff; padding:.75rem 1.25rem; border-radius:10px; font-size:.9rem; z-index:999; box-shadow:0 10px 15px -3px rgba(0,0,0,0.3);">
-    Pesan Notifikasi
-  </div>
+      </div><!-- /form-box list -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <div id="toast" class="toast-notif">Pesan Notifikasi</div>
 
   <script src="js/supabase-config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/sidebar.js"></script>
-    <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
+  <script src="js/auth.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
   <script src="js/dokumen.js"></script>
 </body>
 </html>

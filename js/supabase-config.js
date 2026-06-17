@@ -5,9 +5,10 @@ const SUPABASE_ANON_KEY =
 
 const { createClient } = supabase;
 
-const db = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ✅ Tambahkan baris ini agar bisa diakses dari semua file JS
+window.supabaseClient = db;
+window.supabase = db;
 
 console.log("Supabase Connected");

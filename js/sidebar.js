@@ -1,72 +1,87 @@
-const currentPage = window.location.pathname.split("/").pop() || "index.html";
-const sidebarLinks = document.querySelectorAll(".sidebar a");
+// ============================================================
+//  sidebar.js — Auto-inject sidebar & active state
+//  Cara pakai: cukup taruh <div class="sidebar"></div> kosong
+//  di setiap HTML, sisanya diurus script ini.
+// ============================================================
 
-sidebarLinks.forEach(link => {
-    const linkPage = link.getAttribute("href");
-    const item = link.closest("li");
+const SIDEBAR_MENU = [
+    { href: "dashboard.html",    icon: "🏠", label: "Dashboard" },
+    { href: "karyawan.html",     icon: "👥", label: "Data Karyawan" },
+    { href: "p2k3.html",         icon: "🏢", label: "Struktur P2K3" },
+    { href: "dokumen.html",      icon: "📂", label: "Dokumen K3" },
+    { href: "pelaksanaan.html",  icon: "📋", label: "Pelaksanaan SOP" },
+    { href: "monitoring.html",   icon: "🛡️", label: "Monitoring Kepatuhan" },
+    { href: "insiden.html",      icon: "⚠️",  label: "Laporan Insiden" },
+    { href: "audit.html",        icon: "📊", label: "Audit" },
+    { href: "admin.html",        icon: "⚙️",  label: "Kelola User" },
+];
 
-    if (!item) {
-        return;
-    }
+function renderSidebar() {
+    const sidebar = document.querySelector(".sidebar");
+    if (!sidebar) return;
 
-    item.classList.toggle("active", linkPage == currentPage);
-});
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
-// Event listener untuk profile section di navbar
+    const menuHTML = SIDEBAR_MENU.map(item => {
+        const isActive = item.href === currentPage ? ' class="active"' : '';
+        return `<li${isActive}><a href="${item.href}">${item.icon} ${item.label}</a></li>`;
+    }).join("\n        ");
+
+    sidebar.innerHTML = `
+    <div class="logo">
+        <img src="images/logo otsuka.jpg" alt="Logo Otsuka">
+        <h2>OTSUKA K3</h2>
+        <p>Admin Panel</p>
+    </div>
+    <ul>
+        ${menuHTML}
+    </ul>`;
+}
+
+// ============================================================
+//  Navbar: wrap .profile dalam .navbar-right & handle click
+// ============================================================
 document.addEventListener("DOMContentLoaded", () => {
+    renderSidebar();
+
     const profileElement = document.querySelector(".profile");
     if (profileElement) {
-        // Jika belum ada navbar-right container, buat satu
         if (!profileElement.parentElement.classList.contains("navbar-right")) {
             const navbarRight = document.createElement("div");
             navbarRight.className = "navbar-right";
-            
             profileElement.parentElement.replaceChild(navbarRight, profileElement);
             navbarRight.appendChild(profileElement);
-            
-            // Logout button dihapus agar hanya menampilkan email & role
         }
 
-        // Event listener untuk profile click
         profileElement.addEventListener("click", () => {
             window.location.href = "profile.html";
         });
     }
 });
 
-// Logout function untuk semua halaman
+// ============================================================
+//  Logout
+// ============================================================
 async function logout() {
     const confirmed = confirm("Apakah Anda yakin ingin keluar dari sistem?");
-    
-    if (!confirmed) {
-        return;
-    }
+    if (!confirmed) return;
 
     try {
-        // Cek apakah supabase sudah tersedia
-        if (typeof supabase === 'undefined') {
+        if (typeof supabase === "undefined") {
             alert("Sistem belum siap. Silahkan refresh halaman.");
-            console.error("Supabase not initialized");
             return;
         }
 
         const { error } = await supabase.auth.signOut();
-
         if (error) {
             alert("Gagal logout: " + error.message);
-            console.log(error);
             return;
         }
 
         alert("Anda telah logout");
-        
-        // Tunggu sebentar sebelum redirect
-        setTimeout(() => {
-            window.location.href = "login.html";
-        }, 500);
-        
+        setTimeout(() => { window.location.href = "login.html"; }, 500);
+
     } catch (err) {
         alert("Error logout: " + err.message);
-        console.log(err);
     }
 }

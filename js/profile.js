@@ -26,6 +26,12 @@ async function loadProfil() {
         });
 
         const authMeta = user.user_metadata || {};
+    // ambil data user_profiles berdasarkan auth user id
+    const { data, error } = await supabase
+        .from("user_profiles")
+        .select("nama, nik, email, departemen, work_unit, role, is_active") // ✅ tambah email
+        .eq("id", user.id)
+        .maybeSingle();
 
         // 1. Ambil data user_profiles berdasarkan auth user id
         console.log("📊 [PROFILE] Querying user_profiles for id:", user.id);
@@ -36,6 +42,10 @@ async function loadProfil() {
             .maybeSingle();
 
         console.log("📋 [PROFILE] Query result:", { data, error });
+    // catatan: karena kolom nama/nik belum tersimpan (sesuai info), fallback ke metadata auth
+    const nama = data?.nama || authMeta?.nama || "";
+    const nik = data?.nik || authMeta?.nik || "";
+    const email = data?.email || user.email || "";
 
         if (error) {
             console.error("❌ [PROFILE] Error fetching user profile:", error);

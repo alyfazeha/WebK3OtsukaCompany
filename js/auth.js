@@ -5,13 +5,13 @@
 
 const ROLE_ACCESS = {
     pages: {
-        Admin:      ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html', 'admin.html'],
-        K3Manager:  ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html'],
-        K3Officer:  ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html'],
-        DeptHead:   ['dashboard.html', 'dokumen.html', 'pelaksanaan.html', 'insiden.html'],
+        Admin:      ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'monitoring.html', 'insiden.html', 'audit.html', 'admin.html'],
+        K3Manager:  ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'monitoring.html', 'insiden.html', 'audit.html'],
+        K3Officer:  ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'monitoring.html', 'insiden.html', 'audit.html'],
+        DeptHead:   ['dashboard.html', 'dokumen.html', 'pelaksanaan.html', 'monitoring.html', 'insiden.html'],
         Employee:   ['dashboard.html', 'pelaksanaan.html', 'insiden.html'],
-        Auditor:    ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'audit.html', 'insiden.html'],
-        Viewer:     ['index.html', 'dokumen.html'],
+        Auditor:    ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'monitoring.html', 'audit.html', 'insiden.html'],
+        Viewer:     ['dashboard.html', 'dokumen.html'],
     },
     readOnly: {
         Admin: false, K3Manager: false, K3Officer: false,
@@ -64,11 +64,11 @@ async function initAuth() {
     }
 
     // Cek akses halaman
-    const currentPage  = window.location.pathname.split('/').pop() || 'dashboard.html';
+    const currentPage  = window.location.pathname.split('/').pop() || 'index.html';
     const allowedPages = ROLE_ACCESS.pages[role] || ROLE_ACCESS.pages['Viewer'];
 
     if (!allowedPages.includes(currentPage)) {
-        window.location.href = allowedPages[0] || 'dashboard.html';
+        window.location.href = allowedPages[0] || 'index.html';
         return;
     }
 
@@ -98,15 +98,17 @@ function renderUserBadge(role, nama) {
         </div>`;
 }
 
-
 function restrictSidebar(role) {
     const allowed = ROLE_ACCESS.pages[role] || [];
-    // Tampilkan menu Admin hanya untuk Admin
     document.querySelectorAll('.sidebar li').forEach(li => {
         const link = li.querySelector('a');
         if (!link) return;
         const href = link.getAttribute('href');
-        if (href && !allowed.includes(href)) li.style.display = 'none';
+        if (href && !allowed.includes(href)) {
+            li.style.display = 'none';
+        } else {
+            li.style.display = '';
+        }
     });
 }
 

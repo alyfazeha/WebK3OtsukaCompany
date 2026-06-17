@@ -2,12 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
     loadProfil();
 });
 
-
 async function loadProfil() {
-
     try {
         console.log("🔄 [PROFILE] Loading profil...");
-        
+
         const {
             data: { user }
         } = await db.auth.getUser();
@@ -26,14 +24,8 @@ async function loadProfil() {
         });
 
         const authMeta = user.user_metadata || {};
-    // ambil data user_profiles berdasarkan auth user id
-    const { data, error } = await supabase
-        .from("user_profiles")
-        .select("nama, nik, email, departemen, work_unit, role, is_active") // ✅ tambah email
-        .eq("id", user.id)
-        .maybeSingle();
 
-        // 1. Ambil data user_profiles berdasarkan auth user id
+        // Ambil data user_profiles berdasarkan auth user id
         console.log("📊 [PROFILE] Querying user_profiles for id:", user.id);
         let { data, error } = await db
             .from("user_profiles")
@@ -42,19 +34,16 @@ async function loadProfil() {
             .maybeSingle();
 
         console.log("📋 [PROFILE] Query result:", { data, error });
-    // catatan: karena kolom nama/nik belum tersimpan (sesuai info), fallback ke metadata auth
-    const nama = data?.nama || authMeta?.nama || "";
-    const nik = data?.nik || authMeta?.nik || "";
-    const email = data?.email || user.email || "";
 
+        // Jika ada error tapi data ada, tetap lanjut
         if (error) {
             console.error("❌ [PROFILE] Error fetching user profile:", error);
         }
 
-        // 2. Jika profile belum ada, buat profile baru untuk user ini
+        // Jika profile belum ada, buat profile baru untuk user ini
         if (!data) {
             console.warn("⚠️ [PROFILE] Profile tidak ditemukan, membuat baru...");
-            
+
             const newProfileData = {
                 id: user.id,
                 email: user.email,
@@ -86,7 +75,7 @@ async function loadProfil() {
             }
         }
 
-        // 3. Siapkan data dengan fallback
+        // Siapkan data dengan fallback
         const nama = data?.nama || authMeta?.nama || "";
         const nik = data?.nik || authMeta?.nik || "";
         const departemen = data?.departemen || authMeta?.departemen || "";
@@ -102,64 +91,31 @@ async function loadProfil() {
             dbData: data
         });
 
-        // 4. Isi form fields dengan data
+        // Isi form fields dengan data
         const namaEl = document.getElementById("nama");
         const emailEl = document.getElementById("email");
         const nikEl = document.getElementById("nik");
         const departemenEl = document.getElementById("departemen");
         const workUnitEl = document.getElementById("work_unit");
 
-        console.log("🎯 [PROFILE] Form elements found:", {
-            nama: !!namaEl,
-            email: !!emailEl,
-            nik: !!nikEl,
-            departemen: !!departemenEl,
-            workUnit: !!workUnitEl
-        });
+        if (namaEl) namaEl.value = nama;
+        if (emailEl) emailEl.value = email;
+        if (nikEl) nikEl.value = nik;
+        if (departemenEl) departemenEl.value = departemen;
+        if (workUnitEl) workUnitEl.value = work_unit;
 
-        if (namaEl) {
-            namaEl.value = nama;
-            console.log("✓ [PROFILE] Nama field diisi:", nama);
-        }
-        
-        if (emailEl) {
-            emailEl.value = email;
-            console.log("✓ [PROFILE] Email field diisi:", email);
-        }
-        
-        if (nikEl) {
-            nikEl.value = nik;
-            console.log("✓ [PROFILE] NIK field diisi:", nik);
-        }
-        
-        if (departemenEl) {
-            departemenEl.value = departemen;
-            console.log("✓ [PROFILE] Departemen field diisi:", departemen);
-        }
-        
-        if (workUnitEl) {
-            workUnitEl.value = work_unit;
-            console.log("✓ [PROFILE] Work Unit field diisi:", work_unit);
-        }
-
-        // 5. Status password (password tidak bisa ditampilkan ulang dari Supabase)
+        // Status password (password tidak bisa ditampilkan ulang dari Supabase)
         const passwordStatusEl = document.getElementById("password-status");
         if (passwordStatusEl) {
-            // Jika user login berarti password kemungkinan sudah ter-set.
-            // Kita tampilkan status saja, bukan isi password.
-            passwordStatusEl.textContent = "Password akun Anda: sudah di-set (tidak ditampilkan). Isi password baru untuk mengganti.";
+            passwordStatusEl.textContent =
+                "Password akun Anda: sudah di-set (tidak ditampilkan). Isi password baru untuk mengganti.";
         }
 
-        // 6. Update navbar profile
-
+        // Update navbar profile
         const navbar = document.getElementById("navbar-profile");
-        if (navbar) {
-            navbar.textContent = nama || email || "User";
-            console.log("✓ [PROFILE] Navbar updated dengan:", nama || email || "User");
-        }
+        if (navbar) navbar.textContent = nama || email || "User";
 
         console.log("✅ [PROFILE] Profile page loaded successfully!");
-
     } catch (err) {
         console.error("❌ [PROFILE] Error di loadProfil:", err);
         console.error("Stack:", err.stack);
@@ -167,11 +123,7 @@ async function loadProfil() {
     }
 }
 
-
-
-
 async function simpanProfil() {
-
     try {
         const nama = document.getElementById("nama").value.trim();
         const nik = document.getElementById("nik").value.trim();
@@ -199,7 +151,6 @@ async function simpanProfil() {
 
         // Ambil user yang sedang login
         const { data: { user } } = await db.auth.getUser();
-
         if (!user) {
             alert("❌ Silakan login terlebih dahulu");
             return;
@@ -216,35 +167,28 @@ async function simpanProfil() {
             })
             .eq("id", user.id);
 
-
         if (error) {
             console.error("Error saat menyimpan profil:", error);
             alert("❌ Gagal menyimpan data!\n\nError: " + error.message);
             return;
         }
 
-        // Update navbar dengan nama baru
+        // Update navbar dengan nama baru + sessionStorage
         const navbar = document.getElementById("navbar-profile");
-        if (navbar) {
-            navbar.textContent = nama;
-        }
-
-        // Update sessionStorage untuk konsistensi
-        sessionStorage.setItem('k3_nama', nama);
+        if (navbar) navbar.textContent = nama;
+        sessionStorage.setItem("k3_nama", nama);
 
         alert("✅ Profil berhasil diperbarui!");
 
+        // Refresh field supaya tampil ulang seperti awal
+        await loadProfil();
     } catch (err) {
         console.error("Error di simpanProfil:", err);
         alert("❌ Terjadi kesalahan: " + err.message);
     }
 }
 
-
-
-
-async function ubahPassword(){
-
+async function ubahPassword() {
     try {
         const passwordBaru = document.getElementById("passwordBaru").value;
 
@@ -258,7 +202,6 @@ async function ubahPassword(){
             return;
         }
 
-        // Update password di Supabase Auth
         const { error } = await db.auth.updateUser({
             password: passwordBaru
         });
@@ -269,56 +212,43 @@ async function ubahPassword(){
             return;
         }
 
-        // Kosongkan field password
         document.getElementById("passwordBaru").value = "";
-
         alert("✅ Password berhasil diperbarui!");
-        console.log("Password berhasil diubah");
 
+        await loadProfil();
     } catch (err) {
         console.error("Error di ubahPassword:", err);
         alert("❌ Terjadi kesalahan: " + err.message);
     }
 }
 
-
 async function logout() {
-
     const confirmed = confirm("Apakah Anda yakin ingin keluar dari sistem?");
-
-    if (!confirmed) {
-        return;
-    }
+    if (!confirmed) return;
 
     try {
-        // Cek apakah db sudah tersedia
-        if (typeof db === 'undefined') {
+        if (typeof db === "undefined") {
             alert("Sistem belum siap. Silahkan refresh halaman.");
             console.error("DB not initialized");
             return;
         }
 
         const { error } = await db.auth.signOut();
-
         if (error) {
             alert("❌ Gagal logout: " + error.message);
             console.error("Logout error:", error);
             return;
         }
 
-        // Hapus session storage
         sessionStorage.clear();
-
         alert("✅ Anda telah logout");
-        
-        // Tunggu sebentar sebelum redirect
+
         setTimeout(() => {
             window.location.href = "login.html";
         }, 500);
-        
     } catch (err) {
         alert("❌ Error logout: " + err.message);
         console.error("Logout error:", err);
     }
-
 }
+

@@ -86,12 +86,14 @@ body{
 }
 
 .sidebar li a:hover {
-    background: #1FA9E6;
+    /* lebih transparan biar tidak biru full */
+    background: rgba(31, 169, 230, 0.28);
 }
 
 .sidebar li.active a {
-    background: #1FA9E6;
+    background: rgba(31, 169, 230, 0.35);
 }
+
 
 .sidebar a,
 .sidebar a:hover,
@@ -146,7 +148,18 @@ body{
 .profile{
     font-size:18px;
     font-weight:500;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: rgba(31, 169, 230, 0.12);
+    border: 1px solid rgba(31, 169, 230, 0.18);
+    cursor: pointer;
+    transition: 0.2s;
 }
+
+.navbar .profile:hover{
+    background: rgba(31, 169, 230, 0.22);
+}
+
 
 /* =======================
    NAVBAR RIGHT SECTION
@@ -312,15 +325,25 @@ th{
     font-size:16px;
     border-right:1px solid rgba(255,255,255,.35);
 }
+
+/* Rata tengah seluruh isi tabel */
+table th,
+table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
 th:last-child{
     border-right:none;
 }
 td{
     padding:16px;
     text-align:center;
+    vertical-align: middle;
     border-bottom:1px solid #eee;
     border-right:1px solid #edf2f6;
 }
+
 td:last-child{
     border-right:none;
 }

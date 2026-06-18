@@ -26,26 +26,29 @@
       <div class="page-top-bar">
         <div class="page-title-text">
           <h1>Manajemen Audit K3</h1>
-          <p>Penjadwalan reguler (Internal 1 thn/sekali, Eksternal min. 3 thn/sekali) dan tindak lanjut temuan</p>
+          <p>Penjadwalan reguler (Internal 1 thn/sekali, Eksternal min. 3 thn/sekali), checklist temuan, CAPA, dan paket bukti audit</p>
         </div>
         <button id="openModalBtn" class="btn-jadwal" onclick="openModalAudit()">+ Jadwalkan Audit Baru</button>
       </div>
 
+      <!-- Summary KPIs -->
       <div class="summary-grid" id="summary-grid">
         <div class="summary-card"><div class="num" id="sum-total">0</div><div class="lbl">Total Agenda Audit</div></div>
         <div class="summary-card"><div class="num" id="sum-terjadwal">0</div><div class="lbl">Status Terjadwal</div></div>
         <div class="summary-card"><div class="num" id="sum-selesai">0</div><div class="lbl">Status Selesai</div></div>
-        <div class="summary-card"><div class="num" id="sum-open">0</div><div class="lbl">Temuan Open</div></div>
-        <div class="summary-card"><div class="num" id="sum-closed">0</div><div class="lbl">Temuan Closed</div></div>
+        <div class="summary-card"><div class="num" id="sum-open">0</div><div class="lbl">CAPA Open</div></div>
+        <div class="summary-card"><div class="num" id="sum-closed">0</div><div class="lbl">CAPA Closed</div></div>
       </div>
 
       <div class="card-box">
         <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab('tab-jadwal', this)">Jadwal Pelaksanaan Audit</button>
-          <button class="tab-btn" onclick="switchTab('tab-temuan', this)">Daftar Log Temuan Audit</button>
+          <button class="tab-btn active" onclick="switchTab('tab-jadwal', this)">Jadwal Pelaksanaan</button>
+          <button class="tab-btn" onclick="switchTab('tab-checklist', this)">Checklist Audit</button>
+          <button class="tab-btn" onclick="switchTab('tab-capa', this)">Log CAPA</button>
+          <button class="tab-btn" onclick="switchTab('tab-trail', this)">Audit Trail</button>
         </div>
 
-        <!-- Tab: Jadwal -->
+        <!-- ═══ Tab: Jadwal ═══ -->
         <div id="tab-jadwal" class="tab-panel active">
           <div class="table-responsive">
             <table>
@@ -53,8 +56,9 @@
                 <tr>
                   <th class="col-no">#</th>
                   <th>Jenis Audit</th>
-                  <th>Standar Regulasi K3</th>
+                  <th>Acuan Standar K3</th>
                   <th>Tim Auditor</th>
+                  <th>Departemen Terdampak</th>
                   <th>Tgl. Rencana</th>
                   <th>Tgl. Realisasi</th>
                   <th>Status</th>
@@ -62,50 +66,117 @@
                 </tr>
               </thead>
               <tbody id="tbody-jadwal">
-                <tr><td colspan="8">Memuat data pelaksanaan…</td></tr>
+                <tr><td colspan="9">Memuat data pelaksanaan…</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Tab: Temuan -->
-        <div id="tab-temuan" class="tab-panel">
+        <!-- ═══ Tab: Checklist ═══ -->
+        <div id="tab-checklist" class="tab-panel">
           <div class="filter-bar">
-            <select id="filter-audit" onchange="loadTemuan()" class="filter-select filter-select--wide">
-              <option value="">-- Semua Event Audit --</option>
+            <select id="filter-audit-checklist" onchange="loadChecklist()" class="filter-select filter-select--wide">
+              <option value="">-- Pilih Event Audit --</option>
             </select>
-            <select id="filter-status-temuan" onchange="filterTemuan()" class="filter-select">
-              <option value="">Semua Status Temuan</option>
-              <option value="Open">Open</option>
-              <option value="Closed">Closed</option>
+            <select id="filter-status-checklist" onchange="filterChecklist()" class="filter-select">
+              <option value="">Semua Status</option>
+              <option value="Conformance">Conformance</option>
+              <option value="Minor NC">Minor NC</option>
+              <option value="Major NC">Major NC</option>
+              <option value="Observation">Observation</option>
             </select>
+            <button class="btn-jadwal" style="padding:8px 16px;font-size:13px;" onclick="openModalChecklist()">+ Tambah Item Checklist</button>
           </div>
-          
           <div class="table-responsive">
             <table>
               <thead>
                 <tr>
                   <th class="col-no">#</th>
-                  <th>Referensi Event Audit</th>
-                  <th>Deskripsi Malfungsi/Temuan</th>
-                  <th>Kategori</th>
-                  <th>Rencana Tindakan Koreksi</th>
-                  <th>Status</th>
+                  <th>Klausul / Persyaratan K3</th>
+                  <th>Deskripsi Temuan</th>
+                  <th>Klasifikasi</th>
+                  <th>Bukti Terkait</th>
+                  <th>Status CAPA</th>
                   <th class="col-aksi-sm">Aksi</th>
                 </tr>
               </thead>
-              <tbody id="tbody-temuan">
-                <tr><td colspan="7">Silakan pilih parameter filter untuk menampilkan log temuan.</td></tr>
+              <tbody id="tbody-checklist">
+                <tr><td colspan="7">Pilih event audit untuk menampilkan checklist.</td></tr>
               </tbody>
             </table>
           </div>
         </div>
-      </div>
+
+        <!-- ═══ Tab: CAPA ═══ -->
+        <div id="tab-capa" class="tab-panel">
+          <div class="filter-bar">
+            <select id="filter-audit-capa" onchange="loadCapa()" class="filter-select filter-select--wide">
+              <option value="">-- Semua Event Audit --</option>
+            </select>
+            <select id="filter-status-capa" onchange="filterCapa()" class="filter-select">
+              <option value="">Semua Status CAPA</option>
+              <option value="Open">Open</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-no">#</th>
+                  <th>Referensi Audit</th>
+                  <th>Temuan / Non-Conformance</th>
+                  <th>Tindakan Korektif (CA)</th>
+                  <th>Tindakan Preventif (PA)</th>
+                  <th>PIC</th>
+                  <th>Target Selesai</th>
+                  <th>Status</th>
+                  <th class="col-aksi-sm">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-capa">
+                <tr><td colspan="9">Memuat data CAPA…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ═══ Tab: Audit Trail ═══ -->
+        <div id="tab-trail" class="tab-panel">
+          <div class="filter-bar">
+            <input type="text" id="filter-trail-user" placeholder="Filter nama pengguna…" class="filter-select" oninput="filterTrail()" />
+            <input type="date" id="filter-trail-date" class="filter-select" onchange="filterTrail()" />
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Pengguna</th>
+                  <th>Aksi / Kejadian</th>
+                  <th>Modul</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-trail">
+                <tr><td colspan="5">Memuat audit trail…</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-muted-sm" style="margin-top:10px;text-align:center;">
+            ⚠️ Audit trail bersifat <strong>read-only</strong> dan tidak dapat diubah atau dihapus (sesuai K3-IMS Spec §6.6.1).
+          </p>
+        </div>
+
+      </div><!-- end card-box -->
 
     </div>
   </div>
 
-  <!-- Modal: Jadwal Audit Baru -->
+  <!-- ════════════════════════════════════════
+       MODAL: Jadwal Audit Baru
+  ════════════════════════════════════════ -->
   <div class="modal-overlay" id="modal-audit">
     <div class="modal-custom">
       <div class="modal-header-custom">
@@ -133,6 +204,14 @@
           <label>Nama Badan/Tim Auditor</label>
           <input type="text" id="inp-auditor" placeholder="Contoh: Tim Ahli K3 Internal" />
         </div>
+        <div class="form-group-custom">
+          <label>Departemen Terdampak</label>
+          <input type="text" id="inp-dept" placeholder="Contoh: Produksi, Gudang, QC" />
+        </div>
+        <div class="form-group-custom">
+          <label>Lingkup Audit</label>
+          <input type="text" id="inp-scope" placeholder="Contoh: Seluruh area produksi lantai 2" />
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn-modal-batal" onclick="closeModalAudit()">Batal</button>
@@ -141,47 +220,120 @@
     </div>
   </div>
 
-  <!-- Modal: Catat Temuan -->
-  <div class="modal-overlay" id="modal-temuan">
-    <div class="modal-custom">
+  <!-- ════════════════════════════════════════
+       MODAL: Item Checklist Audit (§6.6.2)
+  ════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-checklist">
+    <div class="modal-custom modal-custom--wide">
       <div class="modal-header-custom">
-        <span class="modal-title-custom">Catat Penyimpangan / Temuan</span>
-        <button class="modal-close-custom" onclick="closeModalTemuan()">✕</button>
+        <span class="modal-title-custom">Catat Item Checklist Audit</span>
+        <button class="modal-close-custom" onclick="closeModalChecklist()">✕</button>
       </div>
-      <input type="hidden" id="inp-audit-id-temuan" />
-      <div class="form-group-custom">
-        <label>Deskripsi Temuan Lapangan <span class="required">*</span></label>
-        <textarea id="inp-deskripsi" rows="3" class="form-textarea" placeholder="Uraikan ketidaksesuaian prosedur K3 yang ditemukan…"></textarea>
+      <input type="hidden" id="inp-checklist-audit-id" />
+      <input type="hidden" id="inp-checklist-edit-id" />
+
+      <div class="form-group-custom" style="margin-bottom:10px;">
+        <label>Event Audit <span class="required">*</span></label>
+        <select id="inp-checklist-audit-sel">
+          <option value="">-- Pilih Event Audit --</option>
+        </select>
       </div>
+
+      <div class="form-group-custom" style="margin-bottom:10px;">
+        <label>Klausul / Persyaratan K3 yang Diperiksa <span class="required">*</span></label>
+        <input type="text" id="inp-klausul" placeholder="Contoh: SMK3 Elemen 6 – Keselamatan Bekerja" />
+      </div>
+
+      <div class="form-group-custom" style="margin-bottom:10px;">
+        <label>Deskripsi Temuan / Hasil Pemeriksaan <span class="required">*</span></label>
+        <textarea id="inp-checklist-desc" rows="3" class="form-textarea" placeholder="Uraikan hasil pemeriksaan klausul ini…"></textarea>
+      </div>
+
       <div class="form-grid-2">
         <div class="form-group-custom">
-          <label>Kategori Temuan <span class="required">*</span></label>
-          <select id="inp-kategori">
+          <label>Klasifikasi Temuan <span class="required">*</span></label>
+          <select id="inp-klasifikasi">
             <option value="">-- Pilih --</option>
-            <option value="Minor">Minor (Penyimpangan Ringan)</option>
-            <option value="Mayor">Mayor (Kritikal / Fatal)</option>
+            <option value="Conformance">✅ Conformance (Sesuai)</option>
+            <option value="Observation">👁️ Observation (Perhatian)</option>
+            <option value="Minor NC">⚠️ Minor NC (Non-Conformance Ringan)</option>
+            <option value="Major NC">🚨 Major NC (Non-Conformance Kritikal)</option>
           </select>
         </div>
         <div class="form-group-custom">
-          <label>Status Awal</label>
-          <select id="inp-status-perbaikan">
-            <option value="Open">Open</option>
-            <option value="Closed">Closed</option>
-          </select>
+          <label>Referensi Bukti (Dokumen/Form)</label>
+          <input type="text" id="inp-evidence-ref" placeholder="Contoh: SOP-K3-001, Form Inspeksi Tgl 01/06" />
         </div>
       </div>
-      <div class="form-group-custom">
-        <label>Rencana Tindakan Koreksi (Corrective Action)</label>
-        <textarea id="inp-tindakan" rows="2" class="form-textarea" placeholder="Langkah perbaikan teknis yang wajib dilakukan…"></textarea>
+
+      <div class="form-group-custom" style="margin-top:10px;">
+        <label>Catatan Auditor</label>
+        <textarea id="inp-checklist-notes" rows="2" class="form-textarea" placeholder="Catatan tambahan auditor (opsional)…"></textarea>
       </div>
+
       <div class="modal-footer">
-        <button class="btn-modal-batal" onclick="closeModalTemuan()">Batal</button>
-        <button class="btn-modal-simpan" onclick="simpanTemuan()">Simpan Temuan</button>
+        <button class="btn-modal-batal" onclick="closeModalChecklist()">Batal</button>
+        <button class="btn-modal-simpan" onclick="simpanChecklist()">Simpan Item</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: Detail Audit -->
+  <!-- ════════════════════════════════════════
+       MODAL: CAPA (§6.4 + §6.6.2)
+  ════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-capa">
+    <div class="modal-custom modal-custom--wide">
+      <div class="modal-header-custom">
+        <span class="modal-title-custom">Tambah / Edit CAPA</span>
+        <button class="modal-close-custom" onclick="closeModalCapa()">✕</button>
+      </div>
+      <input type="hidden" id="inp-capa-checklist-id" />
+      <input type="hidden" id="inp-capa-edit-id" />
+
+      <div class="form-group-custom" style="margin-bottom:10px;">
+        <label>Referensi Temuan (Checklist Item)</label>
+        <input type="text" id="inp-capa-ref" readonly style="background:#f4f8fb;" />
+      </div>
+
+      <div class="form-group-custom" style="margin-bottom:10px;">
+        <label>Tindakan Korektif (Corrective Action) <span class="required">*</span></label>
+        <textarea id="inp-capa-ca" rows="2" class="form-textarea" placeholder="Langkah perbaikan atas penyimpangan yang ditemukan…"></textarea>
+      </div>
+
+      <div class="form-group-custom" style="margin-bottom:10px;">
+        <label>Tindakan Preventif (Preventive Action)</label>
+        <textarea id="inp-capa-pa" rows="2" class="form-textarea" placeholder="Langkah pencegahan agar penyimpangan tidak terulang…"></textarea>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-group-custom">
+          <label>PIC (Penanggung Jawab)</label>
+          <input type="text" id="inp-capa-pic" placeholder="Nama / jabatan PIC" />
+        </div>
+        <div class="form-group-custom">
+          <label>Target Tanggal Selesai</label>
+          <input type="date" id="inp-capa-target" />
+        </div>
+        <div class="form-group-custom">
+          <label>Status CAPA</label>
+          <select id="inp-capa-status">
+            <option value="Open">Open</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-batal" onclick="closeModalCapa()">Batal</button>
+        <button class="btn-modal-simpan" onclick="simpanCapa()">Simpan CAPA</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       MODAL: Detail Audit + Evidence Package
+  ════════════════════════════════════════ -->
   <div class="modal-overlay" id="modal-detail">
     <div class="modal-custom modal-custom--wide">
       <div class="modal-header-custom">
@@ -191,16 +343,20 @@
       <div id="detail-info" class="detail-info-box"></div>
       
       <div class="detail-temuan-header">
-        <strong class="detail-temuan-title">Daftar Temuan Pada Event Ini</strong>
-        <button class="btn-tambah-temuan" onclick="openModalTemuan(currentAuditId)">+ Tambah Temuan Baru</button>
+        <strong class="detail-temuan-title">Ringkasan Temuan Checklist</strong>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-tambah-temuan" onclick="goToChecklistTab()">🔍 Buka Checklist Tab</button>
+          <button class="btn-jadwal" style="padding:6px 15px;font-size:12px;background:#16a34a;" onclick="exportEvidencePackage(currentAuditId)">📦 Export Evidence Package</button>
+        </div>
       </div>
       
       <div id="detail-temuan-list" class="temuan-list">
-        <p class="text-muted-sm">Belum tercatat adanya temuan pada agenda audit ini.</p>
+        <p class="text-muted-sm">Memuat ringkasan temuan…</p>
       </div>
       
       <div class="modal-footer modal-footer--border">
         <button class="btn-modal-batal" onclick="closeModalDetail()">Tutup Panel</button>
+        <button class="btn-modal-simpan" style="background:#0F3D56;" onclick="tandaiSelesai(currentAuditId)" id="btn-detail-selesai">✅ Tandai Selesai</button>
       </div>
     </div>
   </div>

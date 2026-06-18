@@ -2949,6 +2949,260 @@ tr.row-expiring td { background: #fff7ed; }
     max-width: unset;
   }
 }
+/* ══════════════════════════════════════════════════
+   AUDIT K3 — RESPONSIVE FIX
+   Tambahkan di bagian paling bawah style.css
+   ══════════════════════════════════════════════════ */
+
+/* Pastikan card-box tidak clip tabel saat scroll */
+.card-box {
+  overflow: visible !important;
+}
+
+/* Wrapper tabel — scroll horizontal di semua ukuran */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+}
+
+/* Tabel audit: lebar minimum agar kolom tidak gepeng */
+.table-responsive table {
+  min-width: 680px;
+  width: 100%;
+}
+
+/* ── Tablet (≤900px) ── */
+@media (max-width: 900px) {
+  .summary-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .card-box {
+    padding: 18px;
+  }
+}
+
+/* ── Mobile (≤600px) ── */
+@media (max-width: 600px) {
+
+  /* Summary cards: 2 kolom */
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  /* Card box lebih compact */
+  .card-box {
+    padding: 12px 10px;
+    border-radius: 12px;
+  }
+
+  /* Header halaman: susun vertikal */
+  .page-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .btn-jadwal {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    min-height: 44px;
+  }
+
+  /* Tab bar: font lebih kecil, wrap */
+  .tabs {
+    gap: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 2px solid #eee;
+  }
+
+  .tab-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Filter bar: full width */
+  .filter-bar {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-select,
+  .filter-select--wide {
+    flex: 1 1 100%;
+    max-width: 100%;
+    width: 100%;
+    font-size: 14px; /* cegah zoom iOS */
+    min-height: 42px;
+  }
+
+  /* Tabel: scroll horizontal, kolom tidak terlalu lebar */
+  .table-responsive table {
+    min-width: 560px;
+    font-size: 11px;
+  }
+
+  .table-responsive table th,
+  .table-responsive table td {
+    padding: 8px 8px;
+    font-size: 11px;
+  }
+
+  /* Tombol aksi lebih compact */
+  .btn-sm {
+    padding: 4px 8px;
+    font-size: 10px;
+    margin: 1px;
+  }
+
+  /* Modal: full screen hampir */
+  .modal-custom {
+    padding: 18px 14px;
+    border-radius: 14px;
+    max-height: 92vh;
+  }
+
+  .modal-title-custom {
+    font-size: 15px;
+  }
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .detail-info-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  /* Temuan item di modal detail */
+  .temuan-item {
+    padding: 12px;
+  }
+
+  .temuan-desc,
+  .temuan-tindakan {
+    font-size: 12px;
+  }
+
+  /* Toast full width */
+  .toast {
+    left: 1rem;
+    right: 1rem;
+    max-width: unset;
+    text-align: center;
+    font-size: 13px;
+  }
+
+  /* Summary card teks lebih kecil */
+  .summary-card {
+    padding: 12px 8px;
+  }
+
+  .summary-card .lbl {
+    font-size: 10px;
+  }
+}
+
+/* ── HP kecil (≤400px) ── */
+@media (max-width: 400px) {
+  .summary-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .summary-card .num {
+    font-size: 20px;
+  }
+
+  .table-responsive table {
+    min-width: 500px;
+    font-size: 10px;
+  }
+
+  .aksi-group {
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .btn-sm {
+    width: 100%;
+    text-align: center;
+    padding: 5px 6px;
+  }
+}
+/* ══════════════════════════════════════════════════
+   AUDIT K3 — IMS SPEC PATCH (tambahkan di akhir style.css)
+   Menyesuaikan dengan K3-IMS General Specification v1.0
+   ══════════════════════════════════════════════════ */
+
+/* ── Badge tambahan sesuai klasifikasi §6.6.2 ── */
+.badge-conformance  { background: #16a34a; }
+.badge-observation  { background: #6366f1; }
+.badge-minor-nc     { background: #e67e22; }
+.badge-major-nc     { background: #c0392b; }
+.badge-in-progress  { background: #f59e0b; color: #111; }
+
+/* ── Audit Trail table: timestamp nowrap ── */
+#tbody-trail td:first-child {
+  white-space: nowrap;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* ── Readonly input styling (CAPA ref field) ── */
+.form-group-custom input[readonly] {
+  background: #f4f8fb;
+  color: #6b7280;
+  cursor: default;
+}
+
+/* ── Evidence export button (inside detail modal) ── */
+.btn-export-evidence {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 8px;
+  font-family: Poppins, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btn-export-evidence:hover { background: #15803d; }
+
+/* ── Tab bar: 4 tabs tetap fit di mobile ── */
+@media (max-width: 600px) {
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .tab-btn {
+    flex-shrink: 0;
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+}
+
+/* ── Summary CAPA label ── */
+#sum-open,
+#sum-closed {
+  /* Warna angka tetap #0F3D56, override jika perlu */
+  color: #0F3D56;
+}
 
 
 

@@ -85,3 +85,72 @@ async function logout() {
         alert("Error logout: " + err.message);
     }
 }
+
+/* ══════════════════════════════════════════════════
+   PATCH sidebar.js — tambahkan kode ini
+   setelah sidebar selesai di-render / di DOMContentLoaded
+   ══════════════════════════════════════════════════ */
+
+function initMobileSidebar() {
+  // Buat overlay jika belum ada
+  let overlay = document.querySelector('.sidebar-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+  }
+
+  // Buat tombol hamburger jika belum ada
+  let hamburger = document.querySelector('.btn-hamburger');
+  if (!hamburger) {
+    hamburger = document.createElement('button');
+    hamburger.className = 'btn-hamburger';
+    hamburger.setAttribute('aria-label', 'Buka menu');
+    hamburger.innerHTML = `
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"
+           viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <line x1="3" y1="6"  x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>`;
+
+    // Sisipkan hamburger sebagai anak pertama navbar
+    const navbar = document.querySelector('.navbar');
+    if (navbar) navbar.insertBefore(hamburger, navbar.firstChild);
+  }
+
+  const sidebar = document.querySelector('.sidebar');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden'; // cegah scroll background
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+
+  overlay.addEventListener('click', closeSidebar);
+
+  // Tutup sidebar saat link diklik (navigasi mobile)
+  sidebar.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 600) closeSidebar();
+    });
+  });
+}
+
+// Jalankan setelah DOM siap
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMobileSidebar);
+} else {
+  initMobileSidebar();
+}

@@ -209,17 +209,18 @@ function renderTable(list) {
     // Status badge class (handle spasi → tanda hubung)
     const statusClass = `badge-${(doc.status_dokumen || 'Draft').replace(/\s+/g, '-')}`;
 
+    // Ganti bagian html += `` di dalam forEach di fungsi renderTable()
     html += `
       <tr class="${rowClass}">
         <td>${idx + 1}</td>
         <td style="font-size:12px; color:#475569; font-weight:500;">${escapeHtml(doc.nomor_dokumen || '–')}</td>
         <td style="font-weight:500; color:#0F3D56;">${escapeHtml(doc.nama_dokumen)}</td>
         <td><span class="badge-jenis">${escapeHtml(doc.jenis_dokumen)}</span></td>
-        <td style="font-size:12px; color:#374151;">${escapeHtml(doc.departemen || '–')}</td>
-        <td style="text-align:center; font-size:12px;">${escapeHtml(doc.nomor_revisi || '–')}</td>
+        <td class="col-hide-mobile" style="font-size:12px; color:#374151;">${escapeHtml(doc.departemen || '–')}</td>
+        <td class="col-hide-mobile" style="text-align:center; font-size:12px;">${escapeHtml(doc.nomor_revisi || '–')}</td>
         <td style="text-align:center;"><span class="badge-status ${statusClass}">${escapeHtml(doc.status_dokumen || '–')}</span></td>
-        <td style="text-align:center; font-size:12px;">${formatDate(doc.tanggal_efektif)}</td>
-        <td style="text-align:center; font-size:12px; ${isExpiring ? 'color:#c2410c; font-weight:600;' : ''}">
+        <td class="col-hide-mobile" style="text-align:center; font-size:12px;">${formatDate(doc.tanggal_efektif)}</td>
+        <td class="col-hide-mobile" style="text-align:center; font-size:12px; ${isExpiring ? 'color:#c2410c; font-weight:600;' : ''}">
           ${doc.tanggal_review ? formatDate(doc.tanggal_review) + (isExpiring ? ' ⚠️' : '') : '–'}
         </td>
         <td>

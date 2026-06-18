@@ -1794,10 +1794,11 @@ input:disabled {
     color: #94a3b8;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   dokumen.css  — compact & responsive
-═══════════════════════════════════════════════════════════════ */
 
+
+/* ═══════════════════════════════════════════════════════════════
+   dokumen.css  — compact & responsive (mobile-first fix)
+═══════════════════════════════════════════════════════════════ */
 /* ─── Layout Upload Grid ─────────────────────────────────────── */
 .upload-grid {
   display: grid;
@@ -1810,42 +1811,42 @@ input:disabled {
 /* ─── Form Box ───────────────────────────────────────────────── */
 .form-box {
   background: #fff;
-  padding: 14px 18px;           /* ↓ was 20px 22px */
+  padding: 14px 18px;
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
 }
 
 .form-section-title {
   color: #0F3D56;
-  font-size: 13px;              /* ↓ was 14px */
+  font-size: 13px;
   font-weight: 600;
-  margin: 0 0 10px 0;          /* ↓ was 14px */
-  padding-bottom: 8px;          /* ↓ was 10px */
+  margin: 0 0 10px 0;
+  padding-bottom: 8px;
   border-bottom: 1px solid #f0f0f0;
 }
 
 .form-row-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;                     /* ↓ was 10px */
+  gap: 8px;
 }
 
 .form-group {
-  margin-bottom: 7px;           /* ↓ was 10px */
+  margin-bottom: 7px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 3px;           /* ↓ was 4px */
+  margin-bottom: 3px;
   font-weight: 500;
   color: #0F3D56;
-  font-size: 11px;              /* ↓ was 12px */
+  font-size: 11px;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 6px 9px;             /* ↓ was 8px 10px */
+  padding: 6px 9px;
   border-radius: 8px;
   border: 1px solid #dde3e8;
   outline: none;
@@ -1854,6 +1855,14 @@ input:disabled {
   color: #333;
   box-sizing: border-box;
   transition: border-color 0.2s;
+  /* Penting: cegah zoom-in otomatis di iOS Safari */
+  font-size: max(16px, 12px);
+}
+
+/* Khusus untuk label & hint, tetap kecil */
+.form-group label,
+.field-hint {
+  font-size: 11px !important;
 }
 
 .form-group input:focus,
@@ -1868,7 +1877,7 @@ input:disabled {
 
 .field-hint {
   display: block;
-  font-size: 10px;              /* ↓ was 11px */
+  font-size: 10px;
   color: #9ca3af;
   margin-top: 3px;
 }
@@ -1876,13 +1885,13 @@ input:disabled {
 /* ─── Upload Button ──────────────────────────────────────────── */
 #btn-upload {
   width: 100%;
-  padding: 7px 14px;            /* ↓ was 9px 16px */
+  padding: 7px 14px;
   background: #0F3D56;
   color: white;
   border: none;
   border-radius: 10px;
   font-family: 'Poppins', sans-serif;
-  font-size: 12px;              /* ↓ was 13px */
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -1891,6 +1900,8 @@ input:disabled {
   gap: 8px;
   transition: background 0.2s, transform 0.1s;
   margin-top: 4px;
+  /* Touch target minimal 44px untuk mobile */
+  min-height: 44px;
 }
 
 #btn-upload:hover   { background: #1FA9E6; }
@@ -1903,7 +1914,7 @@ input:disabled {
   width: 100%;
   background: #e5e7eb;
   border-radius: 10px;
-  height: 5px;                  /* ↓ was 6px */
+  height: 5px;
   margin-top: 10px;
   overflow: hidden;
 }
@@ -1920,7 +1931,7 @@ input:disabled {
   background: #fff;
   border: 2px dashed #1FA9E6;
   border-radius: 15px;
-  padding: 16px 14px;           /* ↓ was 20px 16px */
+  padding: 16px 14px;
   text-align: center;
   transition: border-color 0.2s, background 0.2s;
   cursor: pointer;
@@ -1929,6 +1940,8 @@ input:disabled {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* Minimum height agar tidak terlalu gepeng di mobile */
+  min-height: 160px;
 }
 
 .doc-upload-card:hover,
@@ -1939,8 +1952,8 @@ input:disabled {
 
 .doc-upload-card svg {
   color: #1FA9E6;
-  margin-bottom: 8px;           /* ↓ was 10px */
-  width: 32px;                  /* ↓ was 38px */
+  margin-bottom: 8px;
+  width: 32px;
   height: 32px;
 }
 
@@ -1952,7 +1965,7 @@ input:disabled {
 }
 
 #upload-prompt strong {
-  font-size: 11.5px;            /* ↓ was 12.5px */
+  font-size: 11.5px;
   font-weight: 600;
   color: #0F3D56;
   margin-bottom: 3px;
@@ -1961,7 +1974,7 @@ input:disabled {
 #upload-prompt p {
   margin: 2px 0;
   color: #7f8c8d;
-  font-size: 10.5px;            /* ↓ was 11.5px */
+  font-size: 10.5px;
 }
 
 .upload-format-chips {
@@ -1969,20 +1982,20 @@ input:disabled {
   gap: 4px;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 8px 0 3px;            /* ↓ was 10px 0 4px */
+  margin: 8px 0 3px;
 }
 
 .upload-format-chips span {
   background: #e0f2fe;
   color: #0369a1;
-  font-size: 10px;              /* ↓ was 10.5px */
+  font-size: 10px;
   font-weight: 600;
   padding: 2px 7px;
   border-radius: 20px;
 }
 
 .upload-size-note {
-  font-size: 10px !important;   /* ↓ was 11px */
+  font-size: 10px !important;
   color: #b0b8c1 !important;
   margin-top: 3px !important;
 }
@@ -1997,13 +2010,13 @@ input:disabled {
 }
 
 .file-icon-wrap {
-  font-size: 2.5rem;            /* ↓ was 3rem */
+  font-size: 2.5rem;
   margin-bottom: 8px;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
 #selected-file-name {
-  font-size: 12px;              /* ↓ was 13px */
+  font-size: 12px;
   font-weight: 600;
   color: #0288d1;
   text-align: center;
@@ -2025,6 +2038,7 @@ input:disabled {
   align-items: center;
   gap: 5px;
   transition: background 0.2s;
+  min-height: 36px;
 }
 
 .btn-clear-file:hover { background: #dc2626; }
@@ -2060,6 +2074,7 @@ input:disabled {
   border: 1px solid #dde3e8;
   font-family: 'Poppins', sans-serif;
   outline: none;
+  min-height: 36px;
 }
 
 .list-controls input { width: 200px; }
@@ -2109,12 +2124,17 @@ input:disabled {
 }
 
 /* ─── Table ──────────────────────────────────────────────────── */
-.table-wrap { overflow-x: auto; }
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* smooth scroll di iOS */
+}
 
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px;
+  /* Pastikan tabel tidak menyusut lebih kecil dari kontennya */
+  min-width: 700px;
 }
 
 table thead tr { background: #0F3D56; color: white; }
@@ -2192,6 +2212,7 @@ tr.row-expiring td { background: #fff7ed; }
   font-size: 11px;
   font-family: 'Poppins', sans-serif;
   transition: background 0.2s;
+  min-height: 32px;
 }
 
 .btn-lihat:hover { background: #27ae60; }
@@ -2206,6 +2227,7 @@ tr.row-expiring td { background: #fff7ed; }
   font-size: 11px;
   font-family: 'Poppins', sans-serif;
   transition: background 0.2s;
+  min-height: 32px;
 }
 
 .btn-hapus-doc:hover { background: #c0392b; }
@@ -2226,13 +2248,18 @@ tr.row-expiring td { background: #fff7ed; }
   max-width: 300px;
 }
 
-/* ─── Responsive ─────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+═══════════════════════════════════════════ */
+
+/* Tablet landscape */
 @media (max-width: 1100px) {
   .upload-grid {
     grid-template-columns: 1fr 210px;
   }
 }
 
+/* Tablet portrait — drop zone pindah ke bawah */
 @media (max-width: 900px) {
   .upload-grid {
     grid-template-columns: 1fr;
@@ -2243,6 +2270,7 @@ tr.row-expiring td { background: #fff7ed; }
   }
 }
 
+/* Tablet kecil / HP landscape */
 @media (max-width: 768px) {
   .form-row-2 {
     grid-template-columns: 1fr;
@@ -2253,12 +2281,10 @@ tr.row-expiring td { background: #fff7ed; }
     width: 100%;
   }
 
-  .list-controls input {
-    width: 100%;
-  }
-
+  .list-controls input,
   .list-controls select {
     width: 100%;
+    box-sizing: border-box;
   }
 
   .list-header {
@@ -2274,24 +2300,96 @@ tr.row-expiring td { background: #fff7ed; }
     padding: 5px 10px;
     font-size: 11px;
   }
+
+  /* Toast lebih lebar & di tengah bawah di HP */
+  .toast-notif {
+    left: 1rem;
+    right: 1rem;
+    max-width: 100%;
+    bottom: 1rem;
+    text-align: center;
+  }
 }
 
+/* HP portrait — prioritas utama */
 @media (max-width: 480px) {
   .form-box {
-    padding: 12px 14px;
+    padding: 12px 12px;
+    border-radius: 12px;
   }
 
+  .form-section-title {
+    font-size: 12px;
+  }
+
+  /* Input & select: font 16px mencegah zoom Safari iOS */
+  .form-group input,
+  .form-group select {
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+
+  #btn-upload {
+    font-size: 13px;
+    padding: 10px 14px;
+    min-height: 46px;
+  }
+
+  .doc-upload-card {
+    padding: 20px 12px;
+    border-radius: 12px;
+    min-height: 150px;
+  }
+
+  /* Tabel: kolom-kolom tidak penting disembunyikan */
   table thead th,
   table tbody td {
-    padding: 8px 8px;
+    padding: 8px 7px;
     font-size: 11px;
+  }
+
+  /* Sembunyikan kolom Rev. & Departemen di layar sangat kecil */
+  .col-hide-mobile {
+    display: none;
   }
 
   .action-cell {
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
+  }
+
+  .btn-lihat,
+  .btn-hapus-doc {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    min-height: 34px;
+    font-size: 11px;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .stat-chip {
+    text-align: center;
   }
 }
+
+/* HP kecil (320px) */
+@media (max-width: 360px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-format-chips span {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+}
+
 
 
 /* ============================================================
@@ -2849,5 +2947,161 @@ tr.row-expiring td { background: #fff7ed; }
     left: 1rem;
     right: 1rem;
     max-width: unset;
+  }
+}
+
+
+
+/* ══════════════════════════════════════════════════
+    --- MOBILE RESPONSIVE FIX ---
+   ══════════════════════════════════════════════════ */
+
+/* ── Hamburger button (muncul di mobile) ── */
+.btn-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  box-shadow: none;
+  transition: background 0.2s;
+  color: #0F3D56;
+}
+.btn-hamburger:hover {
+  background: rgba(31, 169, 230, 0.1);
+  transform: none;
+  box-shadow: none;
+}
+.btn-hamburger svg {
+  display: block;
+}
+
+/* ── Overlay gelap saat sidebar terbuka di mobile ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 998;
+}
+.sidebar-overlay.open {
+  display: block;
+}
+
+/* ── Tablet: sidebar ikon saja (80px) ── */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 72px;
+    padding: 20px 10px;
+    overflow: visible;
+  }
+
+  .sidebar .logo h2,
+  .sidebar .logo p {
+    display: none;
+  }
+
+  .sidebar .logo img {
+    width: 44px;
+    margin-bottom: 0;
+  }
+
+  .sidebar .logo {
+    margin-bottom: 20px;
+  }
+
+  .sidebar li a {
+    justify-content: center;
+    padding: 12px;
+    font-size: 20px;
+  }
+
+  /* Sembunyikan teks menu, tampilkan hanya emoji/icon */
+  .sidebar li a span.menu-text {
+    display: none;
+  }
+
+  .main {
+    margin-left: 72px;
+  }
+}
+
+/* ── Mobile: sidebar tersembunyi, slide-in saat dibuka ── */
+@media (max-width: 600px) {
+  .sidebar {
+    width: 240px;
+    padding: 24px 16px;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
+    /* Kembalikan tampilan penuh */
+    overflow: hidden;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Kembalikan logo ke tampilan normal */
+  .sidebar .logo h2,
+  .sidebar .logo p,
+  .sidebar .logo img {
+    display: block;
+  }
+
+  .sidebar .logo img {
+    width: 80px;
+    margin-bottom: 10px;
+  }
+
+  .sidebar .logo h2 {
+    font-size: 20px;
+  }
+
+  .sidebar .logo {
+    margin-bottom: 20px;
+  }
+
+  .sidebar li a {
+    justify-content: flex-start;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .sidebar li a span.menu-text {
+    display: inline;
+  }
+
+  /* Main tidak tergeser — sidebar overlap di atasnya */
+  .main {
+    margin-left: 0 !important;
+  }
+
+  /* Navbar: kompres sedikit */
+  .navbar {
+    padding: 0 16px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .navbar h2 {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100vw - 120px);
+  }
+
+  /* Hamburger muncul di mobile */
+  .btn-hamburger {
+    display: flex;
+    align-items: center;
+  }
+
+  .content {
+    padding: 16px 14px;
   }
 }

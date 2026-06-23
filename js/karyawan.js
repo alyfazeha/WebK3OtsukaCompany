@@ -29,10 +29,28 @@ async function loadData() {
         console.log(error);
         return;
     }
-    semuaData = data;
-    tampilkanData(data);
+
+    semuaData = data || [];
+    tampilkanData(semuaData);
+    hitungStats(semuaData);
 }
+
 loadData();
+
+function hitungStats(data) {
+    // MCU Fit dianggap: "Fit" dan "Fit dengan Catatan"
+    const total = data.length;
+    const fitAktif = data.filter(x => x.status_mcu === "Fit" || x.status_mcu === "Fit dengan Catatan").length;
+    const unfit = data.filter(x => x.status_mcu === "Unfit").length;
+
+    const elTotal = document.getElementById("stat-total-karyawan");
+    const elFit = document.getElementById("stat-fit-mcu");
+    const elUnfit = document.getElementById("stat-unfit-mcu");
+
+    if (elTotal) elTotal.textContent = total;
+    if (elFit) elFit.textContent = fitAktif;
+    if (elUnfit) elUnfit.textContent = unfit;
+}
 
 function tampilkanData(data) {
     tbody.innerHTML = "";

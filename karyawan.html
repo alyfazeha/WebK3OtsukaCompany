@@ -19,6 +19,31 @@
             </div>
         </div>
         <div class="content">
+            <!-- Statistik Karyawan (otomatis update saat data berubah) -->
+            <div class="dashboard-grid" style="margin-bottom:24px;">
+                <div class="card-stat">
+                    <div class="card-icon">👥</div>
+                    <div class="card-info">
+                        <h3 id="stat-total-karyawan">0</h3>
+                        <p>Total Karyawan</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">✅</div>
+                    <div class="card-info">
+                        <h3 id="stat-fit-mcu">0</h3>
+                        <p>MCU Aktif (Fit)</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">🚫</div>
+                    <div class="card-info">
+                        <h3 id="stat-unfit-mcu">0</h3>
+                        <p>MCU Tidak Aktif (Non-Fit)</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="top">
                 <button id="openModal">
                     + Tambah Data

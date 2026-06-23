@@ -2201,6 +2201,10 @@ table tbody td {
   padding: 28px !important;
 }
 
+.table-wrap table tbody tr td {
+  background-color: #ffffff;
+}
+
 /* ─── Status Badge ───────────────────────────────────────────── */
 .badge-status {
   display: inline-block;

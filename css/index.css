@@ -35,61 +35,102 @@ section {
     line-height: 1.6;
 }
 
-/* 1. NAVBAR */
+/* ==========================================================================
+   1. LANDING NAVBAR FULL WIDTH STYLE (MENTOK KANAN-KIRI)
+   ========================================================================== */
 .landing-navbar {
-    height: 85px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%; /* Membuat background putih full kanan-kiri */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
+    border-radius: 0; /* Menghilangkan bentuk kapsul bulat sebelumnya */
+    padding: 16px 40px; /* Jarak aman dari tepi layar monitor */
+    box-shadow: 0 4px 20px rgba(15, 61, 86, 0.04);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    
+    /* MENGGUNAKAN SPACE-BETWEEN AGAR BRAND DI KIRI & LOGIN DI KANAN */
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; 
     align-items: center;
-    padding: 0 80px;
-    box-shadow: 0 4px 30px rgba(15, 61, 86, 0.03);
-    position: sticky;
-    top: 0;
+    
     z-index: 1000;
-    border-bottom: 1px solid #edf2f7;
+    transition: all 0.3s ease;
 }
 
 .landing-navbar .brand {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
 .landing-navbar .brand img {
-    height: 48px;
+    height: 36px;
     object-fit: contain;
 }
 
 .landing-navbar .brand h1 {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--color-deep);
+    white-space: nowrap;
 }
 
+/* Container List Navigasi (Otomatis berada di tengah navbar) */
+.landing-navbar .nav-links {
+    display: flex;
+    list-style: none;
+    gap: 6px; 
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+/* Gaya Item Menu Utama */
+.landing-navbar .nav-links li a {
+    text-decoration: none;
+    color: #475569; 
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 100px; 
+    transition: all 0.25s ease;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* STATE HOVER & AKTIF: Tetap Abu-Abu Muda */
+.landing-navbar .nav-links li a:hover,
+.landing-navbar .nav-links li a.active {
+    background: #e2e8f0; 
+    color: var(--color-deep) !important; 
+}
+
+/* Tombol Masuk/Login Nav */
 .btn-login-nav {
     background: var(--gradient-main);
     color: white;
     border: none;
-    padding: 12px 26px;
-    border-radius: 10px;
+    padding: 10px 22px;
+    border-radius: 100px; 
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(23, 108, 140, 0.2);
+    box-shadow: 0 4px 12px rgba(23, 108, 140, 0.15);
+    white-space: nowrap;
 }
 
 .btn-login-nav:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(23, 108, 140, 0.35);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(23, 108, 140, 0.25);
 }
 
-/* 2. HERO SECTION */
+/* 2. HERO SECTION (Diberi space atas ekstra agar tidak tertabrak navbar full) */
 .hero-section {
     max-width: 1280px;
-    margin: 0 auto;
+    margin: 130px auto 0 auto; 
     display: grid;
     grid-template-columns: 1.2fr 0.8fr;
     align-items: center;
@@ -223,7 +264,7 @@ section {
     color: var(--color-mid);
 }
 
-/* 3. SAFETY MILESTONES (STATISTIK) */
+/* 3. SAFETY MILESTONES */
 .stats-section {
     background: white;
     border-top: 1px solid #edf2f7;
@@ -259,7 +300,7 @@ section {
     font-weight: 500;
 }
 
-/* 4. CORE VALUES (3 PILAR) */
+/* 4. CORE VALUES */
 .pilar-grid {
     max-width: 1200px;
     margin: 0 auto;
@@ -500,4 +541,255 @@ section {
 
 .landing-footer strong {
     color: white;
+}
+
+/* Smooth scroll secara global */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 110px; 
+}
+
+/* 5A. TENTANG OTSUKA */
+.about-section {
+    background: white;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.about-text p {
+    font-size: 15px;
+    color: #475569;
+    line-height: 1.8;
+    margin-bottom: 16px;
+    text-align: justify;
+}
+
+.about-badges-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.cert-badge-card {
+    background: var(--gradient-soft);
+    border: 1px solid rgba(35, 167, 199, 0.15);
+    padding: 18px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-deep);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 4px 10px rgba(15, 61, 86, 0.01);
+}
+
+.cert-badge-card small {
+    font-weight: 500;
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* 5B. SIMBOL & FILOSOFI */
+.philosophy-section {
+    background: #f8fafc;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.philosophy-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 40px;
+}
+
+.phil-card {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(15, 61, 86, 0.02);
+}
+
+.phil-card h3 {
+    font-size: 24px;
+    color: var(--color-deep);
+    margin-bottom: 24px;
+    font-weight: 700;
+    border-left: 5px solid var(--color-bright);
+    padding-left: 14px;
+}
+
+.phil-card p {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+.objective-box {
+    background: #f1f5f9;
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+    margin-top: 20px;
+    border-left: 4px solid #94a3b8;
+}
+
+.motto-container {
+    background: var(--gradient-main);
+    padding: 24px;
+    border-radius: 16px;
+    color: white;
+    text-align: center;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 20px rgba(15, 61, 86, 0.12);
+}
+
+.motto-quote {
+    color: white !important;
+    font-size: 16px !important;
+    font-weight: 700;
+    font-style: italic;
+    margin-bottom: 0 !important;
+    line-height: 1.5;
+}
+
+.phil-card h5 {
+    font-size: 15px;
+    color: var(--color-deep);
+    margin: 24px 0 12px 0;
+    font-weight: 700;
+}
+
+.phil-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.phil-list li {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #f8fafc;
+    padding: 14px 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.list-num-icon {
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.list-content {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* Simbol Grafis Bulatan Otsuka */
+.otsuka-symbol-logo {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+    justify-content: center;
+    margin-bottom: 24px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    user-select: none;
+}
+
+.circle-blue {
+    font-size: 70px;
+    color: #0057B8;
+    line-height: 1;
+}
+
+.circle-red {
+    font-size: 38px;
+    color: #E60012;
+    line-height: 1;
+}
+
+/* ==========================================================================
+   MEDIA QUERIES (RESPONSIVE VIEW UNTUK LAYAR TABLET & HP)
+   ========================================================================== */
+@media (max-width: 1024px) {
+    section {
+        padding: 60px 40px;
+    }
+    .landing-navbar {
+        padding: 16px 24px; /* Menyesuaikan padding kiri-kanan tablet */
+    }
+    .hero-section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+        margin-top: 140px;
+    }
+    .hero-text h2 {
+        font-size: 36px;
+    }
+    .hero-cta-group {
+        justify-content: center;
+    }
+    .hero-visual {
+        order: -1;
+    }
+    .about-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .landing-navbar {
+        padding: 16px 20px;
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+    .landing-navbar .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2px;
+    }
+    .landing-navbar .nav-links li a {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    .hero-section {
+        margin-top: 200px;
+    }
+    section {
+        padding: 50px 20px;
+    }
+    .philosophy-grid {
+        grid-template-columns: 1fr;
+    }
+    .about-badges-grid {
+        grid-template-columns: 1fr;
+    }
 }

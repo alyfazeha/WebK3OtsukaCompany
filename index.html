@@ -7,31 +7,34 @@
     <title>Sistem Informasi K3 - PT Otsuka Indonesia</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
-    <!-- Memanggil Global Style (Variabel Warna & Font) -->
     <link rel="stylesheet" href="css/style.css">
-    <!-- Memanggil Landing Page Style Baru -->
     <link rel="stylesheet" href="css/index.css">
-    <!-- Memanggil Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="landing-page">
 
-    <!-- 1. NAVBAR -->
     <nav class="landing-navbar">
         <div class="brand">
             <img src="images/logo otsuka.jpg" alt="Logo Otsuka">
             <h1>PT Otsuka Indonesia</h1>
         </div>
+
+        <ul class="nav-links">
+            <li><a href="#tentang" class="active">Tentang Kami</a></li>
+            <li><a href="#filosofi">Filosofi & Simbol</a></li>
+            <li><a href="#dokumen-publik">Berkas Umum</a></li>
+            <li><a href="#kontak-darurat">Kontak Siaga</a></li>
+        </ul>
+
         <div>
             <button class="btn-login-nav" onclick="window.location.href='login.html'">🔑 Masuk Ke Sistem</button>
         </div>
     </nav>
 
-    <!-- 2. HERO SECTION -->
     <section class="hero-section">
         <div class="hero-text">
             <div class="tagline-badge">🛡️ K3 Integrated Management System</div>
@@ -65,7 +68,6 @@
         </div>
     </section>
 
-    <!-- 3. SAFETY MILESTONES (STATISTIK CHIPS) -->
     <section class="stats-section">
         <div class="stats-grid">
             <div class="stats-card">
@@ -87,7 +89,6 @@
         </div>
     </section>
 
-    <!-- 4. CORE VALUES (3 PILAR UTAMA) -->
     <section class="pilars-section">
         <div class="section-header">
             <h3>🛡️ Tiga Pilar Budaya K3 Otsuka</h3>
@@ -103,7 +104,7 @@
             <div class="pilar-card">
                 <div class="pilar-icon">⚡</div>
                 <h4>Responsif Tangkas</h4>
-                <p>Kesiapsiagaan penuh dari tim K3 Officer dan First Aider yang dipersenjatai sistem alert digital
+                <p>Kesiapsiagaan penuh dari tim K3 Officer dan First Aider yang dipersenjateni sistem alert digital
                     otomatis selama 24 jam penuh.</p>
             </div>
             <div class="pilar-card">
@@ -115,7 +116,6 @@
         </div>
     </section>
 
-    <!-- 5. WORKFLOW PREVIEW (ALUR SISTEM) -->
     <section class="workflow-section">
         <div class="section-header">
             <h3>🔀 Alur Singkat Pelaporan Bahaya</h3>
@@ -146,21 +146,104 @@
         </div>
     </section>
 
-    <!-- 6. DOKUMEN PUBLIK GRID -->
+    <section class="about-section" id="tentang">
+        <div class="section-header">
+            <h3>🏢 Tentang PT Otsuka Indonesia</h3>
+            <p>Sejarah singkat, rekam jejak industri farmasi, dan standarisasi tinggi pabrik manufaktur kami.</p>
+        </div>
+        <div class="about-container">
+            <div class="about-text">
+                <p><strong>PT Otsuka Indonesia</strong> didirikan pada tahun 1974 sebagai perusahaan patungan di bidang
+                    industri farmasi dengan Otsuka Pharmaceutical Co.,Ltd., Jepang. Dibangun di atas lahan seluas 48.397
+                    m² di Lawang, sebuah kota kecil di Jawa Timur, Pabrik PT Otsuka Indonesia memproduksi dan memasarkan
+                    produk-produk obat diantaranya Cairan Infus/Injeksi dan Obat Etikal, maupun Produk Nutrisi untuk
+                    keperluan Medis Khusus serta Produk-produk Alat Kesehatan.</p>
+                <p>Produk Cairan Infus telah berhasil menembus pasar farmasi serta memiliki reputasi terbaik di
+                    Indonesia. Sukses ini telah mendorong kami untuk melangkah lebih jauh di industri farmasi dengan
+                    memproduksi obat-obat Etikal, Nutrisi untuk keperluan Medis Khusus dan Alat-alat Kesehatan yang
+                    telah memenuhi persyaratan standarisasi <strong>CPOB</strong> (Cara Pembuatan Obat yang Baik),
+                    <strong>CPAKB</strong> (Cara Pembuatan Alat Kesehatan yang Baik) dan <strong>CPPOB</strong> (Cara
+                    Produksi Pangan Olahan yang Baik).
+                </p>
+                <p>Langkah diversifikasi bisnis yang diambil oleh PT Otsuka Indonesia terus berkembang, tidak hanya di
+                    Indonesia saja, tetapi kami juga telah mengembangkan sayap dengan melakukan ekspor ke beberapa
+                    negara seperti Hong Kong, Singapura, Malaysia, Myanmar, Vietnam, Filipina, Mongolia, Sri Lanka,
+                    Thailand, India dan Mesir.</p>
+            </div>
+            <div class="about-badges-grid">
+                <div class="cert-badge-card">🏅 ISO 9001 <small>Sistem Manajemen Mutu</small></div>
+                <div class="cert-badge-card">🍏 ISO 22000 <small>Manajemen Keamanan Pangan</small></div>
+                <div class="cert-badge-card">🌿 ISO 14001 <small>Sistem Manajemen Lingkungan</small></div>
+                <div class="cert-badge-card">⚡ ISO 50001 <small>Sistem Manajemen Energi</small></div>
+                <div class="cert-badge-card">🕌 Sertifikat Halal <small>Sertifikasi Resmi Resmi</small></div>
+                <div class="cert-badge-card">🚢 Sertifikat AEO <small>Kepabeanan Ekspor & Impor</small></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="philosophy-section" id="filosofi">
+        <div class="philosophy-grid">
+            <div class="phil-card symbol-card">
+                <h3>🎨 Simbol Kami</h3>
+                <div class="otsuka-symbol-logo">
+                    <img src="images/logo otsuka.jpg" alt="Logo Otsuka" style="width: 250px; height: 100px;">
+                </div>
+                <p>Representasi simbolis dari filosofi perusahaan Otsuka, simbol perusahaan kami mengadopsi inisial
+                    <code>O</code> dari nama perusahaan sebagai motif. Mewakili langit di atas, <strong>O besar</strong>
+                    ditampilkan dalam gradasi Otsuka BLUE yang dimaksudkan untuk menandakan "keterbukaan", "kebebasan",
+                    "kecerdasan", dan "masa depan".
+                </p>
+                <p><strong>O kecil</strong> dalam Otsuka RED mewakili energi terfokus Otsuka, sumber dari
+                    prinsip-prinsip ini. Mengimbangi dua bentuk yang seimbang, nama Otsuka dieja dalam jenis huruf yang
+                    terbuka dan ramah. Simbol perusahaan kami menyampaikan komitmen energik Otsuka untuk kebahagiaan
+                    manusia melalui kesehatan yang baik.</p>
+                <div class="objective-box">
+                    <strong>🎯 Objektif:</strong> Sehubungan dengan pesatnya globalisasi operasinya, Otsuka
+                    memperkenalkan simbol perusahaannya untuk mempromosikan komunikasi yang bermakna dengan orang-orang
+                    di seluruh dunia. Simbol perusahaan kami menandakan dedikasi global Otsuka untuk membangun hubungan
+                    yang harmonis dengan komunitas lokal dan melindungi ekosistem alami di sekitar fasilitas kami. Ini
+                    juga mewakili tujuan kami yang lebih besar untuk berkontribusi pada kesehatan dan kesejahteraan
+                    orang-orang di seluruh dunia.
+                </div>
+            </div>
+
+            <div class="phil-card values-card">
+                <h3>🎯 Filosofi Kami</h3>
+                <div class="motto-container">
+                    <p class="motto-quote">"Otsuka-people creating new products for better health worldwide"</p>
+                </div>
+                <p>Selama puluhan tahun, PT Otsuka Indonesia telah terbukti mampu menguasai bisnis Cairan Infus dan
+                    untuk terus memperkuat kedudukan tersebut, kami selalu tertantang untuk terus mengembangkan
+                    produk-produk baru dalam rangka memenuhi kebutuhan pelanggan secara berkesinambungan.</p>
+                <h5>Filosofi kami mewujudkan dedikasi kami untuk:</h5>
+                <ul class="phil-list">
+                    <li>
+                        <div class="list-num-icon">💡</div>
+                        <div class="list-content">Menciptakan produk yang unik dan inovatif</div>
+                    </li>
+                    <li>
+                        <div class="list-num-icon">❤️</div>
+                        <div class="list-content">Meningkatkan kesehatan dan kesejahteraan</div>
+                    </li>
+                    <li>
+                        <div class="list-num-icon">🌍</div>
+                        <div class="list-content">Berkontribusi pada kehidupan orang-orang di seluruh dunia</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
     <section class="docs-section" id="dokumen-publik">
         <div class="section-header">
             <h3>📂 Regulasi & Panduan Umum K3</h3>
             <p>Berkas panduan resmi yang dapat diunduh bebas oleh tamu industri, praktisi akademik, maupun mitra
                 kontraktor eksternal.</p>
         </div>
-        <!-- Tambahkan id="document-container" di sini -->
-        <div class="doc-grid" id="document-container">
-            <!-- Data dari Supabase akan otomatis di-render di sini dengan tampilan asli -->
-        </div>
+        <div class="doc-grid" id="document-container"></div>
     </section>
 
-    <!-- 7. EMERGENCY STATIONS (KONTAK CEPAT) -->
-    <section class="emergency-section">
+    <section class="emergency-section" id="kontak-darurat">
         <div class="section-header">
             <h3 style="color: #991b1b;">🚨 Hubungi Posko Siaga Tanggap Darurat</h3>
             <p style="color: #991b1b; opacity: 0.8;">Saluran khusus interkom internal dan darurat luar jikalau terjadi
@@ -191,7 +274,6 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
     <footer class="landing-footer">
         <p>&copy; 2026 <strong>PT Otsuka Indonesia</strong> — Health & Safety Integrated Management System.</p>
         <p style="font-size: 12px; margin-top: 10px; color: #64748b;">All Rights Reserved. Dikembangkan untuk
@@ -202,7 +284,7 @@
         // 1. Konfigurasi Client Supabase
         const SUPABASE_URL = 'https://npewnmpxexiqeoqberkm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wZXdubXB4ZXhpcWVvcWJlcmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNDg3OTIsImV4cCI6MjA5NjkyNDc5Mn0.rTavMzcN2i_z-09_RdY_CSt79XEoBgVQBpnr3biCSmk';
-        const BUCKET_NAME = 'dokumen-k3'; // Contoh: 'documents' atau 'k3-files'
+        const BUCKET_NAME = 'dokumen-k3';
 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -211,7 +293,6 @@
             const container = document.getElementById('document-container');
 
             try {
-                // Ambil data dari table public.dokumen_k3
                 const { data: dokumenList, error } = await supabaseClient
                     .from('dokumen_k3')
                     .select('*')
@@ -219,7 +300,6 @@
 
                 if (error) throw error;
 
-                // Bersihkan container dari elemen placeholder/lama
                 container.innerHTML = '';
 
                 if (!dokumenList || dokumenList.length === 0) {
@@ -227,9 +307,7 @@
                     return;
                 }
 
-                // Loop data dan buat struktur elemen persis seperti template asli
                 dokumenList.forEach(doc => {
-                    // Dapatkan URL Unduh Publik dari Supabase Storage berdasarkan file_path di tabel
                     const { data: urlData } = supabaseClient
                         .storage
                         .from(BUCKET_NAME)
@@ -237,21 +315,18 @@
 
                     const fileUrl = urlData.publicUrl;
 
-                    // Template literal dengan susunan class CSS asli (Tampilan tidak akan berubah)
                     const cardHtml = `
-                <div class="doc-card">
-                    <div class="doc-card-body">
-                        <h4>${doc.nama_dokumen}</h4>
-                        <p>Kategori/Jenis: ${doc.jenis_dokumen || 'Umum'}</p>
-                    </div>
-                    <div class="doc-footer">
-                        <span class="doc-meta">${doc.jenis_dokumen || 'Berkas'} • ${doc.tanggal_upload || ''}</span>
-                        <button class="btn-download" onclick="window.open('${fileUrl}', '_blank')">📥 Unduh</button>
-                    </div>
-                </div>
-            `;
-
-                    // Masukkan card ke dalam grid
+                        <div class="doc-card">
+                            <div class="doc-card-body">
+                                <h4>${doc.nama_dokumen}</h4>
+                                <p>Kategori/Jenis: ${doc.jenis_dokumen || 'Umum'}</p>
+                            </div>
+                            <div class="doc-footer">
+                                <span class="doc-meta">${doc.jenis_dokumen || 'Berkas'} • ${doc.tanggal_upload || ''}</span>
+                                <button class="btn-download" onclick="window.open('${fileUrl}', '_blank')">📥 Unduh</button>
+                            </div>
+                        </div>
+                    `;
                     container.insertAdjacentHTML('beforeend', cardHtml);
                 });
 
@@ -261,7 +336,15 @@
             }
         }
 
-        // Jalankan fungsi setelah seluruh halaman selesai dimuat
+        // 3. Logika Mengubah tab navbar aktif saat diklik 
+        const menuLinks = document.querySelectorAll('.landing-navbar .nav-links a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                menuLinks.forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
         document.addEventListener('DOMContentLoaded', muatDokumenPublik);
     </script>
 </body>

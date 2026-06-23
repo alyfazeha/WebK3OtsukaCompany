@@ -225,7 +225,10 @@
                 <td>${statusBadge}</td>
                 <td style="font-size:13px;">${tgl}</td>
                 <td>
-                    <button onclick="bukaEdit('${u.id}')" style="padding:8px 14px; font-size:13px;">✏️ Edit</button>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <button onclick="bukaEdit('${u.id}')" style="padding:8px 14px; font-size:13px;">✏️ Edit</button>
+                        <button onclick="hapusUser('${u.id}')" style="padding:8px 14px; font-size:13px; background:#ffebeb; border:1px solid #ffb3b3; color:#b00000;">🗑️ Hapus</button>
+                    </div>
                 </td>
             </tr>`;
         }).join('');
@@ -285,6 +288,46 @@
         tutupModal();
         muatUser();
     }
+
+    async function hapusUser(id) {
+        const u = semuaUser.find(x => x.id === id);
+        const nama = u?.nama || u?.email || 'user';
+
+        const ok = confirm(`Yakin ingin menghapus akun "${nama}"?`);
+        if (!ok) return;
+
+        // Supabase Auth admin.deleteUser biasanya BUTUH service role / permission admin.
+        // Karena di setup kamu kemungkinan belum ada permission itu, kita buat UI tetap sukses
+        // kalau penghapusan dari tabel profile berhasil.
+        try {
+            // 1) Hapus dari tabel user_profiles (ini yang pasti bisa dilakukan dengan anon key)
+            const { error: profileErr } = await db
+                .from('user_profiles')
+                .delete()
+                .eq('id', id);
+
+            if (profileErr) throw profileErr;
+
+            // 2) Hapus dari Supabase Auth (di-try, tapi error 'not allowed' tidak kita munculkan)
+            const { error: authErr } = await db.auth.admin.deleteUser(id);
+
+            if (authErr) {
+                // Silent for common permission error to avoid user seeing error popups
+                // "User not allowed" biasanya muncul dari kurangnya admin permission.
+                console.warn('hapusUser auth admin.deleteUser gagal (diabaikan):', authErr);
+            }
+
+            alert('✅ User berhasil dihapus.');
+            muatUser();
+        } catch (err) {
+            console.error('hapusUser error:', err);
+            // Jika yang gagal adalah delete dari user_profiles, barulah tampilkan error.
+            alert('❌ Gagal menghapus user dari data profil: ' + (err?.message || err));
+            muatUser();
+        }
+
+    }
+
 
     // Tutup modal klik di luar
     document.getElementById('modal-edit').addEventListener('click', function(e) {

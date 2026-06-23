@@ -1067,6 +1067,39 @@ body.login-page {
   position: relative; /* pastikan ini ada */
 }
 
+.btn-back-mobile {
+  display: none; /* sembunyi di desktop */
+}
+
+@media (max-width: 860px) {
+  .btn-back-mobile {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 16px 0 8px 0;
+    padding: 10px 16px;
+    background: #ffffff;
+    color: #176C8C;
+    border: 1.5px solid #176C8C;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+}
+
+.login-form-panel {
+  display: flex;
+  flex-direction: column; /* ← pastikan ini ada */
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .login-form-panel {
+    padding: 16px 16px;
+  }
+}
+
 
 /* =======================
    USER BADGE DI NAVBAR

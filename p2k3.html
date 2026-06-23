@@ -14,33 +14,98 @@
 <body>
 <div class="sidebar" id="sidebar"></div>
 
-
 <div class="main">
     <div class="navbar">
         <h2>Struktur Organisasi P2K3</h2>
         <div class="profile" id="navbar-profile">Administrator</div>
-
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // initAuth() dipanggil oleh auth.js agar badge kanan atas sama seperti halaman lain
             if (typeof initAuth === 'function') initAuth();
         });
     </script>
 
-
     <div class="content p2k3-page">
+
+        <!-- HERO -->
         <div class="p2k3-hero">
             <div>
-                <span class="section-label">Komite Keselamatan dan Kesehatan Kerja</span>
-                <h3>Struktur Organisasi P2K3</h3>
-                <p>
-                    Pantau susunan pengurus, periode tugas, dan anggota pendukung dalam satu tampilan struktur yang rapi.
-                </p>
+
+                <!-- Judul + tombol edit -->
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap;">
+                    <div>
+                        <span class="section-label">Komite Keselamatan dan Kesehatan Kerja</span>
+                        <h3>Struktur Organisasi P2K3</h3>
+                        <p>
+                            Pantau susunan pengurus, periode tugas, dan anggota pendukung dalam satu tampilan struktur yang rapi.
+                        </p>
+                    </div>
+
+                    <button
+                        id="btnEditFotoStruktur"
+                        type="button"
+                        style="background:rgba(255,255,255,.95); color:#0F3D56;">
+                        ✏️ Edit Foto
+                    </button>
+                </div>
+
+                <!-- Upload box tetap -->
+                <div id="strukturPhotoWrap" style="margin-top:16px; position:relative;">
+                    <div style="display:flex; gap:16px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;">
+
+                        <div style="flex: 1 1 360px; min-width: 280px;">
+                            <div
+                                id="strukturPhotoEmpty"
+                                style="display:none; background:rgba(255,255,255,.12); border:2px dashed rgba(255,255,255,.35); border-radius:12px; padding:18px; text-align:center; color:#e8f7fb;">
+                                <div style="font-size:32px; margin-bottom:8px;">🖼️</div>
+                                <div>Belum ada foto struktur.</div>
+                            </div>
+                        </div>
+
+                        <div style="flex: 0 0 330px; min-width: 280px;">
+                                <div id="strukturPhotoActions" style="display:flex; flex-direction:column; gap:10px; align-items:flex-start; padding-left:18px;">
+
+                                <div id="strukturUploadBox" style="display:none; width:100%;">
+                                    <div style="font-weight:700; color:#e8f7fb; margin-bottom:6px;">
+                                        Form Edit Foto Struktur
+                                    </div>
+
+                                    <input id="inputFotoStruktur" type="file" accept="image/*" />
+
+                                    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:10px;">
+                                        <button
+                                            type="button"
+                                            style="background:#7f8c8d;"
+                                            onclick="tutupUploadFotoStruktur()">
+                                            Batal
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            style="background:var(--color-bright);"
+                                            onclick="simpanUploadFotoStruktur()">
+                                            Simpan
+                                        </button>
+                                    </div>
+
+                                    <div
+                                        id="strukturUploadNote"
+                                        style="margin-top:8px; font-size:12px; color:#e8f7fb;">
+                                        Unggah akan menggantikan foto struktur.
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
         </div>
 
+        <!-- PANEL FOTO -->
         <div class="org-panel">
             <div class="panel-heading">
                 <div>
@@ -49,21 +114,73 @@
                 </div>
             </div>
 
-            <div style="width:100%; overflow:auto;">
-                <img
-                    src="images/struktur_p2k3.png"
-                    alt="Struktur P2K3"
-                    style="max-width:100%; height:auto; display:block; margin:0 auto;"
-                >
+            <div style="display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap;">
+                <div style="flex: 1 1 520px; min-width: 320px;">
+                    <div style="width:100%; overflow:auto;">
+
+                        <div id="strukturPhotoWrap" style="position:relative;">
+
+                            <div
+                                id="strukturPhotoEmpty"
+                                style="display:none; background:#f4f8fb; border:2px dashed #cbd5e1; border-radius:12px; padding:22px; text-align:center; color:#7a8791;">
+                                <div style="font-size:36px; margin-bottom:8px;">🖼️</div>
+                                <div>Belum ada foto struktur.</div>
+                            </div>
+
+                            <img
+                                id="strukturPhoto"
+                                src="images/struktur_p2k3.png"
+                                alt="Struktur P2K3"
+                                style="max-width:100%; height:auto; display:block; margin:0 auto; border-radius:12px;">
+
+                            <div
+                                id="strukturPhotoActions"
+                                style="margin-top:12px; display:flex; gap:10px; justify-content:center;">
+
+                                <div
+                                    id="strukturUploadBox"
+                                    style="display:none; width:100%; max-width:520px; margin:0 auto;">
+
+                                    <input id="inputFotoStruktur" type="file" accept="image/*" />
+
+                                    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:10px;">
+                                        <button
+                                            type="button"
+                                            style="background:#7f8c8d;"
+                                            onclick="tutupUploadFotoStruktur()">
+                                            Batal
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            style="background:var(--color-bright);"
+                                            onclick="simpanUploadFotoStruktur()">
+                                            Simpan
+                                        </button>
+                                    </div>
+
+                                    <div
+                                        id="strukturUploadNote"
+                                        style="margin-top:8px; font-size:12px; color:#7a8791;">
+                                        Unggah akan menggantikan foto struktur.
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
+
     </div>
 </div>
 
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sidebar.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/p2k3.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/p2k3.js"></script>
 </body>
 </html>
-

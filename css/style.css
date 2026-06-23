@@ -1045,6 +1045,29 @@ body.login-page {
     .login-card { box-shadow: 0 30px 60px rgba(0,0,0,.2); }
 }
 
+.login-brand .btn-back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-block;
+  padding: 8px 16px;
+  background: #ffffff;
+  color: #176C8C;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-brand .btn-back:hover {
+  background: #e8f4f8;
+}
+
+.login-brand {
+  position: relative; /* pastikan ini ada */
+}
+
+
 /* =======================
    USER BADGE DI NAVBAR
 ======================= */

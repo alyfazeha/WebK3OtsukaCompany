@@ -9,6 +9,7 @@
 ───────────────────────────────────────────── */
 let allDokumen = [];
 let selectedFile = null;
+let editingId = null;
 
 /* ─────────────────────────────────────────────
    INIT
@@ -109,6 +110,32 @@ async function uploadDokumen() {
   if (!fields.tglEfektif.value)    return showToast('Tanggal efektif wajib diisi!', 'error');
 
   try {
+    if (editingId) {
+
+      const { error } = await db
+        .from('dokumen_k3')
+        .update({
+          nama_dokumen: fields.nama.value.trim(),
+          nomor_dokumen: fields.nomor.value.trim(),
+          jenis_dokumen: fields.jenis.value,
+          status_dokumen: fields.status.value,
+          departemen: fields.dept.value,
+          nomor_revisi: fields.revisi.value.trim() || 'Rev.00',
+          tanggal_efektif: fields.tglEfektif.value,
+          tanggal_review: fields.tglReview.value || null
+        })
+        .eq('id', editingId);
+
+      if (error) throw error;
+
+      showToast('Dokumen berhasil diperbarui!', 'success');
+
+      editingId = null;
+      batalEdit();
+      loadDokumen();
+
+      return;
+    }
     btn.disabled = true;
     btn.textContent = 'Mengunggah…';
     animateProgress(0, 80, 1500);
@@ -225,6 +252,7 @@ function renderTable(list) {
         </td>
         <td>
           <div class="action-cell">
+            <button class="btn-edit" onclick="editDokumen(${doc.id})">✏️ Edit</button>
             <button class="btn-lihat" onclick="bukaDokumen('${escapeHtml(doc.file_path)}')">👁️ Lihat</button>
             <button class="btn-hapus-doc" onclick="hapusDokumen(${doc.id}, '${escapeHtml(doc.file_path)}')">🗑️ Hapus</button>
           </div>
@@ -262,6 +290,68 @@ async function hapusDokumen(id, path) {
     console.error(err);
     showToast('Gagal menghapus dokumen: ' + err.message, 'error');
   }
+}
+
+async function editDokumen(id) {
+  try {
+    const { data, error } = await db
+      .from('dokumen_k3')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+
+    editingId = id;
+
+    document.getElementById('nama-dokumen').value = data.nama_dokumen || '';
+    document.getElementById('nomor-dokumen').value = data.nomor_dokumen || '';
+    document.getElementById('jenis-dokumen').value = data.jenis_dokumen || '';
+    document.getElementById('status-dokumen').value = data.status_dokumen || '';
+    document.getElementById('departemen-dokumen').value = data.departemen || '';
+    document.getElementById('nomor-revisi').value = data.nomor_revisi || '';
+    document.getElementById('tanggal-efektif').value = data.tanggal_efektif || '';
+    document.getElementById('tanggal-review').value = data.tanggal_review || '';
+
+    document.getElementById('btn-upload').innerHTML = '💾 Update Dokumen';
+
+    const btnBatal = document.getElementById('btn-batal-edit');
+    if (btnBatal) btnBatal.style.display = 'inline-block';
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function batalEdit() {
+  editingId = null;
+
+  document.getElementById('nama-dokumen').value = '';
+  document.getElementById('nomor-dokumen').value = '';
+  document.getElementById('jenis-dokumen').selectedIndex = 0;
+  document.getElementById('status-dokumen').selectedIndex = 0;
+  document.getElementById('departemen-dokumen').selectedIndex = 0;
+  document.getElementById('nomor-revisi').value = '';
+  document.getElementById('tanggal-efektif').value = '';
+  document.getElementById('tanggal-review').value = '';
+
+  clearFile();
+
+  document.getElementById('btn-upload').innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+    </svg>
+    Upload Dokumen`;
+
+  const btnBatal = document.getElementById('btn-batal-edit');
+  if (btnBatal) btnBatal.style.display = 'none';
 }
 
 /* ─────────────────────────────────────────────

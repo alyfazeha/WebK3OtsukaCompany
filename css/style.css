@@ -1933,6 +1933,17 @@ input:disabled {
 #btn-upload:active  { transform: scale(0.99); }
 #btn-upload:disabled { background: #94a3b8; cursor: not-allowed; }
 
+/* ─── Batal Edit Button ───────────────────────────────────────────── */
+#btn-batal-edit {
+  width: 100%;
+  background-color: #e53e3e;  /* merah */
+  margin-top: 10px;           /* jarak dari tombol upload */
+}
+
+#btn-batal-edit:hover {
+  background-color: #c53030;
+}
+
 /* ─── Progress Bar ───────────────────────────────────────────── */
 #upload-progress {
   display: none;

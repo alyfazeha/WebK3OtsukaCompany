@@ -240,7 +240,17 @@
             <p>Berkas panduan resmi yang dapat diunduh bebas oleh tamu industri, praktisi akademik, maupun mitra
                 kontraktor eksternal.</p>
         </div>
-        <div class="doc-grid" id="document-container"></div>
+
+        <div class="slider-container">
+            <button class="slider-arrow prev-arrow" id="slide-prev">❮</button>
+
+            <div class="doc-slider-viewport">
+                <div class="doc-grid" id="document-container">
+                </div>
+            </div>
+
+            <button class="slider-arrow next-arrow" id="slide-next">❯</button>
+        </div>
     </section>
 
     <section class="emergency-section" id="kontak-darurat">
@@ -346,6 +356,25 @@
         });
 
         document.addEventListener('DOMContentLoaded', muatDokumenPublik);
+
+        // 4. Logika Fungsi Geser Kanan-Kiri Slider Dokumen
+        document.addEventListener('DOMContentLoaded', () => {
+            const viewport = document.querySelector('.doc-slider-viewport');
+            const btnPrev = document.getElementById('slide-prev');
+            const btnNext = document.getElementById('slide-next');
+
+            if (viewport && btnPrev && btnNext) {
+                // Klik tombol kanan -> Geser ke kanan seukuran lebar container
+                btnNext.addEventListener('click', () => {
+                    viewport.scrollLeft += viewport.offsetWidth;
+                });
+
+                // Klik tombol kiri -> Geser ke kiri seukuran lebar container
+                btnPrev.addEventListener('click', () => {
+                    viewport.scrollLeft -= viewport.offsetWidth;
+                });
+            }
+        });
     </script>
 </body>
 

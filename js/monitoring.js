@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldWrapper.className = 'mon-field-card';
         fieldWrapper.dataset.id = fieldCounter;
         fieldWrapper.dataset.type = selectedType;
-        fieldWrapper.style.cssText = "background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #0284c7; padding: 1.25rem; border-radius: 6px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.05);";
+        fieldWrapper.style.cssText = "background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #0284c7; padding: 1.25rem; border-radius: 6px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 1rem;";
 
         // Generate konten internal kartu berdasarkan tipe input
         let dynamicSubInput = '';
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Event listener hapus item field secara mandiri
         fieldWrapper.querySelector('.btn-delete-field').addEventListener('click', () => {
             fieldWrapper.remove();
-            if (fieldsContainer.children.length === 0) {
+            if (fieldsContainer.querySelectorAll('.mon-field-card').length === 0) {
                 resetFieldsContainerToEmpty();
             }
         });
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetDept = document.getElementById('form-target-dept').value;
         const description = document.getElementById('form-desc').value.trim();
 
-        // Validasi kelengkapan data dasar
+        // Validasi kelengkapan data dasar (Kolom NOT NULL)
         if (!title || !frequency || !targetDept) {
             alert('Mohon lengkapi seluruh field identitas utama form!');
             return;
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!labelValue) {
                 validationStatus = false;
-                labelInput.style.borderColor = '#ef4444';
+                if (labelInput) labelInput.style.borderColor = '#ef4444';
             }
 
             let optionsArray = [];
@@ -201,8 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Pengiriman data ke tabel Supabase 'monitoring_forms'
-            // *Catatan: Kolom 'fields_schema' dikonfigurasi bertipe data JSONB di database*
+            // Pengiriman murni properti yang ada di struktur database Anda
             const { data, error } = await supabaseClient
                 .from('monitoring_forms')
                 .insert([
@@ -211,8 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         frequency: frequency,
                         target_department: targetDept,
                         description: description,
-                        fields_schema: structurePayload,
-                        created_by: 'Anindya Naura (Operational Specialist)',
+                        fields_schema: structurePayload, // Payload JSONB otomatis masuk dengan aman
+                        created_by: 'Anindya Naura (Operational & Checklist Specialist)',
                         status: 'Active'
                     }
                 ]);
@@ -237,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             tbodyTemplateForms.innerHTML = `
                 <tr>
-                    <td colspan="6" style="text-align:center; padding: 2rem;">Mendownload data dari server Supabase...</td>
+                    <td colspan="6" style="text-align:center; padding: 2rem; color: #64748b;">Mendownload data dari server Supabase...</td>
                 </tr>
             `;
 
@@ -251,9 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!data || data.length === 0) {
                 tbodyTemplateForms.innerHTML = `
                     <tr>
-                        <td colspan="6">
+                        <td colspan="6" style="text-align:center; padding: 2rem;">
                             <div class="pel-empty-state">
-                                <p>Belum ada template form monitoring yang dibuat.</p>
+                                <p style="color: #94a3b8; font-weight: 500;">Belum ada template form monitoring yang dibuat.</p>
                             </div>
                         </td>
                     </tr>
@@ -265,9 +264,10 @@ document.addEventListener('DOMContentLoaded', () => {
             data.forEach(form => {
                 const tr = document.createElement('tr');
                 
-                // Hitung total komponen instan dari payload JSONB
+                // Hitung total komponen instan dari payload array JSONB
                 const totalElements = Array.isArray(form.fields_schema) ? form.fields_schema.length : 0;
 
+                // Membentuk susunan data presisi sebanyak 6 kolom (td) 
                 tr.innerHTML = `
                     <td style="font-weight:600; color:#1e293b;">${form.title}</td>
                     <td><span class="pel-badge" style="background:#f1f5f9; color:#475569; padding:0.25rem 0.5rem; border-radius:4px; font-size:0.8rem; font-weight:600;">${form.frequency}</span></td>
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tbodyTemplateForms.innerHTML = `
                 <tr>
                     <td colspan="6" style="text-align:center; color:#ef4444; font-weight:600; padding:2rem;">
-                        ❌ Gagal memuat data: ${err.message}. Pastikan tabel 'monitoring_forms' sudah dibuat di Supabase.
+                        ❌ Gagal memuat data: ${err.message}. Pastikan koneksi tabel Supabase sudah tepat.
                     </td>
                 </tr>
             `;

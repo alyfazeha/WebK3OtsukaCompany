@@ -164,6 +164,104 @@ function tutupModal() {
   editId = null;
 }
 
+// ====== EDIT FOTO STRUKTUR (opsional) ======
+// Konsep: simpan foto struktur ke Storage Supabase, lalu render image dari URL.
+// Karena belum ada struktur DB/storage yang pasti di repo ini,
+// implementasi dibuat defensif:
+// - Kalau upload/storage tidak terkonfigurasi, UI tetap jalan tanpa crash.
+
+let strukturFotoUploadPath = "";
+
+function tutupUploadFotoStruktur() {
+  const box = document.getElementById('strukturUploadBox');
+  const input = document.getElementById('inputFotoStruktur');
+  if (box) box.style.display = 'none';
+  if (input) input.value = '';
+}
+
+function bukaUploadFotoStruktur() {
+  const box = document.getElementById('strukturUploadBox');
+  if (!box) return;
+  box.style.display = 'block';
+}
+
+async function simpanUploadFotoStruktur() {
+  const input = document.getElementById('inputFotoStruktur');
+  if (!input || !input.files || !input.files[0]) {
+    alert('Pilih file foto terlebih dahulu.');
+    return;
+  }
+
+  // Nama file default
+  const file = input.files[0];
+  const fileExt = (file.name.split('.').pop() || 'png').toLowerCase();
+  const fileName = `struktur_p2k3_${Date.now()}.${fileExt}`;
+
+  // Pastikan storage client tersedia.
+  if (!db || !db.storage) {
+    alert('Storage Supabase belum terhubung.');
+    return;
+  }
+
+  // Container (bucket) harus ada di Supabase Storage.
+  // Jika bucket kamu berbeda, ubah nilai berikut.
+  const BUCKET_NAME = 'struktur_p2k3';
+
+  try {
+    // Upload
+    const { error: uploadErr } = await db.storage
+      .from(BUCKET_NAME)
+      .upload(fileName, file, { cacheControl: '3600', upsert: true });
+
+    if (uploadErr) {
+      // Kalau storage tidak izin/terjadi error, jangan blok user.
+      // UI tidak perlu memunculkan error berkali-kali.
+      console.warn('upload foto struktur gagal (diabaikan):', uploadErr);
+      throw uploadErr;
+    }
+
+    // Dapatkan public URL
+    const { data: publicData } = db.storage
+      .from(BUCKET_NAME)
+      .getPublicUrl(fileName);
+
+    strukturFotoUploadPath = publicData?.publicUrl || '';
+
+    // Foto preview di halaman bisa saja tidak ditampilkan (karena permintaan UI).
+    // Jadi hanya update jika elemen img-nya ada.
+    const img = document.getElementById('strukturPhoto');
+    if (img && strukturFotoUploadPath) {
+      img.src = strukturFotoUploadPath;
+    }
+
+    // Sembunyikan empty state jika ada foto.
+    const empty = document.getElementById('strukturPhotoEmpty');
+    if (empty) empty.style.display = 'none';
+
+    // Jika upload gagal tapi image di browser sudah berubah, kita tetap anggap sukses.
+    alert('✅ Foto struktur berhasil diubah.');
+    tutupUploadFotoStruktur();
+  } catch (err) {
+    console.error('simpanUploadFotoStruktur error:', err);
+    alert('❌ Gagal mengupload foto struktur.');
+  }
+}
+
+// Hook tombol edit foto
+(function initStrukturFotoUI() {
+  const btn = document.getElementById('btnEditFotoStruktur');
+  if (!btn) return;
+
+  btn.addEventListener('click', () => {
+    bukaUploadFotoStruktur();
+  });
+
+  // Expose global untuk onclick inline di p2k3.html
+  window.tutupUploadFotoStruktur = tutupUploadFotoStruktur;
+  window.simpanUploadFotoStruktur = simpanUploadFotoStruktur;
+})();
+
+
 function editData(id) {
   const data = semuaData.find(item => item.id == id);
   if (!data) return;

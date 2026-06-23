@@ -410,15 +410,43 @@ section {
     background: white;
 }
 
-.doc-grid {
+/* ==========================================================================
+   6. DOKUMEN PUBLIK - MODEREN HORIZONTAL SLIDER (3 PER HALAMAN)
+   ========================================================================== */
+
+/* Container Utama Slider */
+.slider-container {
+    position: relative;
     max-width: 1200px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-.doc-card {
+/* Jendela Viewport (Memotong elemen yang meluber ke kanan) */
+.doc-slider-viewport {
+    overflow-x: auto; /* Tetap izinkan geser manual via touch/swipe di HP */
+    scroll-behavior: smooth; /* Efek bergeser halus saat tombol diklik */
+    width: 100%;
+    padding: 10px 5px;
+    scrollbar-width: none; /* Sembunyikan scrollbar di Firefox */
+}
+
+/* Sembunyikan scrollbar di Chrome, Safari, dan Edge */
+.doc-slider-viewport::-webkit-scrollbar {
+    display: none;
+}
+
+/* Mengubah Grid menjadi Baris Menyamping (Horizontal Flex) */
+.doc-grid {
+    display: flex !important; 
+    gap: 30px;
+    width: 100%;
+}
+
+/* UKURAN CARD: Dibuat Pas Maksimal 3 Buah per Halaman */
+.doc-grid .doc-card {
     background: #fff;
     border-radius: 20px;
     padding: 35px;
@@ -427,6 +455,10 @@ section {
     flex-direction: column;
     justify-content: space-between;
     transition: all 0.3s ease;
+    
+    /* Rumus matematika CSS: Membagi 3 space dikurangi total gap */
+    flex: 0 0 calc((100% - 60px) / 3); 
+    box-sizing: border-box;
 }
 
 .doc-card:hover {
@@ -442,11 +474,52 @@ section {
     margin-bottom: 12px;
 }
 
-.doc-card-body p {
-    color: #64748b;
-    font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 25px;
+/* Style Tombol Navigasi Panah */
+.slider-arrow {
+    background: white;
+    color: var(--color-deep);
+    border: 1px solid #e2e8f0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(15, 61, 86, 0.06);
+    transition: all 0.25s ease;
+    flex-shrink: 0; /* Mencegah tombol gepeng */
+    user-select: none;
+}
+
+.slider-arrow:hover {
+    background: var(--gradient-main);
+    color: white;
+    border-color: transparent;
+    transform: scale(1.08);
+}
+
+/* TAMPILAN RESPONSIF (OTOMATIS MENYESUAIKAN LAYAR) */
+@media (max-width: 1024px) {
+    /* Di Tablet, ukuran berubah otomatis jadi pas 2 item per halaman */
+    .doc-grid .doc-card {
+        flex: 0 0 calc((100% - 30px) / 2);
+    }
+}
+
+@media (max-width: 768px) {
+    /* Di HP, ukuran berubah otomatis jadi 1 item penuh per halaman */
+    .doc-grid .doc-card {
+        flex: 0 0 100%;
+    }
+    /* Sembunyikan panah di HP karena user lebih nyaman swipe layar langsung */
+    .slider-arrow {
+        display: none;
+    }
+    .slider-container {
+        gap: 0;
+    }
 }
 
 .doc-footer {

@@ -7,12 +7,15 @@
     <title>Sistem Informasi K3 - PT Otsuka Indonesia</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Memanggil Global Style (Variabel Warna & Font) -->
     <link rel="stylesheet" href="css/style.css">
     <!-- Memanggil Landing Page Style Baru -->
     <link rel="stylesheet" href="css/index.css">
+    <!-- Memanggil Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="landing-page">
@@ -34,11 +37,14 @@
             <div class="tagline-badge">🛡️ K3 Integrated Management System</div>
             <h2>Sistem Terintegrasi Keselamatan & Kesehatan Kerja <span>Masyarakat Internal</span></h2>
             <p>
-                Sentralisasi data K3, pemantauan kepatuhan SOP otomatis, manajemen berkas audit, pelaporan bahaya real-time, dan transparansi performa K3 dalam satu platform mutakhir PT Otsuka Indonesia.
+                Sentralisasi data K3, pemantauan kepatuhan SOP otomatis, manajemen berkas audit, pelaporan bahaya
+                real-time, dan transparansi performa K3 dalam satu platform mutakhir PT Otsuka Indonesia.
             </p>
             <div class="hero-cta-group">
                 <button class="btn-primary-cta" onclick="window.location.href='login.html'">Masuk ke Dashboard</button>
-                <button class="btn-secondary-cta" onclick="document.getElementById('dokumen-publik').scrollIntoView({behavior: 'smooth'})">Jelajahi Berkas Umum</button>
+                <button class="btn-secondary-cta"
+                    onclick="document.getElementById('dokumen-publik').scrollIntoView({behavior: 'smooth'})">Jelajahi
+                    Berkas Umum</button>
             </div>
         </div>
 
@@ -49,10 +55,12 @@
                     <div class="mockup-dot"></div>
                     <div class="mockup-dot"></div>
                 </div>
-                <div style="font-weight: 700; color: var(--color-deep); font-size: 15px; margin-bottom: 15px;">📊 Status Kepatuhan Pabrik</div>
+                <div style="font-weight: 700; color: var(--color-deep); font-size: 15px; margin-bottom: 15px;">📊 Status
+                    Kepatuhan Pabrik</div>
                 <div class="mockup-bar">🟢 Produksi Line A — 94% Aman</div>
                 <div class="mockup-bar">🟢 Warehouse Sub-Depot — 100% Fit</div>
-                <div class="mockup-bar" style="background: #fff8f8; color: #cc5c5c;">🟡 Engineering Room — Perlu Audit</div>
+                <div class="mockup-bar" style="background: #fff8f8; color: #cc5c5c;">🟡 Engineering Room — Perlu Audit
+                </div>
             </div>
         </div>
     </section>
@@ -89,17 +97,20 @@
             <div class="pilar-card">
                 <div class="pilar-icon">🔬</div>
                 <h4>Tindakan Preventif</h4>
-                <p>Identifikasi dini dan inspeksi berkala di seluruh mesin serta area koridor produksi guna meminimalkan risiko sebelum muncul bahaya fisik.</p>
+                <p>Identifikasi dini dan inspeksi berkala di seluruh mesin serta area koridor produksi guna meminimalkan
+                    risiko sebelum muncul bahaya fisik.</p>
             </div>
             <div class="pilar-card">
                 <div class="pilar-icon">⚡</div>
                 <h4>Responsif Tangkas</h4>
-                <p>Kesiapsiagaan penuh dari tim K3 Officer dan First Aider yang dipersenjatai sistem alert digital otomatis selama 24 jam penuh.</p>
+                <p>Kesiapsiagaan penuh dari tim K3 Officer dan First Aider yang dipersenjatai sistem alert digital
+                    otomatis selama 24 jam penuh.</p>
             </div>
             <div class="pilar-card">
                 <div class="pilar-icon">🎓</div>
                 <h4>Edukasi Berkelanjutan</h4>
-                <p>Pelatihan berkala, safety induction interaktif bagi tamu, serta sertifikasi kompetensi formal bagi seluruh operator internal pabrik.</p>
+                <p>Pelatihan berkala, safety induction interaktif bagi tamu, serta sertifikasi kompetensi formal bagi
+                    seluruh operator internal pabrik.</p>
             </div>
         </div>
     </section>
@@ -108,7 +119,8 @@
     <section class="workflow-section">
         <div class="section-header">
             <h3>🔀 Alur Singkat Pelaporan Bahaya</h3>
-            <p>Bagaimana sistem pintar kami membantu merespons temuan kondisi tidak aman di area pabrik dengan cepat.</p>
+            <p>Bagaimana sistem pintar kami membantu merespons temuan kondisi tidak aman di area pabrik dengan cepat.
+            </p>
         </div>
         <div class="workflow-grid">
             <div class="workflow-step">
@@ -138,39 +150,12 @@
     <section class="docs-section" id="dokumen-publik">
         <div class="section-header">
             <h3>📂 Regulasi & Panduan Umum K3</h3>
-            <p>Berkas panduan resmi yang dapat diunduh bebas oleh tamu industri, praktisi akademik, maupun mitra kontraktor eksternal.</p>
+            <p>Berkas panduan resmi yang dapat diunduh bebas oleh tamu industri, praktisi akademik, maupun mitra
+                kontraktor eksternal.</p>
         </div>
-        <div class="doc-grid">
-            <div class="doc-card">
-                <div class="doc-card-body">
-                    <h4>Kebijakan Utama K3 Perusahaan</h4>
-                    <p>Dokumen komitmen fundamental jajaran direksi PT Otsuka Indonesia terhadap perlindungan tenaga kerja sesuai hukum regulasi.</p>
-                </div>
-                <div class="doc-footer">
-                    <span class="doc-meta">PDF • 1.2 MB</span>
-                    <button class="btn-download" onclick="downloadFile('kebijakan-k3-otsuka.pdf')">📥 Unduh</button>
-                </div>
-            </div>
-            <div class="doc-card">
-                <div class="doc-card-body">
-                    <h4>Aturan K3 Kontraktor (CSMS)</h4>
-                    <p>Standar aturan operasional serta manajemen risiko wajib dipatuhi mitra vendor sebelum memulai konstruksi fisik di area pabrik.</p>
-                </div>
-                <div class="doc-footer">
-                    <span class="doc-meta">PDF • 2.4 MB</span>
-                    <button class="btn-download" onclick="downloadFile('csms-guideline-otsuka.pdf')">📥 Unduh</button>
-                </div>
-            </div>
-            <div class="doc-card">
-                <div class="doc-card-body">
-                    <h4>Panduan Evakuasi & Jalur Darurat</h4>
-                    <p>Peta visual titik kumpul (*assembly point*) beserta instruksi penyelamatan mandiri apabila alarm evakuasi berbunyi.</p>
-                </div>
-                <div class="doc-footer">
-                    <span class="doc-meta">PDF • 980 KB</span>
-                    <button class="btn-download" onclick="downloadFile('tanggap-darurat-tamu.pdf')">📥 Unduh</button>
-                </div>
-            </div>
+        <!-- Tambahkan id="document-container" di sini -->
+        <div class="doc-grid" id="document-container">
+            <!-- Data dari Supabase akan otomatis di-render di sini dengan tampilan asli -->
         </div>
     </section>
 
@@ -178,7 +163,8 @@
     <section class="emergency-section">
         <div class="section-header">
             <h3 style="color: #991b1b;">🚨 Hubungi Posko Siaga Tanggap Darurat</h3>
-            <p style="color: #991b1b; opacity: 0.8;">Saluran khusus interkom internal dan darurat luar jikalau terjadi kecelakaan kerja atau kebakaran di dalam perimeter pabrik.</p>
+            <p style="color: #991b1b; opacity: 0.8;">Saluran khusus interkom internal dan darurat luar jikalau terjadi
+                kecelakaan kerja atau kebakaran di dalam perimeter pabrik.</p>
         </div>
         <div class="emergency-grid">
             <div class="emergency-card">
@@ -208,13 +194,75 @@
     <!-- FOOTER -->
     <footer class="landing-footer">
         <p>&copy; 2026 <strong>PT Otsuka Indonesia</strong> — Health & Safety Integrated Management System.</p>
-        <p style="font-size: 12px; margin-top: 10px; color: #64748b;">All Rights Reserved. Dikembangkan untuk standardisasi keselamatan lingkungan manufaktur modern.</p>
+        <p style="font-size: 12px; margin-top: 10px; color: #64748b;">All Rights Reserved. Dikembangkan untuk
+            standardisasi keselamatan lingkungan manufaktur modern.</p>
     </footer>
 
     <script>
-        function downloadFile(fileName) {
-            alert(`Mengeksekusi pengunduhan aman berkas umum:\n${fileName}`);
+        // 1. Konfigurasi Client Supabase
+        const SUPABASE_URL = 'https://npewnmpxexiqeoqberkm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wZXdubXB4ZXhpcWVvcWJlcmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNDg3OTIsImV4cCI6MjA5NjkyNDc5Mn0.rTavMzcN2i_z-09_RdY_CSt79XEoBgVQBpnr3biCSmk';
+        const BUCKET_NAME = 'dokumen-k3'; // Contoh: 'documents' atau 'k3-files'
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // 2. Fungsi Ambil Data & Tampilkan
+        async function muatDokumenPublik() {
+            const container = document.getElementById('document-container');
+
+            try {
+                // Ambil data dari table public.dokumen_k3
+                const { data: dokumenList, error } = await supabaseClient
+                    .from('dokumen_k3')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Bersihkan container dari elemen placeholder/lama
+                container.innerHTML = '';
+
+                if (!dokumenList || dokumenList.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #7f8c8d;">Belum ada dokumen publik yang tersedia.</p>';
+                    return;
+                }
+
+                // Loop data dan buat struktur elemen persis seperti template asli
+                dokumenList.forEach(doc => {
+                    // Dapatkan URL Unduh Publik dari Supabase Storage berdasarkan file_path di tabel
+                    const { data: urlData } = supabaseClient
+                        .storage
+                        .from(BUCKET_NAME)
+                        .getPublicUrl(doc.file_path);
+
+                    const fileUrl = urlData.publicUrl;
+
+                    // Template literal dengan susunan class CSS asli (Tampilan tidak akan berubah)
+                    const cardHtml = `
+                <div class="doc-card">
+                    <div class="doc-card-body">
+                        <h4>${doc.nama_dokumen}</h4>
+                        <p>Kategori/Jenis: ${doc.jenis_dokumen || 'Umum'}</p>
+                    </div>
+                    <div class="doc-footer">
+                        <span class="doc-meta">${doc.jenis_dokumen || 'Berkas'} • ${doc.tanggal_upload || ''}</span>
+                        <button class="btn-download" onclick="window.open('${fileUrl}', '_blank')">📥 Unduh</button>
+                    </div>
+                </div>
+            `;
+
+                    // Masukkan card ke dalam grid
+                    container.insertAdjacentHTML('beforeend', cardHtml);
+                });
+
+            } catch (err) {
+                console.error('Gagal memuat dokumen:', err.message);
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #e74c3c;">Gagal memuat daftar dokumen dari sistem.</p>';
+            }
         }
+
+        // Jalankan fungsi setelah seluruh halaman selesai dimuat
+        document.addEventListener('DOMContentLoaded', muatDokumenPublik);
     </script>
 </body>
 

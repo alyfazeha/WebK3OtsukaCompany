@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Kepatuhan K3 - OTSUKA K3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Chart.js untuk grafik distribusi departemen & rasio form (Spesifikasi 6.5.1) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+<div class="sidebar"></div>
+    <div class="main">
+        <div class="navbar">
+            <h2>Laporan Kepatuhan</h2>
+            <div class="profile">
+                Administrator
+            </div>
+        </div>
+        <div class="content">
+
+            <div class="top">
+                <h3>Modul 6.3 — Compliance Report</h3>
+                <div style="display:flex;gap:10px;">
+                    <button type="button" id="btnRefreshReport" class="btn-primary" style="margin-top:0;">
+                        🔄 Muat Ulang
+                    </button>
+                    <button type="button" id="btnExportCsv" class="btn-primary" style="margin-top:0;">
+                        ⬇️ Ekspor (.CSV)
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI SUMMARY CARDS (pakai .dashboard-grid / .card-stat yang sudah ada di style.css) -->
+            <div class="dashboard-grid">
+                <div class="card-stat">
+                    <div class="card-icon">📋</div>
+                    <div class="card-info">
+                        <h3 id="statTotalForms">0</h3>
+                        <p>Total Form Terdaftar</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">📥</div>
+                    <div class="card-info">
+                        <h3 id="statTotalSubmissions">0</h3>
+                        <p>Total Submisi Form</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">⭐</div>
+                    <div class="card-info">
+                        <h3 id="statAvgRating">0.0/5</h3>
+                        <p>Skor Kepatuhan Rata-Rata</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-icon">✅</div>
+                    <div class="card-info">
+                        <h3 id="statComplianceRate">0%</h3>
+                        <p>Compliance Rate</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTER TOOLBAR (Spesifikasi 6.5.2) -->
+            <div class="comp-filter-bar">
+                <div>
+                    <label for="filterDept" class="comp-filter-label">Filter Departemen</label>
+                    <select id="filterDept">
+                        <option value="ALL">-- Semua Departemen Pelaksana --</option>
+                        <option value="Produksi">Produksi</option>
+                        <option value="QA">QA</option>
+                        <option value="QC">QC</option>
+                        <option value="HRD">HRD</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Warehouse">Warehouse</option>
+                    </select>
+                </div>
+                <p class="comp-filter-note">Menampilkan log hasil kerja Inspector & Department Head.</p>
+            </div>
+
+            <!-- CHARTS: Distribusi & Rasio Form (Spesifikasi 6.5.1) -->
+            <div class="comp-chart-grid">
+                <div class="comp-chart-card comp-chart-card--wide">
+                    <h4>Distribusi Submisi per Departemen</h4>
+                    <div class="comp-chart-canvas-wrap">
+                        <canvas id="chartDeptSubmissions"></canvas>
+                    </div>
+                </div>
+                <div class="comp-chart-card">
+                    <h4>Rasio Penggunaan Form</h4>
+                    <div class="comp-chart-canvas-wrap">
+                        <canvas id="chartFormRatio"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABEL LOG RIWAYAT SUBMISI -->
+            <div class="comp-table-card">
+                <h4>Log Riwayat Submisi & Evaluasi Lapangan</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Form</th>
+                            <th>Inspektur</th>
+                            <th>Departemen</th>
+                            <th>Parameter</th>
+                            <th>Waktu Masuk</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodySubmissionLogs">
+                        <tr>
+                            <td colspan="6" class="comp-table-loading">Mendownload data log dari server pusat...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL JAWABAN -->
+    <div class="modal" id="modalDetailAnswers">
+        <div class="modal-content" style="width:560px;max-height:80vh;overflow-y:auto;">
+            <h2 id="modalFormTitle">Detail Jawaban Form Inspeksi</h2>
+            <p class="comp-modal-meta" id="modalMetaInfo">Pemeriksa: - | Waktu: -</p>
+            <div id="modalAnswersContainer" class="comp-modal-answers"></div>
+            <div style="display:flex;justify-content:end;margin-top:10px;">
+                <button type="button" onclick="tutupModalDetail()" style="background:#7f8c8d;">
+                    Tutup Rincian
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
+    <script src="js/compliance_report.js"></script>
+</body>
+</html>

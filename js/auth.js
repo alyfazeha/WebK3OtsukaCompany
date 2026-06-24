@@ -5,13 +5,13 @@
 
 const ROLE_ACCESS = {
     pages: {
-        Admin:      ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'submission.html', 'monitoring.html', 'insiden.html', 'audit.html', 'admin.html', 'compliance_report.html'],
-        K3Manager:  ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'submission.html', 'monitoring.html', 'insiden.html', 'audit.html'],
-        K3Officer:  ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'submission.html', 'monitoring.html', 'insiden.html', 'audit.html'],
-        DeptHead:   ['dashboard.html', 'dokumen.html', 'pelaksanaan.html', 'submission.html', 'monitoring.html', 'insiden.html'],
-        Employee:   ['dashboard.html', 'pelaksanaan.html', 'submission.html', 'insiden.html'],
-        Auditor:    ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'monitoring.html', 'audit.html', 'insiden.html'],
-        Viewer:     ['dashboard.html', 'dokumen.html'],
+        Admin: ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'submission.html', 'monitoring.html', 'compliance_report.html', 'insiden.html', 'audit.html', 'admin.html'],
+        K3Manager: ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'submission.html', 'monitoring.html', 'compliance_report.html', 'insiden.html', 'audit.html'],
+        K3Officer: ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'submission.html', 'monitoring.html', 'compliance_report.html', 'insiden.html', 'audit.html'],
+        DeptHead: ['dashboard.html', 'dokumen.html', 'pelaksanaan.html', 'submission.html', 'monitoring.html', 'compliance_report.html', 'insiden.html'],
+        Employee: ['dashboard.html', 'pelaksanaan.html', 'submission.html', 'insiden.html'],
+        Auditor: ['dashboard.html', 'karyawan.html', 'p2k3.html', 'dokumen.html', 'pelaksanaan.html', 'monitoring.html', 'compliance_report.html', 'audit.html', 'insiden.html'],
+        Viewer: ['dashboard.html', 'dokumen.html']
     },
     readOnly: {
         Admin: false, K3Manager: false, K3Officer: false,

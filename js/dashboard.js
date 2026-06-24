@@ -71,7 +71,7 @@ async function hitungTotalDokumen() {
 async function hitungInsidenDanCapa(dept) {
     try {
         // A. Penghitungan Insiden Aktif
-        let queryInsiden = client.from('insiden_k3').select('jenis, status');
+        let queryInsiden = client.from('incidents').select('jenis, status');
         if (dept !== 'All') {
             queryInsiden = queryInsiden.eq('dept', dept);
         }
@@ -105,7 +105,7 @@ async function hitungInsidenDanCapa(dept) {
 async function hitungSafeDays() {
     try {
         const { data, error } = await client
-            .from('insiden_k3')
+            .from('incidents')
             .select('tgl')
             .order('tgl', { ascending: false })
             .limit(1);

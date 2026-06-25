@@ -108,6 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderDynamicFields(schema) {
         dynamicFieldsContainer.innerHTML = ''; 
 
+        // Reset meteran skor
+        meterPct.textContent = '0%';
+        skorMeterFill.style.width = '0%';
+        skorMeterFill.style.backgroundColor = 'var(--color-bright)';
+        bigSkor.textContent = '0';
+        skorLabelText.textContent = 'Mulai Evaluasi';
+        skorLabelText.style.color = '#4b5563';
+        btnSubmitForm.disabled = true;
+
         if (!schema || !Array.isArray(schema) || schema.length === 0) {
             dynamicFieldsContainer.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#ef4444; font-style:italic; padding: 1.5rem;">⚠️ Template form ini belum memiliki komponen kuesioner.</td></tr>';
             btnSubmitForm.disabled = true;
@@ -229,72 +238,97 @@ document.addEventListener('DOMContentLoaded', () => {
         const dynamicItems = dynamicFieldsContainer.querySelectorAll('.dynamic-field-item');
         if (dynamicItems.length === 0) return;
 
-        let totalQuestions = dynamicItems.length;
+        const totalQuestions = dynamicItems.length;
         let answeredQuestions = 0;
         let compliantAnswers = 0;
 
         dynamicItems.forEach(item => {
             const type = item.dataset.type;
-            let val = '';
+            const fieldId = item.dataset.id;
+
+            // Cari schema field ini dari template aktif
+            const fieldSchema = currentSelectedTemplate?.fields_schema?.find(
+                f => String(f.element_id) === String(fieldId)
+            );
 
             if (type === 'checklist') {
                 const checkedRadio = item.querySelector('.user-answer-input-radio:checked');
                 if (checkedRadio) {
-                    val = checkedRadio.value;
                     answeredQuestions++;
-                    // Jika memilih 'Sesuai' atau 'Aman' atau nilai bernuansa positif, hitung sebagai kepatuhan
-                    if (val === 'Sesuai' || val === 'Aman' || val === 'Ya' || val === 'Ada') {
-                        compliantAnswers++;
-                    }
+                    // Opsi pertama dari schema = jawaban positif/patuh
+                    const firstOption = Array.isArray(fieldSchema?.options) && fieldSchema.options.length > 0
+                        ? fieldSchema.options[0]
+                        : null;
+                    const positifFallback = ['Sesuai', 'Aman', 'Ya', 'Ada', 'OK', 'Baik', 'Layak', 'Tersedia'];
+                    const isCompliant = firstOption
+                        ? checkedRadio.value === firstOption
+                        : positifFallback.includes(checkedRadio.value);
+                    if (isCompliant) compliantAnswers++;
                 }
+
+            } else if (type === 'dropdown') {
+                const selectEl = item.querySelector('.user-answer-input');
+                if (selectEl && selectEl.value) {
+                    answeredQuestions++;
+                    // Opsi pertama dari schema = jawaban positif/patuh
+                    const firstOption = Array.isArray(fieldSchema?.options) && fieldSchema.options.length > 0
+                        ? fieldSchema.options[0]
+                        : null;
+                    if (firstOption && selectEl.value === firstOption) compliantAnswers++;
+                    else if (!firstOption) compliantAnswers++; // tidak ada referensi, anggap patuh
+                }
+
             } else if (type === 'rating') {
-                const normalInput = item.querySelector('.user-answer-input');
-                if (normalInput && normalInput.value) {
-                    val = normalInput.value;
+                const selectEl = item.querySelector('.user-answer-input');
+                if (selectEl && selectEl.value) {
                     answeredQuestions++;
-                    // Bobot rating: jika >= 4 bintang dianggap patuh
-                    if (parseInt(val) >= 4) {
-                        compliantAnswers++;
-                    }
+                    if (parseInt(selectEl.value) >= 4) compliantAnswers++;
                 }
-            } else {
-                const normalInput = item.querySelector('.user-answer-input');
-                if (normalInput && normalInput.value.trim() !== '') {
+
+            } else if (type === 'number') {
+                const inputEl = item.querySelector('.user-answer-input');
+                if (inputEl && inputEl.value.trim() !== '') {
                     answeredQuestions++;
-                    compliantAnswers++; // Dianggap patuh jika form diisi data deskriptifnya
+                    // Nilai > 0 dianggap patuh (bisa disesuaikan)
+                    if (parseFloat(inputEl.value) > 0) compliantAnswers++;
+                }
+
+            } else {
+                // type === 'text' dan tipe lainnya: diisi = patuh
+                const inputEl = item.querySelector('.user-answer-input');
+                if (inputEl && inputEl.value.trim() !== '') {
+                    answeredQuestions++;
+                    compliantAnswers++;
                 }
             }
         });
 
-        // Hitung persentase kepatuhan (Akurasi skor berdasarkan item yang aman/sesuai)
-        const finalPercentage = Math.round((compliantAnswers / totalQuestions) * 100);
+        // Hitung persentase — hindari pembagian dengan 0
+        const finalPercentage = totalQuestions > 0
+            ? Math.round((compliantAnswers / totalQuestions) * 100)
+            : 0;
 
-        // Update Tampilan DOM Meteran Skor
+        // Update DOM meteran skor
         meterPct.textContent = `${finalPercentage}%`;
         skorMeterFill.style.width = `${finalPercentage}%`;
         bigSkor.textContent = finalPercentage;
 
-        // Ubah warna meteran & deskripsi label sesuai ambang batas K3
         if (finalPercentage >= 85) {
-            skorMeterFill.style.backgroundColor = '#0e9f6e'; // Hijau Aman (Excellent)
+            skorMeterFill.style.backgroundColor = '#0e9f6e';
             skorLabelText.textContent = 'Kepatuhan Tinggi (Aman)';
             skorLabelText.style.color = '#0e9f6e';
         } else if (finalPercentage >= 60) {
-            skorMeterFill.style.backgroundColor = '#e3a008'; // Kuning Warning (Minor Non-Conformance)
+            skorMeterFill.style.backgroundColor = '#e3a008';
             skorLabelText.textContent = 'Kepatuhan Sedang (Peringatan)';
             skorLabelText.style.color = '#e3a008';
         } else {
-            skorMeterFill.style.backgroundColor = '#f05252'; // Merah Bahaya (Critical Non-Conformance)
+            skorMeterFill.style.backgroundColor = '#f05252';
             skorLabelText.textContent = 'Kepatuhan Rendah (Bahaya)';
             skorLabelText.style.color = '#f05252';
         }
 
-        // Aktifkan tombol kirim HANYA jika seluruh parameter form wajib telah terisi
-        if (answeredQuestions === totalQuestions) {
-            btnSubmitForm.disabled = false;
-        } else {
-            btnSubmitForm.disabled = true;
-        }
+        // Aktifkan tombol submit hanya jika semua soal sudah dijawab
+        btnSubmitForm.disabled = answeredQuestions < totalQuestions;
     }
 
     // =========================================================================
@@ -344,13 +378,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('monitoring_submissions')
                 .insert([
                     {
-                        form_template_id: currentSelectedTemplate.id,
-                        form_title: currentSelectedTemplate.title,
-                        inspector_name: inspectorName,
-                        inspector_department: inspectorDept,
-                        submitted_answers: answersPayload, 
-                        score: finalScoreCalculated, // Kolom nilai rata-rata kepatuhan terhitung
-                        submitted_at: new Date().toISOString()
+                        form_id           : currentSelectedTemplate.id,
+                        form_title        : currentSelectedTemplate.title,
+                        submitted_by      : inspectorName,
+                        department        : inspectorDept,
+                        submitted_answers : answersPayload,
+                        score             : finalScoreCalculated,
+                        status            : finalScoreCalculated >= 60 ? 'Compliant' : 'Non-Compliant',
+                        submitted_at      : new Date().toISOString()
                     }
                 ]);
 

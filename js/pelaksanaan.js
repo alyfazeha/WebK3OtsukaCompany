@@ -49,10 +49,13 @@ let currentJenis = null;   // 'APD' | 'APAR' | 'P3K'
 let checkState   = {};     // { APD: [bool,...], APAR: [...], P3K: [...] }
 let skorAkhir    = 0;      // nilai 0–100 yang akan disimpan ke Supabase
 
+let currentKaryawanId = null; 
+
 /* ── 3. INISIALISASI ──────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", async () => {
   setDefaultDate();
   showNavbarDate();
+  await loadCurrentUser();
   await loadKaryawan();
   await loadHistory();
   bindEvents();
@@ -71,6 +74,25 @@ function showNavbarDate() {
   el.textContent = new Date().toLocaleDateString("id-ID", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
+}
+
+async function loadCurrentUser() {
+  try {
+    const { data: { session } } = await window.supabaseClient.auth.getSession();
+    if (!session) return;
+
+    const { data: profile, error } = await window.supabaseClient
+      .from('user_profiles')
+      .select('karyawan_id')
+      .eq('id', session.user.id)
+      .single();
+
+    if (error) throw error;
+    currentKaryawanId = profile?.karyawan_id ?? null;
+
+  } catch (err) {
+    console.error("Gagal load user profile:", err.message);
+  }
 }
 
 /* ── 4. LOAD KARYAWAN dari Supabase ──────────────────────────── */
@@ -308,7 +330,7 @@ async function handleSubmit(e) {
       skor_kepatuhan : skorAkhir,
       foto_bukti     : foto_url, // Menyimpan teks URL gambar / null
       catatan,
-      pemeriksa_id,
+      pemeriksa_id   : currentKaryawanId,
     };
 
     const { error } = await window.supabaseClient
@@ -366,7 +388,7 @@ async function loadHistory() {
   const tbody = document.getElementById("tbody-history");
   tbody.innerHTML = `
     <tr>
-      <td colspan="6" style="text-align:center;padding:20px;color:#6b7280;font-size:.85rem;">
+      <td colspan="8" style="text-align:center;padding:20px;color:#6b7280;font-size:.85rem;">
         Memuat data...
       </td>
     </tr>`;
@@ -393,7 +415,7 @@ async function loadHistory() {
     if (!data || data.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="6">
+          <td colspan="8">
             <div class="pel-empty-state">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
@@ -405,7 +427,7 @@ async function loadHistory() {
       return;
     }
 
-    tbody.innerHTML = data.map((row) => {
+ tbody.innerHTML = data.map((row) => {
       const skor    = row.skor_kepatuhan ?? 0;
       const pillCls = skor >= 80 ? "green" : skor >= 60 ? "yellow" : "red";
       const status  = skor >= 80 ? "Baik" : skor >= 60 ? "Perlu Perbaikan" : "Rendah";
@@ -424,16 +446,27 @@ async function loadHistory() {
            </span>`
         : `<span style="color:#9ca3af;">–</span>`;
 
+      const fotoStr = row.foto_bukti
+        ? `<a href="${row.foto_bukti}" target="_blank" rel="noopener">
+             <img src="${row.foto_bukti}"
+               style="width:56px;height:56px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;cursor:pointer;"
+               onerror="this.style.display='none'"
+             />
+           </a>`
+        : `<span style="color:#9ca3af;">–</span>`;
+
       return `
         <tr>
           <td>${tgl}</td>
           <td><strong>${row.jenis_inspeksi}</strong></td>
+          <td>${row.departemen_id ?? '–'}</td>
           <td>${namaStr}</td>
           <td>
             <strong style="font-size:1rem;">${skor}</strong>
             <span style="color:#9ca3af;font-size:.75rem;">/100</span>
           </td>
           <td><span class="pel-pill ${pillCls}">${status}</span></td>
+          <td>${fotoStr}</td>
           <td>${catatanStr}</td>
         </tr>`;
     }).join("");
@@ -441,7 +474,7 @@ async function loadHistory() {
   } catch (err) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="6" style="color:#e02424;text-align:center;padding:16px;font-size:.85rem;">
+        <td colspan="8" style="color:#e02424;text-align:center;padding:16px;font-size:.85rem;">
           ❌ Gagal memuat riwayat: ${err.message}
         </td>
       </tr>`;

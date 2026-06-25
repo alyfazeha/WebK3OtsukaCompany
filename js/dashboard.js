@@ -64,6 +64,7 @@ async function refreshDashboard() {
         hitungDokumenKadaluarsa(katDok),
         hitungInsidenDanCapa(dept, tglAwal, tglAkhir),
         hitungSafeDays(),
+        hitungTotalKaryawanDept(),
         muatDataRekapUtama(tahun),
         muatStatusDokumen(katDok),
         muatHeatmapFormulir(jenisForm, tglAwal, tglAkhir),
@@ -195,6 +196,39 @@ async function hitungSafeDays() {
         }
     } catch (err) {
         console.error("Gagal menghitung Safe Days:", err);
+    }
+}
+
+// ══════════════════════════════════════════════
+//  KPI 7 & 8 – Total Karyawan & Total Departemen
+// ══════════════════════════════════════════════
+async function hitungTotalKaryawanDept() {
+    try {
+        // Total karyawan (hitung jumlah baris, tanpa perlu ambil semua datanya)
+        const { count: totalKaryawan, error: errKaryawan } = await client
+            .from('karyawan')
+            .select('*', { count: 'exact', head: true });
+
+        document.getElementById('stat-total-karyawan').innerText =
+            !errKaryawan && totalKaryawan !== null ? totalKaryawan : 0;
+
+        // Total departemen = jumlah departemen unik yang benar-benar punya karyawan
+        const { data: dataDept, error: errDept } = await client
+            .from('karyawan')
+            .select('departemen');
+
+        if (!errDept && dataDept) {
+            const deptUnik = new Set(
+                dataDept
+                    .map(d => (d.departemen || '').trim())
+                    .filter(d => d.length > 0)
+            );
+            document.getElementById('stat-total-departemen').innerText = deptUnik.size;
+        } else {
+            document.getElementById('stat-total-departemen').innerText = 0;
+        }
+    } catch (err) {
+        console.error("Gagal menghitung Total Karyawan/Departemen:", err);
     }
 }
 
@@ -646,6 +680,8 @@ async function eksporPDF() {
         ['CAPA Terbuka', document.getElementById('stat-capa').innerText],
         ['Dokumen Segera Kadaluarsa', document.getElementById('stat-dokumen-kadaluarsa').innerText],
         ['Safe Days (tanpa LTI)', document.getElementById('stat-safedays').innerText],
+        ['Total Karyawan', document.getElementById('stat-total-karyawan').innerText],
+        ['Total Departemen', document.getElementById('stat-total-departemen').innerText],
     ];
 
     doc.autoTable({
@@ -696,6 +732,8 @@ function eksporExcel() {
         ['CAPA Terbuka', document.getElementById('stat-capa').innerText],
         ['Dokumen Segera Kadaluarsa', document.getElementById('stat-dokumen-kadaluarsa').innerText],
         ['Safe Days (tanpa LTI)', document.getElementById('stat-safedays').innerText],
+        ['Total Karyawan', document.getElementById('stat-total-karyawan').innerText],
+        ['Total Departemen', document.getElementById('stat-total-departemen').innerText],
     ];
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(kpiData), 'KPI');
 

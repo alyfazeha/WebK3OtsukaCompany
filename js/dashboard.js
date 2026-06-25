@@ -66,6 +66,7 @@ async function refreshDashboard() {
         hitungSafeDays(),
         hitungTotalKaryawanDept(),
         muatDataRekapUtama(tahun),
+        muatTrenKepatuhanPerDepartemen(tahun),
         muatStatusDokumen(katDok),
         muatHeatmapFormulir(jenisForm, tglAwal, tglAkhir),
     ]);
@@ -281,7 +282,6 @@ async function muatDataRekapUtama(tahun) {
             narasiBox.innerText = "Belum ada ringkasan evaluasi untuk periode ini.";
             tabelBody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#95a5a6;">Tidak ada data rekapitulasi.</td></tr>`;
             document.getElementById('stat-kepatuhan').innerText = "0%";
-            renderComplianceChart([]);
             return;
         }
 
@@ -322,8 +322,6 @@ async function muatDataRekapUtama(tahun) {
             tabelBody.appendChild(tr);
         });
 
-        renderComplianceChart(data);
-
     } catch (err) {
         console.error("Gagal memuat rekap utama:", err);
     }
@@ -363,52 +361,144 @@ document.addEventListener('keydown', (e) => {
 
 // ══════════════════════════════════════════════
 //  CHART 1 – Tren Kepatuhan per Departemen (Line)
+//  Dihitung LANGSUNG dari data Pelaksanaan SOP (pelaksanaan_k3),
+//  bukan dari kesimpulan_rekap — sehingga betul-betul per departemen.
 // ══════════════════════════════════════════════
-function renderComplianceChart(dataRekap) {
+const DEPT_COLORS = {
+    'Produksi': '#1FA9E6',
+    'QC': '#27ae60',
+    'HRD': '#9b59b6',
+    'Engineering': '#f39c12',
+    'Warehouse': '#e74c3c',
+};
+const DEPT_COLOR_FALLBACK = ['#16a085', '#d35400', '#2c3e50', '#c0392b', '#8e44ad'];
+
+async function muatTrenKepatuhanPerDepartemen(tahun) {
+    try {
+        // 1. Ambil jumlah form aktif sebagai dasar target per departemen
+        const { data: forms } = await client.from('monitoring_forms').select('id').eq('status', 'Active');
+        const totalForms = (forms || []).length;
+
+        // 2. Ambil data submission
+        let query = client.from('monitoring_submissions').select('submitted_at, department');
+        if (tahun !== 'All') {
+            query = query.gte('submitted_at', `${tahun}-01-01`).lte('submitted_at', `${tahun}-12-31T23:59:59`);
+        }
+
+        const { data, error } = await query;
+        if (error || !data || totalForms === 0) {
+            renderComplianceChart([], [], {});
+            return;
+        }
+
+        // 3. Kelompokkan jumlah submission per bulan (YYYY-MM) per departemen
+        const groupedCount = {};
+        data.forEach(row => {
+            if (!row.submitted_at) return;
+            const d = new Date(row.submitted_at);
+            if (Number.isNaN(d.getTime())) return;
+
+            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            const dept = (row.department || 'Umum').trim();
+
+            if (!groupedCount[key]) {
+                groupedCount[key] = {};
+                DEPTS.forEach(dep => groupedCount[key][dep] = 0);
+            }
+            if (groupedCount[key][dept] !== undefined) {
+                groupedCount[key][dept]++;
+            } else {
+                groupedCount[key][dept] = 1; // Jika ada dept lain yg tidak terdaftar
+            }
+        });
+
+        // 4. Ubah jumlah (count) menjadi persentase compliance rate
+        const grouped = {};
+        const monthKeys = Object.keys(groupedCount).sort();
+
+        monthKeys.forEach(key => {
+            grouped[key] = {};
+            Object.keys(groupedCount[key]).forEach(dept => {
+                const count = groupedCount[key][dept];
+                // Rumus = (Total Submisi Dept / Total Form) * 100
+                const percentage = Math.min(Math.round((count / totalForms) * 100), 100);
+                grouped[key][dept] = [percentage]; // Dibungkus array agar terbaca oleh helper chart
+            });
+        });
+
+        // 5. Urutkan label bulan
+        const labels = monthKeys.map(key => {
+            const [y, m] = key.split('-');
+            return `${konversiBulan(parseInt(m)).substring(0, 3)} ${y}`;
+        });
+
+        renderComplianceChart(monthKeys, labels, grouped);
+
+    } catch (err) {
+        console.error("Gagal memuat tren kepatuhan per departemen:", err);
+    }
+}
+
+function renderComplianceChart(monthKeys, labels, grouped) {
     const ctx = document.getElementById('complianceChart').getContext('2d');
     if (complianceChartInstance) complianceChartInstance.destroy();
 
-    const sorted = [...dataRekap].reverse();
-    const labels = sorted.map(d => `${konversiBulan(d.bulan).substring(0, 3)} ${d.tahun}`);
-    const skorData = sorted.map(d => d.rata_rata_kepatuhan);
+    if (!monthKeys || monthKeys.length === 0) {
+        complianceChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [] },
+            options: { responsive: true }
+        });
+        return;
+    }
+
+    // Gabungkan daftar departemen tetap dengan departemen apa pun yang
+    // benar-benar muncul di data (supaya tidak ada data yang terlewat).
+    const deptSet = new Set(DEPTS);
+    monthKeys.forEach(key => Object.keys(grouped[key]).forEach(d => deptSet.add(d)));
+
+    const datasets = Array.from(deptSet).map((dept, i) => {
+        const data = monthKeys.map(key => {
+            const skors = grouped[key] && grouped[key][dept];
+            if (!skors || skors.length === 0) return null; // null = celah di garis, bukan 0%
+            return Math.round(skors.reduce((a, b) => a + b, 0) / skors.length);
+        });
+        const color = DEPT_COLORS[dept] || DEPT_COLOR_FALLBACK[i % DEPT_COLOR_FALLBACK.length];
+
+        return {
+            label: dept,
+            data,
+            borderColor: color,
+            backgroundColor: color + '22',
+            borderWidth: 2.5,
+            tension: 0.3,
+            spanGaps: true,
+            pointRadius: 3,
+            pointBackgroundColor: color,
+        };
+    });
 
     // Garis target 80%
-    const targetLine = Array(labels.length).fill(80);
+    datasets.push({
+        label: 'Target (80%)',
+        data: Array(labels.length).fill(80),
+        borderColor: '#7f8c8d',
+        borderWidth: 1.5,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        fill: false,
+    });
 
     complianceChartInstance = new Chart(ctx, {
         type: 'line',
-        data: {
-            labels,
-            datasets: [
-                {
-                    label: 'Tingkat Kepatuhan (%)',
-                    data: skorData,
-                    borderColor: '#1FA9E6',
-                    backgroundColor: 'rgba(31,169,230,0.08)',
-                    borderWidth: 3,
-                    tension: 0.3,
-                    fill: true,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#1FA9E6',
-                },
-                {
-                    label: 'Target (80%)',
-                    data: targetLine,
-                    borderColor: '#e74c3c',
-                    borderWidth: 1.5,
-                    borderDash: [6, 4],
-                    pointRadius: 0,
-                    fill: false,
-                }
-            ]
-        },
+        data: { labels, datasets },
         options: {
             responsive: true,
             plugins: {
-                legend: { display: true, position: 'top' },
+                legend: { display: true, position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
                 tooltip: {
                     callbacks: {
-                        label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%`
+                        label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y === null ? 'Tidak ada data' : ctx.parsed.y + '%'}`
                     }
                 }
             },
@@ -815,12 +905,11 @@ async function generateNarasiOtomatis() {
         const tglAkhir = new Date(tahun, bulan, 0).toISOString().split('T')[0];
         const now = new Date();
 
-        // Tarik semua data yang dibutuhkan secara paralel
+        // Tarik semua data yang dibutuhkan secara paralel (resPelaksanaan dihapus)
         const [
             resInsiden,
             resCapa,
             resTemuan,
-            resPelaksanaan,
             resForms,
             resSubs,
             resDokExp,
@@ -828,7 +917,6 @@ async function generateNarasiOtomatis() {
             client.from('incidents').select('jenis, status, keparahan, dept').gte('tgl', tglAwal).lte('tgl', tglAkhir),
             client.from('capa_items').select('status_capa'),
             client.from('temuan_audit').select('status_perbaikan'),
-            client.from('pelaksanaan_k3').select('skor_kepatuhan, departemen_id').gte('tanggal', tglAwal).lte('tanggal', tglAkhir),
             client.from('monitoring_forms').select('id, target_department').eq('status', 'Active'),
             client.from('monitoring_submissions').select('form_id, department').gte('submitted_at', tglAwal + 'T00:00:00').lte('submitted_at', tglAkhir + 'T23:59:59'),
             client.from('dokumen_k3').select('id', { count: 'exact', head: true }).gte('tanggal_review', now.toISOString().split('T')[0]).lte('tanggal_review', new Date(now.getTime() + 30 * 86400000).toISOString().split('T')[0]),
@@ -843,23 +931,29 @@ async function generateNarasiOtomatis() {
         const totalCapa = openCapa + openTemuan;
         const dokExp = resDokExp.count || 0;
 
-        // Rata-rata kepatuhan
-        const skors = (resPelaksanaan.data || []).map(p => p.skor_kepatuhan).filter(s => s !== null);
-        const rataKepatuhan = skors.length > 0
-            ? Math.round(skors.reduce((a, b) => a + b, 0) / skors.length)
-            : null;
+        // ── Kepatuhan Baru (Mirip dengan compliance_report.js) ──
+        const dataForms = resForms.data || [];
+        const dataSubs = resSubs.data || [];
+        const totalForms = dataForms.length;
+        const expectedSubmissions = totalForms * DEPTS.length;
+
+        // Rata-rata kepatuhan bulan terkait:
+        const rataKepatuhan = expectedSubmissions > 0
+            ? Math.min(Math.round((dataSubs.length / expectedSubmissions) * 100), 100)
+            : 0;
 
         // Kepatuhan per departemen (ambil 2 terbaik & terburuk)
-        const deptMap = {};
-        (resPelaksanaan.data || []).forEach(p => {
-            const d = p.departemen_id || 'Umum';
-            if (!deptMap[d]) deptMap[d] = [];
-            deptMap[d].push(p.skor_kepatuhan);
+        const deptSubCounts = {};
+        DEPTS.forEach(d => deptSubCounts[d] = 0);
+        dataSubs.forEach(s => {
+            const d = s.department;
+            if (deptSubCounts[d] !== undefined) deptSubCounts[d]++;
         });
-        const deptRata = Object.entries(deptMap).map(([dept, s]) => ({
-            dept,
-            rata: Math.round(s.reduce((a, b) => a + b, 0) / s.length)
-        })).sort((a, b) => b.rata - a.rata);
+
+        const deptRata = Object.entries(deptSubCounts).map(([dept, count]) => {
+            const rata = totalForms > 0 ? Math.min(Math.round((count / totalForms) * 100), 100) : 0;
+            return { dept, rata };
+        }).sort((a, b) => b.rata - a.rata);
 
         // Overdue forms
         const submittedIds = new Set((resSubs.data || []).map(s => s.form_id));

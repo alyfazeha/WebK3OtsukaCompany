@@ -375,10 +375,91 @@
             </div>
 
             <!-- ══ NARASI AI ══ -->
-            <div class="narrative-container" style="margin-top:30px;">
-                <h3>🤖 Narasi Kesimpulan Otomatis (Sistem)</h3>
+            <div class="narrative-container" style="margin-top: 30px;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+                    <h3 style="margin: 0;">🤖 Narasi Kesimpulan Otomatis (Sistem)</h3>
+                    <button id="btn-gen-narasi" onclick="bukaGenerateNarasi()" style="display: flex; align-items: center; gap: 7px; padding: 9px 18px;
+                               background: linear-gradient(135deg, #1FA9E6, #0F3D56); color: #fff;
+                               border: none; border-radius: 8px; font-family: inherit; font-size: 13px;
+                               font-weight: 600; cursor: pointer; transition: opacity .2s;">
+                        ✨ Generate Narasi Bulan Ini
+                    </button>
+                </div>
+
+                <!-- Narasi dari database -->
                 <div class="narrative-box" id="narasi-box">
-                    Memuat narasi kesimpulan dari database…
+                    Memuat narasi kesimpulan dari database...
+                </div>
+
+                <!-- Panel generate (tersembunyi secara default) -->
+                <div id="panel-generate" style="display: none; margin-top: 16px; background: #f8fafc;
+                     border: 1px solid #dce6ef; border-radius: 12px; padding: 20px 24px;">
+
+                    <p style="font-size: 13px; color: #0F3D56; font-weight: 600; margin: 0 0 12px;">
+                        📋 Pilih periode untuk digenerate:
+                    </p>
+
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px;">
+                        <select id="gen-bulan" style="padding: 8px 12px; border: 1px solid #cdd7df;
+                            border-radius: 8px; font-family: inherit; font-size: 14px; color: #0F3D56;">
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                        <select id="gen-tahun" style="padding: 8px 12px; border: 1px solid #cdd7df;
+                            border-radius: 8px; font-family: inherit; font-size: 14px; color: #0F3D56;">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                        </select>
+                        <button onclick="generateNarasiOtomatis()" style="padding: 8px 18px; background: #0F3D56; color: #fff; border: none;
+                                   border-radius: 8px; font-family: inherit; font-size: 13px;
+                                   font-weight: 600; cursor: pointer;">
+                            ▶ Proses
+                        </button>
+                        <button onclick="tutupGenerateNarasi()" style="padding: 8px 14px; background: transparent; color: #95a5a6;
+                                   border: 1px solid #cdd7df; border-radius: 8px; font-family: inherit;
+                                   font-size: 13px; cursor: pointer;">
+                            Batal
+                        </button>
+                    </div>
+
+                    <!-- Status -->
+                    <div id="gen-status" style="display: none; font-size: 13px; padding: 9px 14px;
+                         border-radius: 8px; margin-bottom: 12px;"></div>
+
+                    <!-- Preview & Edit -->
+                    <div id="gen-preview-wrap" style="display: none;">
+                        <p style="font-size: 13px; font-weight: 600; color: #0F3D56; margin: 0 0 8px;">
+                            ✏️ Hasil Narasi (dapat diedit):
+                        </p>
+                        <textarea id="gen-narasi-text" rows="7" style="width: 100%; padding: 14px; border: 1px solid #cdd7df; border-radius: 8px;
+                                   font-family: inherit; font-size: 14px; line-height: 1.8; color: #2c3e50;
+                                   resize: vertical; box-sizing: border-box;"></textarea>
+                        <div style="margin-top: 12px; display: flex; gap: 10px;">
+                            <button onclick="simpanNarasiKeDB()" style="padding: 9px 20px; background: #27ae60; color: #fff; border: none;
+                                       border-radius: 8px; font-family: inherit; font-size: 13px;
+                                       font-weight: 600; cursor: pointer;">
+                                💾 Simpan ke Database
+                            </button>
+                            <button onclick="generateNarasiOtomatis()" style="padding: 9px 16px; background: transparent; color: #0F3D56;
+                                       border: 1px solid #0F3D56; border-radius: 8px; font-family: inherit;
+                                       font-size: 13px; cursor: pointer;">
+                                🔄 Generate Ulang
+                            </button>
+                        </div>
+                        <div id="gen-simpan-status" style="display: none; font-size: 13px; padding: 9px 14px;
+                             border-radius: 8px; margin-top: 10px;"></div>
+                    </div>
                 </div>
             </div>
 

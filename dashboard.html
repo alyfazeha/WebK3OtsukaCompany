@@ -12,46 +12,265 @@
     <link rel="stylesheet" href="css/style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS untuk ekspor Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- jsPDF untuk ekspor PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        /* ── Export Button Group ── */
+        .export-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-export {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-export:hover {
+            opacity: 0.85;
+        }
+
+        .btn-export.pdf {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-export.excel {
+            background: #27ae60;
+            color: #fff;
+        }
+
+        .btn-export.csv {
+            background: #0F3D56;
+            color: #fff;
+        }
+
+        /* ── Filter Bar ── */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-bar select,
+        .filter-bar input[type="date"] {
+            padding: 8px 12px;
+            border: 1px solid #cdd7df;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            color: #0F3D56;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        /* ── Heatmap ── */
+        .heatmap-wrapper {
+            overflow-x: auto;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            gap: 4px;
+            min-width: 560px;
+        }
+
+        .heatmap-header,
+        .heatmap-row {
+            display: contents;
+        }
+
+        .heatmap-cell {
+            padding: 8px 6px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .heatmap-cell.label-dept {
+            background: transparent;
+            color: #0F3D56;
+            font-weight: 600;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .heatmap-cell.label-month {
+            background: #f0f4f8;
+            color: #0F3D56;
+            font-weight: 600;
+        }
+
+        .heatmap-cell.submitted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .heatmap-cell.partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .heatmap-cell.missed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .heatmap-cell.na {
+            background: #f0f4f8;
+            color: #95a5a6;
+        }
+
+        /* ── Chart card ── */
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .chart-card h4 {
+            color: #0F3D56;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* ── Badge overrides ── */
+        .badge.fit {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge.catatan {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge.unfit {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ── Narrative box ── */
+        .narrative-container h3 {
+            color: #0F3D56;
+            margin-bottom: 12px;
+        }
+
+        .narrative-box {
+            background: #f0f8ff;
+            border-left: 4px solid #1FA9E6;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #2c3e50;
+        }
+
+        /* ── Overdue / expiry badge on stat card ── */
+        #stat-overdue,
+        #stat-dokumen-kadaluarsa {
+            color: #e74c3c;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="sidebar"></div>
+    <div class="sidebar"></div>
     <div class="main">
 
         <div class="navbar">
             <h2>Dashboard Sistem K3</h2>
-            <div class="profile">
-                Administrator
-            </div>
+            <div class="profile">Administrator</div>
         </div>
 
         <div class="content">
-            <div class="top"
-                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 25px;">
+
+            <!-- ══ TOP BAR: Judul + Filter + Ekspor ══ -->
+            <div
+                style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px; margin-bottom:25px;">
                 <h3>Ringkasan Performa Keselamatan Kerja</h3>
 
-                <div class="filter-wrapper" style="display: flex; gap: 10px;">
-                    <select id="filter-dept"
-                        style="padding: 8px 12px; border: 1px solid #cdd7df; border-radius: 8px; font-family: inherit; font-size: 14px; color: #0F3D56; cursor: pointer;">
-                        <option value="All">Semua Departemen</option>
-                        <option value="Produksi">Produksi</option>
-                        <option value="QC">QC</option>
-                        <option value="HRD">HRD</option>
-                        <option value="Engineering">Engineering</option>
-                        <option value="Warehouse">Warehouse</option>
-                    </select>
+                <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-end;">
 
-                    <select id="filter-tahun"
-                        style="padding: 8px 12px; border: 1px solid #cdd7df; border-radius: 8px; font-family: inherit; font-size: 14px; color: #0F3D56; cursor: pointer;">
-                        <option value="All">Semua Tahun</option>
-                        <option value="2026">2026</option>
-                        <option value="2025">2025</option>
-                    </select>
+                    <!-- Filter Row -->
+                    <div class="filter-bar">
+                        <select id="filter-dept">
+                            <option value="All">Semua Departemen</option>
+                            <option value="Produksi">Produksi</option>
+                            <option value="QC">QC</option>
+                            <option value="HRD">HRD</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Warehouse">Warehouse</option>
+                        </select>
+
+                        <select id="filter-tahun">
+                            <option value="All">Semua Tahun</option>
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                        </select>
+
+                        <select id="filter-jenis-form">
+                            <option value="All">Semua Jenis Formulir</option>
+                            <option value="Daily">Harian</option>
+                            <option value="Weekly">Mingguan</option>
+                            <option value="Monthly">Bulanan</option>
+                        </select>
+
+                        <select id="filter-kategori-dok">
+                            <option value="All">Semua Kategori Dokumen</option>
+                            <option value="SOP">SOP</option>
+                            <option value="Regulasi">Regulasi</option>
+                            <option value="Formulir">Formulir</option>
+                            <option value="IK">Instruksi Kerja</option>
+                        </select>
+
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <label style="font-size:13px; color:#0F3D56; white-space:nowrap;">Rentang Tanggal:</label>
+                            <input type="date" id="filter-tgl-awal">
+                            <span style="font-size:13px; color:#95a5a6;">–</span>
+                            <input type="date" id="filter-tgl-akhir">
+                        </div>
+                    </div>
+
+                    <!-- Export Row -->
+                    <div class="export-group">
+                        <button class="btn-export pdf" onclick="eksporPDF()">📄 Ekspor PDF</button>
+                        <button class="btn-export excel" onclick="eksporExcel()">📊 Ekspor Excel</button>
+                        <button class="btn-export csv" onclick="eksporCSV()">📋 Ekspor CSV</button>
+                    </div>
                 </div>
             </div>
 
+            <!-- ══ KPI STAT CARDS ══ -->
             <div class="dashboard-grid">
+                <!-- 1 -->
                 <div class="card-stat">
                     <div class="card-icon">📈</div>
                     <div class="card-info">
@@ -59,13 +278,15 @@
                         <p>Rata-rata Kepatuhan</p>
                     </div>
                 </div>
+                <!-- 2 -->
                 <div class="card-stat">
-                    <div class="card-icon">🛡️</div>
+                    <div class="card-icon">⏰</div>
                     <div class="card-info">
-                        <h3 id="stat-safedays">0 Hari</h3>
-                        <p>Safe Days Counter</p>
+                        <h3 id="stat-overdue">0</h3>
+                        <p>Formulir Terlambat</p>
                     </div>
                 </div>
+                <!-- 3 -->
                 <div class="card-stat">
                     <div class="card-icon">⚠️</div>
                     <div class="card-info">
@@ -73,6 +294,7 @@
                         <p>Insiden Terbuka (Open)</p>
                     </div>
                 </div>
+                <!-- 4 -->
                 <div class="card-stat">
                     <div class="card-icon">🛠️</div>
                     <div class="card-info">
@@ -80,47 +302,90 @@
                         <p>Tindakan CAPA Terbuka</p>
                     </div>
                 </div>
-                <div class="card-stat">
-                    <div class="card-icon">👥</div>
-                    <div class="card-info">
-                        <h3 id="stat-karyawan">0</h3>
-                        <p>Total Karyawan</p>
-                    </div>
-                </div>
+                <!-- 5 -->
                 <div class="card-stat">
                     <div class="card-icon">📂</div>
                     <div class="card-info">
-                        <h3 id="stat-dokumen">0</h3>
-                        <p>Total Dokumen K3</p>
+                        <h3 id="stat-dokumen-kadaluarsa">0</h3>
+                        <p>Dokumen Segera Kadaluarsa (&lt;30 Hari)</p>
+                    </div>
+                </div>
+                <!-- 6 -->
+                <div class="card-stat">
+                    <div class="card-icon">🛡️</div>
+                    <div class="card-info">
+                        <h3 id="stat-safedays">0 Hari</h3>
+                        <p>Safe Days Counter (tanpa LTI)</p>
                     </div>
                 </div>
             </div>
 
-            <div class="charts-grid"
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-top: 30px;">
-                <div
-                    style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-                    <h4 style="color: #0F3D56; margin-bottom: 15px; font-weight: 600;">📈 Tren Kepatuhan K3 Bulanan</h4>
+            <!-- ══ ROW 1 CHARTS: Kepatuhan + Insiden ══ -->
+            <div
+                style="display:grid; grid-template-columns:repeat(auto-fit, minmax(400px,1fr)); gap:20px; margin-top:30px;">
+                <div class="chart-card">
+                    <h4>📈 Tren Kepatuhan K3 per Departemen</h4>
                     <canvas id="complianceChart" height="200"></canvas>
                 </div>
-                <div
-                    style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-                    <h4 style="color: #0F3D56; margin-bottom: 15px; font-weight: 600;">🚨 Distribusi Kategori Insiden
-                    </h4>
+                <div class="chart-card">
+                    <h4>🚨 Statistik Insiden – Frekuensi per Jenis &amp; Departemen</h4>
+                    <div style="display:flex; gap:8px; margin-bottom:12px;">
+                        <select id="incident-view-mode"
+                            style="padding:6px 10px; border:1px solid #cdd7df; border-radius:6px; font-family:inherit; font-size:13px; color:#0F3D56;">
+                            <option value="jenis">Per Jenis</option>
+                            <option value="dept">Per Departemen</option>
+                            <option value="bulan">Per Bulan</option>
+                        </select>
+                        <select id="incident-yoy"
+                            style="padding:6px 10px; border:1px solid #cdd7df; border-radius:6px; font-family:inherit; font-size:13px; color:#0F3D56;">
+                            <option value="off">Tampilan Biasa</option>
+                            <option value="on">Perbandingan Year-over-Year</option>
+                        </select>
+                    </div>
                     <canvas id="incidentChart" height="200"></canvas>
                 </div>
             </div>
 
-            <div class="narrative-container" style="margin-top: 30px;">
-                <h3>🤖 Narasi Kesimpulan Otomatis (Sistem)</h3>
-                <div class="narrative-box" id="narasi-box">
-                    Memuat narasi kesimpulan dari database...
+            <!-- ══ ROW 2 CHARTS: Status Dokumen + Form Heatmap ══ -->
+            <div
+                style="display:grid; grid-template-columns:repeat(auto-fit, minmax(400px,1fr)); gap:20px; margin-top:20px;">
+                <div class="chart-card">
+                    <h4>📁 Status Dokumen K3</h4>
+                    <canvas id="docStatusChart" height="200"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h4>🗓️ Heatmap Pengisian Formulir per Departemen</h4>
+                    <div class="heatmap-wrapper">
+                        <div id="heatmap-container">
+                            <p style="color:#95a5a6; font-size:13px;">Memuat heatmap…</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:12px; margin-top:10px; font-size:12px; flex-wrap:wrap;">
+                        <span><span
+                                style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#d4edda;margin-right:4px;"></span>Lengkap</span>
+                        <span><span
+                                style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#fff3cd;margin-right:4px;"></span>Sebagian</span>
+                        <span><span
+                                style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#f8d7da;margin-right:4px;"></span>Tidak
+                            Diisi</span>
+                        <span><span
+                                style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#f0f4f8;margin-right:4px;"></span>N/A</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="table-container" style="margin-top: 30px;">
-                <h3 style="margin-bottom: 15px;">📅 Riwayat Rekapitulasi Bulanan</h3>
-                <table>
+            <!-- ══ NARASI AI ══ -->
+            <div class="narrative-container" style="margin-top:30px;">
+                <h3>🤖 Narasi Kesimpulan Otomatis (Sistem)</h3>
+                <div class="narrative-box" id="narasi-box">
+                    Memuat narasi kesimpulan dari database…
+                </div>
+            </div>
+
+            <!-- ══ TABEL REKAP ══ -->
+            <div class="table-container" style="margin-top:30px;" id="rekap-section">
+                <h3 style="margin-bottom:15px;">📅 Riwayat Rekapitulasi Bulanan</h3>
+                <table id="tabel-rekap">
                     <thead>
                         <tr>
                             <th>Bulan / Tahun</th>
@@ -130,22 +395,20 @@
                     </thead>
                     <tbody id="tabel-rekap-body">
                         <tr>
-                            <td colspan="3" style="text-align: center; color: #95a5a6;">Memuat data rekapitulasi…</td>
+                            <td colspan="3" style="text-align:center; color:#95a5a6;">Memuat data rekapitulasi…</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
 
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/sidebar.js"></script>
     <script>document.addEventListener("DOMContentLoaded", () => { initAuth(); });</script>
-
     <script src="js/dashboard.js"></script>
 
 </body>

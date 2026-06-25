@@ -77,7 +77,7 @@ function applyFilterAndRender() {
 
     const filteredSubs = selectedDept === "ALL"
         ? cachedSubmissions
-        : cachedSubmissions.filter(sub => sub.inspector_department === selectedDept);
+        : cachedSubmissions.filter(sub => sub.department === selectedDept);
 
     const totalFormsCount = cachedForms.length;
     const totalSubsCount = filteredSubs.length;
@@ -129,8 +129,8 @@ function processAndRenderCharts(submissions) {
     DEPARTMENT_LIST.forEach(dept => { deptCounts[dept] = 0; });
 
     submissions.forEach(sub => {
-        if (deptCounts[sub.inspector_department] !== undefined) {
-            deptCounts[sub.inspector_department]++;
+        if (deptCounts[sub.department] !== undefined) {
+            deptCounts[sub.department]++;
         }
     });
 
@@ -223,9 +223,9 @@ function renderSubmissionTableLogs(submissions) {
         tbodySubmissionLogs.innerHTML += `
         <tr>
             <td style="text-align:left;font-weight:600;">${escapeHtml(sub.form_title)}</td>
-            <td>${escapeHtml(sub.inspector_name)}</td>
+            <td>${escapeHtml(sub.submitted_by)}</td>
             <td>
-                <span class="badge comp-badge-dept">${escapeHtml(sub.inspector_department)}</span>
+                <span class="badge comp-badge-dept">${escapeHtml(sub.department)}</span>
             </td>
             <td>${totalParameters} Parameter</td>
             <td style="font-size:.8rem;color:#777;">${formattedDate}</td>
@@ -248,7 +248,7 @@ function bukaModalDetail(id) {
 
     document.getElementById("modalFormTitle").innerText = submission.form_title || "Detail Jawaban Form Inspeksi";
     document.getElementById("modalMetaInfo").innerText =
-        `Pemeriksa: ${submission.inspector_name || "-"} | Departemen: ${submission.inspector_department || "-"} | Waktu: ${formatSubmissionDate(submission.submitted_at)}`;
+        `Pemeriksa: ${submission.submitted_by || "-"} | Departemen: ${submission.department || "-"} | Waktu: ${formatSubmissionDate(submission.submitted_at)}`;
 
     const answers = Array.isArray(submission.submitted_answers) ? submission.submitted_answers : [];
     const container = document.getElementById("modalAnswersContainer");
@@ -297,7 +297,7 @@ function exportSubmissionsToCsv() {
 
     const rowsToExport = selectedDept === "ALL"
         ? cachedSubmissions
-        : cachedSubmissions.filter(sub => sub.inspector_department === selectedDept);
+        : cachedSubmissions.filter(sub => sub.department === selectedDept);
 
     if (rowsToExport.length === 0) {
         alert("Tidak ada data untuk diekspor pada filter yang sedang aktif.");
@@ -311,8 +311,8 @@ function exportSubmissionsToCsv() {
         const totalParameters = Array.isArray(sub.submitted_answers) ? sub.submitted_answers.length : 0;
         const row = [
             csvEscape(sub.form_title),
-            csvEscape(sub.inspector_name),
-            csvEscape(sub.inspector_department),
+            csvEscape(sub.submitted_by),
+            csvEscape(sub.department),
             totalParameters,
             csvEscape(formatSubmissionDate(sub.submitted_at))
         ];

@@ -199,6 +199,35 @@ async function hitungSafeDays() {
 }
 
 // ══════════════════════════════════════════════
+//  HELPER – Format Narasi jadi Paragraf Rapi
+// ══════════════════════════════════════════════
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+}
+
+// Memecah teks narasi (dipisah baris kosong) menjadi beberapa <p> rapi,
+// alih-alih ditampilkan menumpuk jadi satu paragraf.
+function formatNarasiParagraf(narasiText) {
+    if (!narasiText || !narasiText.trim()) {
+        return '<p style="color:#95a5a6; margin:0;">Belum ada narasi untuk periode ini.</p>';
+    }
+    const paragraf = narasiText
+        .split(/\n\s*\n/)
+        .map(p => p.trim())
+        .filter(p => p.length > 0);
+
+    if (paragraf.length === 0) {
+        return `<p style="margin:0; line-height:1.8;">${escapeHtml(narasiText)}</p>`;
+    }
+
+    return paragraf
+        .map(p => `<p style="margin:0 0 14px 0; line-height:1.8; text-align:justify;">${escapeHtml(p)}</p>`)
+        .join('');
+}
+
+// ══════════════════════════════════════════════
 //  REKAP BULANAN + NARASI + CHART KEPATUHAN
 // ══════════════════════════════════════════════
 async function muatDataRekapUtama(tahun) {
@@ -224,22 +253,39 @@ async function muatDataRekapUtama(tahun) {
 
         tabelBody.innerHTML = "";
 
-        // Kartu kepatuhan + narasi terbaru
+        // Simpan data rekap secara global agar bisa dipakai oleh modal detail & ekspor
+        window._rekapData = data;
+
+        // Kartu kepatuhan + narasi terbaru (tampil sebagai paragraf rapi, bukan satu blok teks)
         const terbaru = data[0];
         document.getElementById('stat-kepatuhan').innerText = `${terbaru.rata_rata_kepatuhan}%`;
-        narasiBox.innerHTML = `<strong>Evaluasi Periode ${konversiBulan(terbaru.bulan)} ${terbaru.tahun}:</strong><br>${terbaru.narasi_kesimpulan}`;
+        narasiBox.innerHTML = `
+            <strong>Evaluasi Periode ${konversiBulan(terbaru.bulan)} ${terbaru.tahun}:</strong>
+            <div style="margin-top:8px;">${formatNarasiParagraf(terbaru.narasi_kesimpulan)}</div>`;
 
-        data.forEach(item => {
+        data.forEach((item, idx) => {
             const skor = item.rata_rata_kepatuhan;
             const badgeClass = skor >= 80 ? 'fit' : skor >= 60 ? 'catatan' : 'unfit';
-            tabelBody.innerHTML += `
-                <tr>
-                    <td><strong>${konversiBulan(item.bulan)} ${item.tahun}</strong></td>
-                    <td><span class="badge ${badgeClass}">${skor}%</span></td>
-                    <td style="text-align:left;max-width:450px;font-size:14px;line-height:1.5;">
-                        ${item.narasi_kesimpulan || '—'}
-                    </td>
-                </tr>`;
+
+            const tr = document.createElement('tr');
+
+            const tdBulan = document.createElement('td');
+            tdBulan.innerHTML = `<strong>${konversiBulan(item.bulan)} ${item.tahun}</strong>`;
+
+            const tdSkor = document.createElement('td');
+            tdSkor.innerHTML = `<span class="badge ${badgeClass}">${skor}%</span>`;
+
+            const tdNarasi = document.createElement('td');
+            tdNarasi.style.textAlign = 'center';
+            const btnDetail = document.createElement('button');
+            btnDetail.type = 'button';
+            btnDetail.className = 'btn-lihat-narasi';
+            btnDetail.innerHTML = '📄 Lihat Narasi Detail';
+            btnDetail.addEventListener('click', () => bukaModalNarasi(idx));
+            tdNarasi.appendChild(btnDetail);
+
+            tr.append(tdBulan, tdSkor, tdNarasi);
+            tabelBody.appendChild(tr);
         });
 
         renderComplianceChart(data);
@@ -248,6 +294,38 @@ async function muatDataRekapUtama(tahun) {
         console.error("Gagal memuat rekap utama:", err);
     }
 }
+
+// ══════════════════════════════════════════════
+//  MODAL – Lihat Narasi Detail (dari tabel rekap)
+// ══════════════════════════════════════════════
+function bukaModalNarasi(idx) {
+    const item = (window._rekapData || [])[idx];
+    if (!item) return;
+
+    document.getElementById('modal-narasi-judul').innerText =
+        `📋 Narasi Evaluasi — ${konversiBulan(item.bulan)} ${item.tahun}`;
+    document.getElementById('modal-narasi-skor').innerText =
+        item.rata_rata_kepatuhan !== null && item.rata_rata_kepatuhan !== undefined
+            ? `Rata-rata Kepatuhan: ${item.rata_rata_kepatuhan}%`
+            : '';
+    document.getElementById('modal-narasi-body').innerHTML = formatNarasiParagraf(item.narasi_kesimpulan);
+
+    document.getElementById('modal-narasi-overlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function tutupModalNarasi() {
+    document.getElementById('modal-narasi-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Tutup modal dengan tombol Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const overlay = document.getElementById('modal-narasi-overlay');
+        if (overlay && overlay.style.display === 'flex') tutupModalNarasi();
+    }
+});
 
 // ══════════════════════════════════════════════
 //  CHART 1 – Tren Kepatuhan per Departemen (Line)
@@ -580,18 +658,12 @@ async function eksporPDF() {
         margin: { left: 14 }
     });
 
-    // Tabel rekap
-    const rows = [];
-    document.querySelectorAll('#tabel-rekap-body tr').forEach(tr => {
-        const cells = tr.querySelectorAll('td');
-        if (cells.length >= 3) {
-            rows.push([
-                cells[0].innerText,
-                cells[1].innerText,
-                cells[2].innerText,
-            ]);
-        }
-    });
+    // Tabel rekap (ambil narasi lengkap dari data, bukan dari tombol "Lihat Narasi Detail")
+    const rows = (window._rekapData || []).map(item => [
+        `${konversiBulan(item.bulan)} ${item.tahun}`,
+        `${item.rata_rata_kepatuhan}%`,
+        item.narasi_kesimpulan || '—',
+    ]);
 
     if (rows.length > 0) {
         doc.autoTable({
@@ -627,11 +699,14 @@ function eksporExcel() {
     ];
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(kpiData), 'KPI');
 
-    // Sheet 2: Rekap Bulanan
+    // Sheet 2: Rekap Bulanan (narasi lengkap dari data, bukan dari tombol)
     const rows = [['Bulan / Tahun', 'Kepatuhan (%)', 'Narasi Evaluasi']];
-    document.querySelectorAll('#tabel-rekap-body tr').forEach(tr => {
-        const cells = tr.querySelectorAll('td');
-        if (cells.length >= 3) rows.push([cells[0].innerText, cells[1].innerText, cells[2].innerText]);
+    (window._rekapData || []).forEach(item => {
+        rows.push([
+            `${konversiBulan(item.bulan)} ${item.tahun}`,
+            item.rata_rata_kepatuhan,
+            item.narasi_kesimpulan || '—',
+        ]);
     });
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), 'Rekap Bulanan');
 
@@ -643,9 +718,12 @@ function eksporExcel() {
 // ══════════════════════════════════════════════
 function eksporCSV() {
     const rows = [['Bulan / Tahun', 'Kepatuhan (%)', 'Narasi Evaluasi']];
-    document.querySelectorAll('#tabel-rekap-body tr').forEach(tr => {
-        const cells = tr.querySelectorAll('td');
-        if (cells.length >= 3) rows.push([cells[0].innerText, cells[1].innerText, cells[2].innerText]);
+    (window._rekapData || []).forEach(item => {
+        rows.push([
+            `${konversiBulan(item.bulan)} ${item.tahun}`,
+            item.rata_rata_kepatuhan,
+            item.narasi_kesimpulan || '—',
+        ]);
     });
 
     const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');

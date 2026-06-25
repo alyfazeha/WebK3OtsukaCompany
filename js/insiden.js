@@ -1,7 +1,7 @@
 /* ============================================================
    insiden.js — Laporan Insiden, HIRARC, dan CAPA Tracking
    Tabel Supabase yang dibutuhkan:
-     - insiden_k3  (id, tgl, waktu, jenis, lokasi, pelapor, dept,
+     - incidents  (id, tgl, waktu, jenis, lokasi, pelapor, dept,
                     kronologi, keparahan, korban, root_cause,
                     corrective, preventive, target_selesai, status,
                     created_at)
@@ -98,7 +98,7 @@ async function loadAll() {
 async function loadInsiden() {
   try {
     const { data, error } = await db
-      .from("insiden_k3")
+      .from("incidents")
       .select("*")
       .order("tgl", { ascending: false });
 
@@ -145,42 +145,42 @@ function updateKPI() {
 /* ========================================================
    RENDER: TABEL INSIDEN
    ======================================================== */
-function renderInsiden() {
-  const q      = (document.getElementById("cari-insiden").value || "").toLowerCase();
-  const fjenis  = document.getElementById("filter-jenis-insiden").value;
-  const fstatus = document.getElementById("filter-status-insiden").value;
+  function renderInsiden() {
+    const q      = (document.getElementById("cari-insiden").value || "").toLowerCase();
+    const fjenis  = document.getElementById("filter-jenis-insiden").value;
+    const fstatus = document.getElementById("filter-status-insiden").value;
 
-  let data = allInsiden.filter(i => {
-    const matchQ = !q || (i.jenis + i.lokasi + i.pelapor).toLowerCase().includes(q);
-    const matchJ = !fjenis  || i.jenis === fjenis;
-    const matchS = !fstatus || i.status === fstatus;
-    return matchQ && matchJ && matchS;
-  });
+    let data = allInsiden.filter(i => {
+      const matchQ = !q || (i.jenis + i.lokasi + i.pelapor).toLowerCase().includes(q);
+      const matchJ = !fjenis  || i.jenis === fjenis;
+      const matchS = !fstatus || i.status === fstatus;
+      return matchQ && matchJ && matchS;
+    });
 
-  const tbody = document.getElementById("tbody-insiden");
+    const tbody = document.getElementById("tbody-insiden");
 
-  if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Tidak ada data insiden yang sesuai filter.</td></tr>`;
-    return;
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Tidak ada data insiden yang sesuai filter.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map((row, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${formatTgl(row.tgl)}</td>
+        <td>${row.jenis}</td>
+        <td>${row.lokasi}</td>
+        <td>${row.pelapor}</td>
+        <td>${badgeKeparahan(row.keparahan)}</td>
+        <td>${badgeStatus(row.status)}</td>
+        <td>
+          <button class="btn-sm btn-detail" onclick="lihatDetailInsiden('${row.id}')">Detail</button>
+          <button class="btn-sm btn-detail" style="background:#176C8C" onclick="editInsiden('${row.id}')">Edit</button>
+          <button class="btn-sm btn-hapus" onclick="hapusInsiden('${row.id}')">Hapus</button>
+        </td>
+      </tr>
+    `).join("");
   }
-
-  tbody.innerHTML = data.map((row, idx) => `
-    <tr>
-      <td>${idx + 1}</td>
-      <td>${formatTgl(row.tgl)}</td>
-      <td>${row.jenis}</td>
-      <td>${row.lokasi}</td>
-      <td>${row.pelapor}</td>
-      <td>${badgeKeparahan(row.keparahan)}</td>
-      <td>${badgeStatus(row.status)}</td>
-      <td>
-        <button class="btn-sm btn-detail" onclick="lihatDetailInsiden('${row.id}')">Detail</button>
-        <button class="btn-sm btn-detail" style="background:#176C8C" onclick="editInsiden('${row.id}')">Edit</button>
-        <button class="btn-sm btn-hapus" onclick="hapusInsiden('${row.id}')">Hapus</button>
-      </td>
-    </tr>
-  `).join("");
-}
 
 /* ========================================================
    RENDER: TABEL HIRARC
@@ -198,7 +198,7 @@ function renderHirarc() {
   const tbody = document.getElementById("tbody-hirarc");
 
   if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">Tidak ada data bahaya yang sesuai filter.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Tidak ada data bahaya yang sesuai filter.</td></tr>`;
     return;
   }
 
@@ -207,8 +207,6 @@ function renderHirarc() {
       <td>${idx + 1}</td>
       <td style="text-align:left">${row.bahaya}</td>
       <td>${row.lokasi}</td>
-      <td style="text-align:center">${row.kemungkinan}</td>
-      <td style="text-align:center">${row.keparahan}</td>
       <td style="text-align:center;font-weight:700;color:#0F3D56">${row.nilai_risiko}</td>
       <td>${badgeLevel(row.level_risiko)}</td>
       <td style="text-align:left;font-size:13px">${row.pengendalian || '–'}</td>
@@ -356,9 +354,9 @@ async function simpanInsiden() {
   try {
     let error;
     if (id) {
-      ({ error } = await db.from("insiden_k3").update(payload).eq("id", id));
+      ({ error } = await db.from("incidents").update(payload).eq("id", id));
     } else {
-      ({ error } = await db.from("insiden_k3").insert([payload]));
+      ({ error } = await db.from("incidents").insert([payload]));
     }
     if (error) throw error;
 
@@ -373,14 +371,14 @@ async function simpanInsiden() {
 
 async function hapusInsiden(id) {
   if (!confirm("Hapus laporan insiden ini? Tindakan tidak dapat dibatalkan.")) return;
-  const { error } = await db.from("insiden_k3").delete().eq("id", id);
+  const { error } = await db.from("incidents").delete().eq("id", id);
   if (error) { toast("Gagal menghapus: " + error.message, false); return; }
   toast("Laporan insiden dihapus.");
   await loadAll();
 }
 
 async function updateStatusInsiden(id, status) {
-  const { error } = await db.from("insiden_k3").update({ status }).eq("id", id);
+  const { error } = await db.from("incidents").update({ status }).eq("id", id);
   if (error) { toast("Gagal update status.", false); return; }
   toast(`Status diubah ke: ${status}`);
   await loadAll();

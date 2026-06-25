@@ -12,6 +12,7 @@ const SIDEBAR_MENU = [
     { href: "pelaksanaan.html",  icon: "📋", label: "Pelaksanaan SOP" },
     { href: "submission.html",   icon: "📝", label: "Form Kepatuhan" }, // <-- Menu Baru Terintegrasi
     { href: "monitoring.html",   icon: "🛡️", label: "Monitoring Kepatuhan" },
+    { href: "compliance_report.html", icon: "📑", label: "Compliance Report" },
     { href: "insiden.html",      icon: "⚠️", label: "Laporan Insiden" },
     { href: "audit.html",        icon: "📊", label: "Audit" },
     { href: "admin.html",        icon: "⚙️", label: "Kelola User" },

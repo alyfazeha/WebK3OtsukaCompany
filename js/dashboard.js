@@ -6,8 +6,8 @@
 
 // ── Chart instances (destroy before re-render to avoid overlap) ──
 let complianceChartInstance = null;
-let incidentChartInstance   = null;
-let docStatusChartInstance  = null;
+let incidentChartInstance = null;
+let docStatusChartInstance = null;
 
 // ── Supabase client alias ──
 const client = typeof db !== 'undefined' ? db : supabase;
@@ -18,8 +18,8 @@ const DEPTS = ['Produksi', 'QC', 'HRD', 'Engineering', 'Warehouse'];
 // ── Nama bulan Indonesia ──
 function konversiBulan(angkaBulan) {
     const namaBulan = [
-        "Januari","Februari","Maret","April","Mei","Juni",
-        "Juli","Agustus","September","Oktober","November","Desember"
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
     return namaBulan[angkaBulan - 1] || "—";
 }
@@ -29,18 +29,18 @@ function konversiBulan(angkaBulan) {
 // ══════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
     // Set default date range: awal tahun ini s/d hari ini
-    const today   = new Date();
+    const today = new Date();
     const firstDay = new Date(today.getFullYear(), 0, 1);
-    document.getElementById('filter-tgl-awal').value  = firstDay.toISOString().split('T')[0];
+    document.getElementById('filter-tgl-awal').value = firstDay.toISOString().split('T')[0];
     document.getElementById('filter-tgl-akhir').value = today.toISOString().split('T')[0];
 
     refreshDashboard();
 
     // Pasang event listener pada semua kontrol filter
-    ['filter-dept','filter-tahun','filter-jenis-form',
-     'filter-kategori-dok','filter-tgl-awal','filter-tgl-akhir'].forEach(id => {
-        document.getElementById(id).addEventListener('change', refreshDashboard);
-    });
+    ['filter-dept', 'filter-tahun', 'filter-jenis-form',
+        'filter-kategori-dok', 'filter-tgl-awal', 'filter-tgl-akhir'].forEach(id => {
+            document.getElementById(id).addEventListener('change', refreshDashboard);
+        });
 
     // Sub-kontrol chart insiden
     document.getElementById('incident-view-mode').addEventListener('change', () => refreshInsiden());
@@ -51,12 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
 //  FUNGSI UTAMA REFRESH
 // ══════════════════════════════════════════════
 async function refreshDashboard() {
-    const dept      = document.getElementById('filter-dept').value;
-    const tahun     = document.getElementById('filter-tahun').value;
+    const dept = document.getElementById('filter-dept').value;
+    const tahun = document.getElementById('filter-tahun').value;
     const jenisForm = document.getElementById('filter-jenis-form').value;
-    const katDok    = document.getElementById('filter-kategori-dok').value;
-    const tglAwal   = document.getElementById('filter-tgl-awal').value;
-    const tglAkhir  = document.getElementById('filter-tgl-akhir').value;
+    const katDok = document.getElementById('filter-kategori-dok').value;
+    const tglAwal = document.getElementById('filter-tgl-awal').value;
+    const tglAkhir = document.getElementById('filter-tgl-akhir').value;
 
     // Semua dipanggil paralel untuk performa
     await Promise.allSettled([
@@ -84,7 +84,7 @@ async function hitungFormulirOverdue(dept, jenisForm, tglAwal, tglAkhir) {
         // Ambil semua form aktif
         let qForms = client.from('monitoring_forms').select('id, frequency, target_department').eq('status', 'Active');
         if (jenisForm !== 'All') qForms = qForms.eq('frequency', jenisForm);
-        if (dept !== 'All')     qForms = qForms.eq('target_department', dept);
+        if (dept !== 'All') qForms = qForms.eq('target_department', dept);
 
         const { data: forms, error: fErr } = await qForms;
         if (fErr || !forms) return;
@@ -99,7 +99,7 @@ async function hitungFormulirOverdue(dept, jenisForm, tglAwal, tglAkhir) {
         let qSubs = client.from('monitoring_submissions')
             .select('form_id, status')
             .in('form_id', formIds);
-        if (tglAwal)  qSubs = qSubs.gte('submitted_at', tglAwal);
+        if (tglAwal) qSubs = qSubs.gte('submitted_at', tglAwal);
         if (tglAkhir) qSubs = qSubs.lte('submitted_at', tglAkhir + 'T23:59:59');
 
         const { data: subs, error: sErr } = await qSubs;
@@ -120,8 +120,8 @@ async function hitungFormulirOverdue(dept, jenisForm, tglAwal, tglAkhir) {
 // ══════════════════════════════════════════════
 async function hitungDokumenKadaluarsa(katDok) {
     try {
-        const today  = new Date();
-        const in30   = new Date(); in30.setDate(today.getDate() + 30);
+        const today = new Date();
+        const in30 = new Date(); in30.setDate(today.getDate() + 30);
 
         let query = client.from('dokumen_k3')
             .select('*', { count: 'exact', head: true })
@@ -147,7 +147,7 @@ async function hitungInsidenDanCapa(dept, tglAwal, tglAkhir) {
         // A. Insiden
         let qInsiden = client.from('incidents').select('jenis, status, dept, tgl');
         if (dept !== 'All') qInsiden = qInsiden.eq('dept', dept);
-        if (tglAwal)  qInsiden = qInsiden.gte('tgl', tglAwal);
+        if (tglAwal) qInsiden = qInsiden.gte('tgl', tglAwal);
         if (tglAkhir) qInsiden = qInsiden.lte('tgl', tglAkhir);
 
         const { data: dataInsiden, error: errInsiden } = await qInsiden;
@@ -165,7 +165,7 @@ async function hitungInsidenDanCapa(dept, tglAwal, tglAkhir) {
         ]);
 
         const openTemuan = (temuanData || []).filter(c => c.status_perbaikan === 'Open').length;
-        const openCapa   = (capaData   || []).filter(c => c.status_capa === 'Open').length;
+        const openCapa = (capaData || []).filter(c => c.status_capa === 'Open').length;
         document.getElementById('stat-capa').innerText = openTemuan + openCapa;
 
     } catch (err) {
@@ -187,8 +187,8 @@ async function hitungSafeDays() {
             .limit(1);
 
         if (!error && data && data.length > 0 && data[0].tgl) {
-            const lastLTI  = new Date(data[0].tgl);
-            const diff     = Math.floor((new Date() - lastLTI) / 86400000);
+            const lastLTI = new Date(data[0].tgl);
+            const diff = Math.floor((new Date() - lastLTI) / 86400000);
             document.getElementById('stat-safedays').innerText = `${diff} Hari`;
         } else {
             document.getElementById('stat-safedays').innerText = "365+ Hari";
@@ -257,7 +257,7 @@ function renderComplianceChart(dataRekap) {
     if (complianceChartInstance) complianceChartInstance.destroy();
 
     const sorted = [...dataRekap].reverse();
-    const labels = sorted.map(d => `${konversiBulan(d.bulan).substring(0,3)} ${d.tahun}`);
+    const labels = sorted.map(d => `${konversiBulan(d.bulan).substring(0, 3)} ${d.tahun}`);
     const skorData = sorted.map(d => d.rata_rata_kepatuhan);
 
     // Garis target 80%
@@ -313,19 +313,19 @@ function renderIncidentChart(dataInsiden) {
     if (incidentChartInstance) incidentChartInstance.destroy();
 
     const viewMode = document.getElementById('incident-view-mode').value;  // jenis | dept | bulan
-    const yoy      = document.getElementById('incident-yoy').value === 'on';
+    const yoy = document.getElementById('incident-yoy').value === 'on';
 
-    const COLORS = ['#0F3D56','#176C8C','#23A7C7','#e74c3c','#f39c12','#8e44ad','#27ae60'];
+    const COLORS = ['#0F3D56', '#176C8C', '#23A7C7', '#e74c3c', '#f39c12', '#8e44ad', '#27ae60'];
 
     if (yoy) {
         // ── Year-over-Year: dua dataset berdasar tahun ──
         const tahunList = [...new Set(dataInsiden.map(i => new Date(i.tgl).getFullYear()))].sort();
-        const bulanLabels = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+        const bulanLabels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
         const datasets = tahunList.map((yr, idx) => {
             const counts = Array(12).fill(0);
             dataInsiden.filter(i => new Date(i.tgl).getFullYear() === yr)
-                       .forEach(i => counts[new Date(i.tgl).getMonth()]++);
+                .forEach(i => counts[new Date(i.tgl).getMonth()]++);
             return {
                 label: String(yr),
                 data: counts,
@@ -355,7 +355,7 @@ function renderIncidentChart(dataInsiden) {
         else if (viewMode === 'dept') key = i.dept || 'Tidak Diketahui';
         else {
             const tgl = new Date(i.tgl);
-            key = `${["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"][tgl.getMonth()]} ${tgl.getFullYear()}`;
+            key = `${["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][tgl.getMonth()]} ${tgl.getFullYear()}`;
         }
         summary[key] = (summary[key] || 0) + 1;
     });
@@ -411,12 +411,12 @@ function renderDocStatusChart(summary) {
     if (docStatusChartInstance) docStatusChartInstance.destroy();
 
     const statusColor = {
-        'Active'       : '#27ae60',
-        'Aktif'        : '#27ae60',
-        'Draft'        : '#3498db',
-        'Under Review' : '#f39c12',
-        'Expiring'     : '#e67e22',
-        'Obsolete'     : '#95a5a6',
+        'Active': '#27ae60',
+        'Aktif': '#27ae60',
+        'Draft': '#3498db',
+        'Under Review': '#f39c12',
+        'Expiring': '#e67e22',
+        'Obsolete': '#95a5a6',
         'Tidak Diketahui': '#bdc3c7',
     };
 
@@ -456,7 +456,7 @@ function renderDocStatusChart(summary) {
 async function muatHeatmapFormulir(jenisForm, tglAwal, tglAkhir) {
     try {
         // Tentukan 6 bulan terakhir sebagai kolom
-        const today  = new Date();
+        const today = new Date();
         const months = [];
         for (let i = 5; i >= 0; i--) {
             const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
@@ -474,7 +474,7 @@ async function muatHeatmapFormulir(jenisForm, tglAwal, tglAkhir) {
         }
 
         // Ambil semua submission dalam 6 bulan terakhir
-        const startDate = `${months[0].year}-${String(months[0].month).padStart(2,'0')}-01`;
+        const startDate = `${months[0].year}-${String(months[0].month).padStart(2, '0')}-01`;
         const { data: subs } = await client
             .from('monitoring_submissions')
             .select('form_id, department, submitted_at, status')
@@ -487,7 +487,7 @@ async function muatHeatmapFormulir(jenisForm, tglAwal, tglAkhir) {
         (subs || []).forEach(s => {
             const dept = s.department;
             if (!dept) return;
-            const key = s.submitted_at ? s.submitted_at.substring(0,7) : null;
+            const key = s.submitted_at ? s.submitted_at.substring(0, 7) : null;
             if (key && submittedMap[dept]) submittedMap[dept].add(key);
         });
 
@@ -506,14 +506,14 @@ async function muatHeatmapFormulir(jenisForm, tglAwal, tglAkhir) {
         // Header row
         html += `<div class="heatmap-cell label-dept" style="font-weight:700; font-size:12px;">Departemen</div>`;
         months.forEach(m => {
-            html += `<div class="heatmap-cell label-month">${konversiBulan(m.month).substring(0,3)}<br>${m.year}</div>`;
+            html += `<div class="heatmap-cell label-month">${konversiBulan(m.month).substring(0, 3)}<br>${m.year}</div>`;
         });
 
         // Data rows
         DEPTS.forEach(dept => {
             html += `<div class="heatmap-cell label-dept">${dept}</div>`;
             months.forEach(m => {
-                const key = `${m.year}-${String(m.month).padStart(2,'0')}`;
+                const key = `${m.year}-${String(m.month).padStart(2, '0')}`;
                 const submitted = submittedMap[dept] && submittedMap[dept].has(key);
                 const totalForms = formsByDept[dept] || 0;
 
@@ -563,9 +563,9 @@ async function eksporPDF() {
 
     const kpiRows = [
         ['Rata-rata Kepatuhan', document.getElementById('stat-kepatuhan').innerText],
-        ['Formulir Terlambat',  document.getElementById('stat-overdue').innerText],
-        ['Insiden Terbuka',     document.getElementById('stat-incidents').innerText],
-        ['CAPA Terbuka',        document.getElementById('stat-capa').innerText],
+        ['Formulir Terlambat', document.getElementById('stat-overdue').innerText],
+        ['Insiden Terbuka', document.getElementById('stat-incidents').innerText],
+        ['CAPA Terbuka', document.getElementById('stat-capa').innerText],
         ['Dokumen Segera Kadaluarsa', document.getElementById('stat-dokumen-kadaluarsa').innerText],
         ['Safe Days (tanpa LTI)', document.getElementById('stat-safedays').innerText],
     ];
@@ -619,9 +619,9 @@ function eksporExcel() {
     const kpiData = [
         ['Indikator', 'Nilai'],
         ['Rata-rata Kepatuhan', document.getElementById('stat-kepatuhan').innerText],
-        ['Formulir Terlambat',  document.getElementById('stat-overdue').innerText],
-        ['Insiden Terbuka',     document.getElementById('stat-incidents').innerText],
-        ['CAPA Terbuka',        document.getElementById('stat-capa').innerText],
+        ['Formulir Terlambat', document.getElementById('stat-overdue').innerText],
+        ['Insiden Terbuka', document.getElementById('stat-incidents').innerText],
+        ['CAPA Terbuka', document.getElementById('stat-capa').innerText],
         ['Dokumen Segera Kadaluarsa', document.getElementById('stat-dokumen-kadaluarsa').innerText],
         ['Safe Days (tanpa LTI)', document.getElementById('stat-safedays').innerText],
     ];
@@ -648,12 +648,269 @@ function eksporCSV() {
         if (cells.length >= 3) rows.push([cells[0].innerText, cells[1].innerText, cells[2].innerText]);
     });
 
-    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
     a.download = `Laporan_K3_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════════
+//  GENERATE NARASI OTOMATIS (Gratis, Tanpa API)
+// ══════════════════════════════════════════════
+
+function bukaGenerateNarasi() {
+    // Set default ke bulan sekarang
+    const now = new Date();
+    document.getElementById('gen-bulan').value = now.getMonth() + 1;
+    document.getElementById('gen-tahun').value = now.getFullYear();
+    document.getElementById('panel-generate').style.display = 'block';
+    document.getElementById('gen-status').style.display = 'none';
+    document.getElementById('gen-preview-wrap').style.display = 'none';
+    document.getElementById('panel-generate').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function tutupGenerateNarasi() {
+    document.getElementById('panel-generate').style.display = 'none';
+}
+
+function setGenStatus(type, msg) {
+    const el = document.getElementById('gen-status');
+    const warna = { info: '#e8f4fd', success: '#d4edda', error: '#f8d7da' };
+    const teks = { info: '#1FA9E6', success: '#155724', error: '#721c24' };
+    el.style.display = 'block';
+    el.style.background = warna[type];
+    el.style.color = teks[type];
+    el.innerText = msg;
+}
+
+async function generateNarasiOtomatis() {
+    const bulan = parseInt(document.getElementById('gen-bulan').value);
+    const tahun = parseInt(document.getElementById('gen-tahun').value);
+
+    setGenStatus('info', '⏳ Mengambil data KPI dari database…');
+    document.getElementById('gen-preview-wrap').style.display = 'none';
+
+    try {
+        const tglAwal = `${tahun}-${String(bulan).padStart(2, '0')}-01`;
+        const tglAkhir = new Date(tahun, bulan, 0).toISOString().split('T')[0];
+        const now = new Date();
+
+        // Tarik semua data yang dibutuhkan secara paralel
+        const [
+            resInsiden,
+            resCapa,
+            resTemuan,
+            resPelaksanaan,
+            resForms,
+            resSubs,
+            resDokExp,
+        ] = await Promise.all([
+            client.from('incidents').select('jenis, status, keparahan, dept').gte('tgl', tglAwal).lte('tgl', tglAkhir),
+            client.from('capa_items').select('status_capa'),
+            client.from('temuan_audit').select('status_perbaikan'),
+            client.from('pelaksanaan_k3').select('skor_kepatuhan, departemen_id').gte('tanggal', tglAwal).lte('tanggal', tglAkhir),
+            client.from('monitoring_forms').select('id, target_department').eq('status', 'Active'),
+            client.from('monitoring_submissions').select('form_id, department').gte('submitted_at', tglAwal + 'T00:00:00').lte('submitted_at', tglAkhir + 'T23:59:59'),
+            client.from('dokumen_k3').select('id', { count: 'exact', head: true }).gte('tanggal_review', now.toISOString().split('T')[0]).lte('tanggal_review', new Date(now.getTime() + 30 * 86400000).toISOString().split('T')[0]),
+        ]);
+
+        // ── Kalkulasi KPI ──
+        const dataInsiden = resInsiden.data || [];
+        const totalInsiden = dataInsiden.length;
+        const insidenOpen = dataInsiden.filter(i => i.status !== 'Closed').length;
+        const openCapa = (resCapa.data || []).filter(c => c.status_capa === 'Open').length;
+        const openTemuan = (resTemuan.data || []).filter(t => t.status_perbaikan === 'Open').length;
+        const totalCapa = openCapa + openTemuan;
+        const dokExp = resDokExp.count || 0;
+
+        // Rata-rata kepatuhan
+        const skors = (resPelaksanaan.data || []).map(p => p.skor_kepatuhan).filter(s => s !== null);
+        const rataKepatuhan = skors.length > 0
+            ? Math.round(skors.reduce((a, b) => a + b, 0) / skors.length)
+            : null;
+
+        // Kepatuhan per departemen (ambil 2 terbaik & terburuk)
+        const deptMap = {};
+        (resPelaksanaan.data || []).forEach(p => {
+            const d = p.departemen_id || 'Umum';
+            if (!deptMap[d]) deptMap[d] = [];
+            deptMap[d].push(p.skor_kepatuhan);
+        });
+        const deptRata = Object.entries(deptMap).map(([dept, s]) => ({
+            dept,
+            rata: Math.round(s.reduce((a, b) => a + b, 0) / s.length)
+        })).sort((a, b) => b.rata - a.rata);
+
+        // Overdue forms
+        const submittedIds = new Set((resSubs.data || []).map(s => s.form_id));
+        const overdue = (resForms.data || []).filter(f => !submittedIds.has(f.id)).length;
+
+        // Jenis insiden terbanyak
+        const insidenJenis = {};
+        dataInsiden.forEach(i => {
+            const j = i.jenis || 'Lain-lain';
+            insidenJenis[j] = (insidenJenis[j] || 0) + 1;
+        });
+        const topJenis = Object.entries(insidenJenis).sort((a, b) => b[1] - a[1]).slice(0, 2);
+
+        setGenStatus('info', '✍️ Menyusun narasi evaluasi…');
+
+        // ── Susun Narasi dari Template Cerdas ──
+        const narasi = susunNarasi({
+            bulan, tahun, rataKepatuhan,
+            totalInsiden, insidenOpen, topJenis,
+            totalCapa, overdue, dokExp, deptRata
+        });
+
+        document.getElementById('gen-narasi-text').value = narasi;
+        document.getElementById('gen-preview-wrap').style.display = 'block';
+        setGenStatus('success', '✅ Narasi berhasil dibuat. Periksa, edit jika perlu, lalu simpan.');
+
+        // Simpan kpiData untuk dipakai saat simpan
+        window._genKPI = { bulan, tahun, rataKepatuhan };
+
+    } catch (err) {
+        console.error(err);
+        setGenStatus('error', '❌ Gagal mengambil data: ' + err.message);
+    }
+}
+
+/**
+ * Menyusun narasi evaluasi profesional berdasarkan data KPI
+ * menggunakan template kondisional — gratis, tanpa API eksternal
+ */
+function susunNarasi({ bulan, tahun, rataKepatuhan, totalInsiden, insidenOpen,
+    topJenis, totalCapa, overdue, dokExp, deptRata }) {
+    const bln = konversiBulan(bulan);
+    const rata = rataKepatuhan !== null ? rataKepatuhan : 0;
+
+    // ── Paragraf 1: Penilaian kepatuhan keseluruhan ──
+    let p1 = '';
+    if (rata >= 85) {
+        p1 = `Pada periode ${bln} ${tahun}, kinerja Keselamatan dan Kesehatan Kerja (K3) perusahaan menunjukkan hasil yang sangat memuaskan dengan rata-rata tingkat kepatuhan mencapai ${rata}%. ` +
+            `Pencapaian ini mencerminkan komitmen seluruh elemen organisasi dalam menerapkan standar K3 secara konsisten dan menyeluruh.`;
+    } else if (rata >= 70) {
+        p1 = `Pada periode ${bln} ${tahun}, kinerja K3 perusahaan berada pada level yang cukup baik dengan rata-rata tingkat kepatuhan sebesar ${rata}%. ` +
+            `Meskipun hasil ini masih di atas ambang batas minimal, terdapat sejumlah area yang masih memerlukan perhatian dan peningkatan lebih lanjut.`;
+    } else if (rata > 0) {
+        p1 = `Pada periode ${bln} ${tahun}, kinerja K3 perusahaan perlu mendapat perhatian serius dengan rata-rata tingkat kepatuhan hanya mencapai ${rata}%, ` +
+            `di bawah target minimum yang ditetapkan. Kondisi ini memerlukan evaluasi menyeluruh dan tindakan korektif segera dari semua pihak terkait.`;
+    } else {
+        p1 = `Pada periode ${bln} ${tahun}, data kepatuhan K3 belum tersedia secara lengkap. ` +
+            `Diperlukan pengisian data pelaksanaan inspeksi secara konsisten agar evaluasi dapat dilakukan secara akurat.`;
+    }
+
+    // ── Paragraf 2: Insiden & CAPA ──
+    let p2 = '';
+    if (totalInsiden === 0) {
+        p2 = `Selama periode ini, tidak terdapat insiden K3 yang tercatat, yang merupakan pencapaian positif yang perlu dipertahankan. `;
+    } else {
+        const jenisText = topJenis.length > 0
+            ? `dengan jenis terbanyak adalah ${topJenis.map(([j, c]) => `${j} (${c} kasus)`).join(' dan ')}`
+            : '';
+        p2 = `Selama periode ${bln} ${tahun}, tercatat sebanyak ${totalInsiden} insiden K3 ${jenisText}. ` +
+            (insidenOpen > 0
+                ? `Dari total insiden tersebut, ${insidenOpen} insiden masih berstatus terbuka (Open) dan memerlukan tindak lanjut segera. `
+                : `Seluruh insiden yang terjadi telah berhasil ditangani dan ditutup dalam periode yang sama. `);
+    }
+
+    if (totalCapa > 0) {
+        p2 += `Terdapat ${totalCapa} item CAPA (Corrective and Preventive Action) yang masih terbuka, ` +
+            `yang perlu diselesaikan sesuai target waktu yang ditetapkan untuk mencegah potensi risiko berulang.`;
+    } else {
+        p2 += `Seluruh temuan CAPA dari periode sebelumnya telah berhasil ditutup, mencerminkan responsivitas tim K3 dalam menangani temuan audit.`;
+    }
+
+    // ── Paragraf 3: Departemen & Formulir ──
+    let p3 = '';
+    if (deptRata.length > 0) {
+        const terbaik = deptRata[0];
+        const terburuk = deptRata[deptRata.length - 1];
+        if (deptRata.length > 1 && terbaik.dept !== terburuk.dept) {
+            p3 = `Dari sisi kinerja per departemen, ${terbaik.dept} mencatat kepatuhan tertinggi sebesar ${terbaik.rata}%, ` +
+                `sementara ${terburuk.dept} perlu mendapat perhatian khusus dengan kepatuhan sebesar ${terburuk.rata}%. `;
+        } else {
+            p3 = `Departemen ${terbaik.dept} mencatat kepatuhan sebesar ${terbaik.rata}% pada periode ini. `;
+        }
+    }
+
+    if (overdue > 0) {
+        p3 += `Sebanyak ${overdue} formulir monitoring belum diselesaikan tepat waktu, ` +
+            `yang mengindikasikan perlunya peningkatan kedisiplinan dalam pengisian laporan rutin K3.`;
+    } else {
+        p3 += `Seluruh formulir monitoring berhasil diselesaikan tepat waktu, menunjukkan kedisiplinan yang baik dari seluruh petugas K3.`;
+    }
+
+    // ── Paragraf 4: Rekomendasi ──
+    const rekoms = [];
+    if (rata < 80 && rata > 0) rekoms.push(`meningkatkan konsistensi pelaksanaan inspeksi K3 harian di seluruh departemen guna mendorong kepatuhan di atas 80%`);
+    if (insidenOpen > 0) rekoms.push(`mempercepat penyelesaian ${insidenOpen} insiden yang masih berstatus Open dengan menetapkan PIC dan target waktu yang jelas`);
+    if (totalCapa > 0) rekoms.push(`memantau dan menyelesaikan ${totalCapa} item CAPA yang masih terbuka sesuai rencana tindakan korektif`);
+    if (overdue > 0) rekoms.push(`memastikan pengisian ${overdue} formulir monitoring yang terlambat segera diselesaikan dan mencegah keterlambatan serupa di bulan berikutnya`);
+    if (dokExp > 0) rekoms.push(`melakukan review terhadap ${dokExp} dokumen K3 yang akan segera kadaluarsa agar dokumen tetap valid dan berlaku`);
+    if (rekoms.length === 0) rekoms.push(`mempertahankan capaian positif ini dan terus meningkatkan budaya K3 di seluruh lini organisasi`);
+
+    const p4 = `Berdasarkan evaluasi menyeluruh periode ${bln} ${tahun}, tindakan prioritas yang perlu segera diambil antara lain: ` +
+        rekoms.slice(0, 3).join('; ') +
+        `. Pemantauan berkelanjutan dan komunikasi rutin antar departemen menjadi kunci keberhasilan implementasi K3 yang optimal di periode mendatang.`;
+
+    return [p1, p2, p3, p4].filter(Boolean).join('\n\n');
+}
+
+async function simpanNarasiKeDB() {
+    const narasi = document.getElementById('gen-narasi-text').value.trim();
+    const kpi = window._genKPI;
+
+    if (!narasi || !kpi) return;
+
+    const btn = document.querySelector('#gen-preview-wrap button');
+
+    const setS = (type, msg) => {
+        const el = document.getElementById('gen-simpan-status');
+        const w = { info: '#e8f4fd', success: '#d4edda', error: '#f8d7da' };
+        const t = { info: '#1FA9E6', success: '#155724', error: '#721c24' };
+        el.style.display = 'block';
+        el.style.background = w[type];
+        el.style.color = t[type];
+        el.innerText = msg;
+    };
+
+    setS('info', '⏳ Menyimpan ke database…');
+
+    try {
+        // Cek apakah sudah ada data bulan ini
+        const { data: existing } = await client
+            .from('kesimpulan_rekap')
+            .select('id')
+            .eq('bulan', kpi.bulan)
+            .eq('tahun', kpi.tahun)
+            .maybeSingle();
+
+        let error;
+        if (existing) {
+            ({ error } = await client.from('kesimpulan_rekap')
+                .update({ rata_rata_kepatuhan: kpi.rataKepatuhan, narasi_kesimpulan: narasi })
+                .eq('id', existing.id));
+        } else {
+            ({ error } = await client.from('kesimpulan_rekap')
+                .insert({ bulan: kpi.bulan, tahun: kpi.tahun, rata_rata_kepatuhan: kpi.rataKepatuhan, narasi_kesimpulan: narasi }));
+        }
+
+        if (error) throw error;
+
+        setS('success', `✅ Narasi ${konversiBulan(kpi.bulan)} ${kpi.tahun} berhasil disimpan! Dashboard diperbarui…`);
+
+        // Refresh tampilan dashboard otomatis
+        setTimeout(() => {
+            tutupGenerateNarasi();
+            muatDataRekapUtama(document.getElementById('filter-tahun').value);
+        }, 1500);
+
+    } catch (err) {
+        setS('error', '❌ Gagal menyimpan: ' + err.message);
+    }
 }

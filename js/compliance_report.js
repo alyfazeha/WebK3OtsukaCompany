@@ -129,9 +129,20 @@ function processAndRenderCharts(submissions) {
     DEPARTMENT_LIST.forEach(dept => { deptCounts[dept] = 0; });
 
     submissions.forEach(sub => {
-        if (deptCounts[sub.department] !== undefined) {
-            deptCounts[sub.department]++;
-        }
+        const deptRaw = (sub.department || "").trim();
+        if (!deptRaw) return; // lewati submisi tanpa departemen
+
+        // Cocokkan tanpa peduli besar/kecil huruf & spasi berlebih,
+        // agar "produksi", "Produksi ", "PRODUKSI" dst tetap terhitung benar.
+        const matchedKey = DEPARTMENT_LIST.find(
+            d => d.toLowerCase() === deptRaw.toLowerCase()
+        );
+
+        // Kalau departemennya belum ada di daftar resmi, tetap dihitung
+        // (bukan dibuang diam-diam) supaya tidak ada data yang hilang dari chart.
+        const key = matchedKey || deptRaw;
+        if (deptCounts[key] === undefined) deptCounts[key] = 0;
+        deptCounts[key]++;
     });
 
     const ctxDeptEl = document.getElementById("chartDeptSubmissions");
